@@ -3,8 +3,6 @@ import json
 import os
 import secrets
 from pathlib import Path
-
-
 from flask import Flask
 from dotenv import load_dotenv
 import firebase_admin
