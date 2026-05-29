@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Report Listing — XSM Marketplace{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-10">
+
+  <!-- Header -->
+  <div class="mb-8">
+    <a href="{{ url_for('listings.listing_detail', listing_id=listing_id) }}"
+       class="inline-flex items-center gap-2 text-xs font-rajdhani text-gray-500
+              hover:text-neon-blue transition-colors mb-4">
+      <i class="fas fa-arrow-left text-[10px]"></i> Back to listing
+    </a>
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+           style="background:rgba(255,60,60,0.12); border:1px solid rgba(255,60,60,0.3);">
+        <i class="fas fa-flag text-red-400 text-sm"></i>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold font-orbitron tracking-wide text-white">Report Listing</h1>
+        <p class="text-xs text-gray-500 font-rajdhani mt-0.5">
+          Help keep XSM safe — reports are reviewed within 24 hours
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listing preview card -->
+  <div class="cyber-card p-4 mb-6 flex items-center gap-4">
+    {% if listing.thumbnail %}
+      <img src="{{ listing.thumbnail }}" alt="Listing"
+           class="w-14 h-14 rounded-lg object-cover border border-gray-700 flex-shrink-0"
+           onerror="this.src='/static/default_thumbnail.png'">
+    {% else %}
+      <div class="w-14 h-14 rounded-lg bg-cyber-700 flex items-center justify-center flex-shrink-0 border border-gray-700">
+        <i class="fas fa-image text-gray-600"></i>
+      </div>
+    {% endif %}
+    <div class="min-w-0">
+      <p class="text-sm font-semibold text-white font-rajdhani truncate">
+        @{{ listing.username }}
+      </p>
+      <p class="text-xs text-gray-500 font-rajdhani">
+        {{ listing.platform }} &nbsp;·&nbsp; ${{ listing.price | int }}
+      </p>
+      {% if listing.flagged %}
+        <span class="inline-flex items-center gap-1 mt-1 text-[10px] font-orbitron px-2 py-0.5
+                     rounded-full bg-red-900/30 border border-red-700/40 text-red-400">
+          <i class="fas fa-flag text-[9px]"></i> Already Flagged
+        </span>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Report form -->
+  <form method="POST"
+        action="{{ url_for('reports.report_listing', listing_id=listing_id) }}"
+        class="cyber-card p-6 space-y-6">
+
+    <!-- Reason -->
+    <div>
+      <label class="block text-xs font-bold font-orbitron tracking-widest text-gray-400 uppercase mb-3">
+        Reason for Report <span class="text-red-400">*</span>
+      </label>
+      <div class="space-y-2">
+        {% for reason in reasons %}
+          <label class="report-option flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer
+                         border border-gray-700 hover:border-red-500/40 hover:bg-red-900/10
+                         transition-all duration-200 group">
+            <input type="radio" name="reason" value="{{ reason }}"
+                   class="accent-red-500 w-4 h-4 flex-shrink-0"
+                   {% if loop.first %}required{% endif %}>
+            <span class="text-sm font-rajdhani text-gray-300 group-hover:text-white transition-colors">
+              {{ reason }}
+            </span>
+          </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Details -->
+    <div>
+      <label class="block text-xs font-bold font-orbitron tracking-widest text-gray-400 uppercase mb-2">
+        Additional Details <span class="text-gray-600">(optional)</span>
+      </label>
+      <textarea name="details" rows="4" maxlength="500"
+                placeholder="Describe the issue in more detail…"
+                class="w-full px-4 py-3 rounded-xl bg-cyber-800 border border-gray-700
+                       text-sm font-rajdhani text-gray-200 placeholder-gray-600
+                       focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/30
+                       resize-none transition-colors"></textarea>
+      <p class="text-right text-[10px] text-gray-600 font-rajdhani mt-1">Max 500 characters</p>
+    </div>
+
+    <!-- Notice -->
+    <div class="flex items-start gap-3 px-4 py-3 rounded-xl
+                bg-yellow-900/10 border border-yellow-700/25">
+      <i class="fas fa-exclamation-triangle text-yellow-500 text-xs mt-0.5 flex-shrink-0"></i>
+      <p class="text-xs font-rajdhani text-yellow-400/80 leading-relaxed">
+        False or malicious reports may result in action against your account.
+        All reports are reviewed by our moderation team.
+      </p>
+    </div>
+
+    <!-- Submit -->
+    <div class="flex gap-3 pt-2">
+      <a href="{{ url_for('listings.listing_detail', listing_id=listing_id) }}"
+         class="flex-1 text-center py-3 rounded-xl font-rajdhani text-sm text-gray-400
+                cyber-button hover:text-white transition-colors">
+        Cancel
+      </a>
+      <button type="submit"
+              class="flex-1 py-3 rounded-xl font-rajdhani font-semibold text-sm text-white
+                     transition-all duration-200 flex items-center justify-center gap-2"
+              style="background:linear-gradient(135deg, #dc2626, #991b1b);
+                     box-shadow: 0 0 16px rgba(220,38,38,0.25);"
+              onmouseover="this.style.boxShadow='0 0 24px rgba(220,38,38,0.45)'"
+              onmouseout="this.style.boxShadow='0 0 16px rgba(220,38,38,0.25)'">
+        <i class="fas fa-flag text-xs"></i>
+        Submit Report
+      </button>
+    </div>
+
+  </form>
+
+</div>
+
+<style>
+  /* Highlight selected radio option */
+  .report-option:has(input:checked) {
+    border-color: rgba(239, 68, 68, 0.5) !important;
+    background:   rgba(153, 27, 27, 0.15) !important;
+  }
+  .report-option:has(input:checked) span {
+    color: #fca5a5 !important;
+  }
+</style>
+{% endblock %}

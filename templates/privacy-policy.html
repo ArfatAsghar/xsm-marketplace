@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy — XSM Marketplace{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-14">
+
+  <!-- Header -->
+  <div class="mb-10 pb-6 border-b border-gray-800">
+    <p class="text-xs text-gray-600 font-rajdhani uppercase tracking-[0.3em] mb-2">Legal</p>
+    <h1 class="text-2xl font-bold text-white font-rajdhani">Privacy Policy</h1>
+    <p class="text-gray-600 text-xs font-rajdhani mt-1">Last updated: May 2026</p>
+  </div>
+
+  <!-- Intro -->
+  <p class="text-gray-400 text-sm font-rajdhani leading-relaxed mb-10">
+    XSM Marketplace ("we", "our", "us") is committed to protecting your personal information.
+    This policy explains what data we collect, how we use it, and your rights when using
+    our platform. By creating an account, you agree to this policy.
+  </p>
+
+  <!-- Sections -->
+  <div class="space-y-8">
+
+    {% set sections = [
+      ("1. Information We Collect", [
+        ("Account Information", "When you register, we collect your username, email address, phone number, date of birth, address, and optionally a profile picture."),
+        ("KYC Documents", "For withdrawal eligibility we collect government-issued identity documents (CNIC front and back) and a selfie. These are stored securely and accessed only by admin staff."),
+        ("Transaction Data", "All purchases, sales, deposits, withdrawals, and escrow activity are recorded to maintain accurate financial records."),
+        ("Payment Slips", "When submitting a deposit request, we collect your payment slip image, account number, and payment method details."),
+        ("Usage Data", "We collect IP address, browser type, and pages visited to improve the platform experience."),
+      ]),
+      ("2. How We Use Your Information", [
+        ("", "We use your data to create and manage your account, process transactions and escrow releases, verify identity for KYC compliance, send transactional email notifications, detect and prevent fraud, respond to disputes and support requests, and improve platform features. We do not sell your personal data to third parties."),
+      ]),
+      ("3. Data Storage & Security", [
+        ("", "Your data is stored in Firebase (Google Cloud), protected by industry-standard encryption in transit and at rest. Uploaded files are stored on our secure server. Despite our measures, no system is 100% secure — use a strong, unique password and keep your credentials private."),
+      ]),
+      ("4. Escrow & Financial Data", [
+        ("", "All transactions use our escrow system. Credits deducted from buyers are held in escrow until the buyer confirms receipt. Platform fees are deducted on release. Withdrawal records are retained for financial compliance."),
+      ]),
+      ("5. Sharing of Information", [
+        ("", "We do not share your data with third parties except when required by law, to prevent fraud or abuse, with Firebase/Google as our infrastructure provider, or with our email provider solely for transactional emails."),
+      ]),
+      ("6. Your Rights", [
+        ("", "You have the right to access the data we hold about you, request correction of inaccurate information, request deletion of your account and data, and withdraw consent for non-essential processing. To exercise these rights, contact us through the Contact page."),
+      ]),
+      ("7. Cookies", [
+        ("", "We use session cookies to keep you logged in. We do not use advertising or tracking cookies. Disabling cookies in your browser will prevent you from logging in."),
+      ]),
+      ("8. Children's Privacy", [
+        ("", "XSM Marketplace is not intended for users under 18. Accounts found to belong to minors will be deleted immediately."),
+      ]),
+      ("9. Changes to This Policy", [
+        ("", "We may update this policy from time to time. Changes will be posted on this page with a revised date. Continued use of the platform constitutes acceptance."),
+      ]),
+      ("10. Contact", [
+        ("", "For questions about this Privacy Policy, reach us through the Contact page."),
+      ]),
+    ] %}
+
+    {% for title, items in sections %}
+    <div class="border-b border-gray-800/60 pb-8">
+      <h2 class="text-sm font-bold text-gray-300 font-rajdhani mb-4">{{ title }}</h2>
+      <div class="space-y-3">
+        {% for label, body in items %}
+        <div>
+          {% if label %}<p class="text-xs text-gray-500 font-rajdhani font-semibold uppercase tracking-[0.15em] mb-1">{{ label }}</p>{% endif %}
+          <p class="text-gray-500 text-sm font-rajdhani leading-relaxed">{{ body }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+
+  <!-- Footer nav -->
+  <div class="flex items-center justify-between mt-10 pt-6">
+    <a href="{{ url_for('misc.home') }}"
+       class="text-gray-700 hover:text-gray-400 text-xs font-rajdhani transition-colors">
+      ← Home
+    </a>
+    <a href="{{ url_for('misc.terms') }}"
+       class="text-gray-700 hover:text-gray-400 text-xs font-rajdhani transition-colors">
+      Terms of Use →
+    </a>
+  </div>
+
+</div>
+{% endblock %}

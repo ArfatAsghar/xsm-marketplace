@@ -1,0 +1,738 @@
+{% extends "base.html" %}
+{% block title %}Sign Up — XSM Marketplace{% endblock %}
+
+{% block content %}
+<div class="min-h-[85vh] flex items-center justify-center py-12 px-4">
+  <div class="w-full max-w-2xl">
+
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-5 cyber-border"
+           style="background: linear-gradient(135deg, rgba(0,243,255,0.15), rgba(189,0,255,0.15));">
+        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="url(#iconGrad)" stroke-width="1.5">
+          <defs>
+            <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#00f3ff"/>
+              <stop offset="100%" stop-color="#bd00ff"/>
+            </linearGradient>
+          </defs>
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
+        </svg>
+      </div>
+      <h1 class="font-orbitron text-2xl sm:text-3xl font-bold tracking-tight
+                 bg-gradient-to-r from-neon-blue to-neon-purple bg-clip-text text-transparent">
+        Create Account
+      </h1>
+      <p class="text-gray-500 font-rajdhani text-sm mt-2">
+        Join XSM Marketplace — buy and sell digital assets securely
+      </p>
+    </div>
+
+    <!-- Card -->
+    <div class="cyber-card overflow-hidden">
+      <div class="h-px w-full"
+           style="background:linear-gradient(90deg,transparent,rgba(0,243,255,.5),rgba(189,0,255,.5),transparent)"></div>
+
+      <div class="p-6 sm:p-8">
+        <form method="POST" enctype="multipart/form-data" id="signupForm" class="space-y-6">
+
+          <!-- ── Profile Picture ── -->
+          <div class="flex flex-col items-center gap-3">
+            <div class="relative group cursor-pointer" onclick="document.getElementById('profile_pic').click()">
+              <div class="w-20 h-20 rounded-2xl overflow-hidden flex items-center justify-center
+                          transition-all duration-200 group-hover:scale-105"
+                   style="border:2px solid rgba(0,243,255,0.3);
+                          box-shadow:0 0 16px rgba(0,243,255,0.1);
+                          background:#08080f;">
+                <img id="profilePreview" src="" alt="Preview"
+                     class="w-full h-full object-cover hidden">
+                <svg id="defaultAvatar" class="w-9 h-9 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+              </div>
+              <div class="absolute -bottom-1 -right-1 w-7 h-7 rounded-lg flex items-center justify-center"
+                   style="background:linear-gradient(135deg,#00f3ff,#bd00ff);">
+                <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"/>
+                </svg>
+              </div>
+              <input id="profile_pic" name="profile_pic" type="file"
+                     accept="image/*" class="hidden" onchange="previewPic(this)">
+            </div>
+            <p class="text-[11px] text-gray-600 font-rajdhani">Click to upload profile picture <span class="text-gray-700">(optional)</span></p>
+          </div>
+
+          <!-- ── Row 1: Username + Email ── -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <!-- Username -->
+            <div class="space-y-1.5">
+              <label class="text-[11px] font-bold font-orbitron tracking-wider uppercase text-gray-500">
+                Username <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 pointer-events-none z-10">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                  </svg>
+                </span>
+                <input type="text" name="username" id="username" required
+                       value="{{ request.form.username if request.form else '' }}"
+                       placeholder="yourname"
+                       class="xsm-input xsm-icon-left">
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="space-y-1.5">
+              <label class="text-[11px] font-bold font-orbitron tracking-wider uppercase text-gray-500">
+                Email <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 pointer-events-none z-10">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                  </svg>
+                </span>
+                <input type="email" name="email" id="email" required
+                       value="{{ request.form.email if request.form else '' }}"
+                       placeholder="you@email.com"
+                       class="xsm-input xsm-icon-left">
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Password ── -->
+          <div class="space-y-1.5">
+            <label class="text-[11px] font-bold font-orbitron tracking-wider uppercase text-gray-500">
+              Password <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 pointer-events-none z-10">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+              </span>
+              <input type="password" name="password" id="password" required
+                     placeholder="Min. 8 characters"
+                     class="xsm-input xsm-icon-left xsm-icon-right"
+                     oninput="checkStrength(this.value)">
+              <button type="button" onclick="togglePassword()"
+                      class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-400 transition-colors z-10">
+                <svg id="eyeIcon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+              </button>
+            </div>
+            <!-- Strength bars -->
+            <div class="flex gap-1 mt-1.5">
+              <div class="h-1 flex-1 rounded-full bg-gray-800 transition-all duration-300" id="s1"></div>
+              <div class="h-1 flex-1 rounded-full bg-gray-800 transition-all duration-300" id="s2"></div>
+              <div class="h-1 flex-1 rounded-full bg-gray-800 transition-all duration-300" id="s3"></div>
+              <div class="h-1 flex-1 rounded-full bg-gray-800 transition-all duration-300" id="s4"></div>
+            </div>
+            <p class="text-[10px] font-rajdhani" id="strengthLabel" style="color:#3a4060">
+              Enter a password to see strength
+            </p>
+          </div>
+
+          <!-- ── Row 2: DOB + Phone ── -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <!-- Date of Birth -->
+            <div class="space-y-1.5">
+              <label class="text-[11px] font-bold font-orbitron tracking-wider uppercase text-gray-500">
+                Date of Birth <span class="text-red-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 pointer-events-none z-10">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                </span>
+                <input type="date" name="dob" id="dob" required
+                       value="{{ request.form.dob if request.form else '' }}"
+                       class="xsm-input xsm-icon-left">
+              </div>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="space-y-1.5">
+              <label class="text-[11px] font-bold font-orbitron tracking-wider uppercase text-gray-500">
+                Phone Number <span class="text-red-500">*</span>
+              </label>
+              <div class="flex gap-2">
+
+                <!-- Country code picker -->
+                <div class="relative flex-shrink-0" style="width:120px;">
+                  <select name="country_code" id="countryCode"
+                          class="xsm-input appearance-none cursor-pointer w-full pr-6 text-sm"
+                          style="padding-left:0.75rem;"
+                          onchange="updateDialCode()">
+                    <!-- Popular -->
+                    <optgroup label="── Popular ──">
+                      <option value="+92"  selected>🇵🇰 +92</option>
+                      <option value="+1">🇺🇸 +1</option>
+                      <option value="+44">🇬🇧 +44</option>
+                      <option value="+91">🇮🇳 +91</option>
+                      <option value="+971">🇦🇪 +971</option>
+                      <option value="+966">🇸🇦 +966</option>
+                      <option value="+61">🇦🇺 +61</option>
+                      <option value="+86">🇨🇳 +86</option>
+                    </optgroup>
+                    <!-- A -->
+                    <optgroup label="── A ──">
+                      <option value="+93">🇦🇫 +93 Afghanistan</option>
+                      <option value="+355">🇦🇱 +355 Albania</option>
+                      <option value="+213">🇩🇿 +213 Algeria</option>
+                      <option value="+376">🇦🇩 +376 Andorra</option>
+                      <option value="+244">🇦🇴 +244 Angola</option>
+                      <option value="+1-268">🇦🇬 +1 Antigua</option>
+                      <option value="+54">🇦🇷 +54 Argentina</option>
+                      <option value="+374">🇦🇲 +374 Armenia</option>
+                      <option value="+61">🇦🇺 +61 Australia</option>
+                      <option value="+43">🇦🇹 +43 Austria</option>
+                      <option value="+994">🇦🇿 +994 Azerbaijan</option>
+                    </optgroup>
+                    <!-- B -->
+                    <optgroup label="── B ──">
+                      <option value="+1-242">🇧🇸 +1 Bahamas</option>
+                      <option value="+973">🇧🇭 +973 Bahrain</option>
+                      <option value="+880">🇧🇩 +880 Bangladesh</option>
+                      <option value="+1-246">🇧🇧 +1 Barbados</option>
+                      <option value="+375">🇧🇾 +375 Belarus</option>
+                      <option value="+32">🇧🇪 +32 Belgium</option>
+                      <option value="+501">🇧🇿 +501 Belize</option>
+                      <option value="+229">🇧🇯 +229 Benin</option>
+                      <option value="+975">🇧🇹 +975 Bhutan</option>
+                      <option value="+591">🇧🇴 +591 Bolivia</option>
+                      <option value="+387">🇧🇦 +387 Bosnia</option>
+                      <option value="+267">🇧🇼 +267 Botswana</option>
+                      <option value="+55">🇧🇷 +55 Brazil</option>
+                      <option value="+673">🇧🇳 +673 Brunei</option>
+                      <option value="+359">🇧🇬 +359 Bulgaria</option>
+                      <option value="+226">🇧🇫 +226 Burkina Faso</option>
+                      <option value="+257">🇧🇮 +257 Burundi</option>
+                    </optgroup>
+                    <!-- C -->
+                    <optgroup label="── C ──">
+                      <option value="+855">🇰🇭 +855 Cambodia</option>
+                      <option value="+237">🇨🇲 +237 Cameroon</option>
+                      <option value="+1">🇨🇦 +1 Canada</option>
+                      <option value="+238">🇨🇻 +238 Cape Verde</option>
+                      <option value="+236">🇨🇫 +236 Central African Rep.</option>
+                      <option value="+235">🇹🇩 +235 Chad</option>
+                      <option value="+56">🇨🇱 +56 Chile</option>
+                      <option value="+86">🇨🇳 +86 China</option>
+                      <option value="+57">🇨🇴 +57 Colombia</option>
+                      <option value="+269">🇰🇲 +269 Comoros</option>
+                      <option value="+242">🇨🇬 +242 Congo</option>
+                      <option value="+243">🇨🇩 +243 Congo (DRC)</option>
+                      <option value="+506">🇨🇷 +506 Costa Rica</option>
+                      <option value="+385">🇭🇷 +385 Croatia</option>
+                      <option value="+53">🇨🇺 +53 Cuba</option>
+                      <option value="+357">🇨🇾 +357 Cyprus</option>
+                      <option value="+420">🇨🇿 +420 Czech Republic</option>
+                    </optgroup>
+                    <!-- D -->
+                    <optgroup label="── D ──">
+                      <option value="+45">🇩🇰 +45 Denmark</option>
+                      <option value="+253">🇩🇯 +253 Djibouti</option>
+                      <option value="+1-767">🇩🇲 +1 Dominica</option>
+                      <option value="+1-809">🇩🇴 +1 Dominican Republic</option>
+                    </optgroup>
+                    <!-- E -->
+                    <optgroup label="── E ──">
+                      <option value="+593">🇪🇨 +593 Ecuador</option>
+                      <option value="+20">🇪🇬 +20 Egypt</option>
+                      <option value="+503">🇸🇻 +503 El Salvador</option>
+                      <option value="+240">🇬🇶 +240 Equatorial Guinea</option>
+                      <option value="+291">🇪🇷 +291 Eritrea</option>
+                      <option value="+372">🇪🇪 +372 Estonia</option>
+                      <option value="+268">🇸🇿 +268 Eswatini</option>
+                      <option value="+251">🇪🇹 +251 Ethiopia</option>
+                    </optgroup>
+                    <!-- F -->
+                    <optgroup label="── F ──">
+                      <option value="+679">🇫🇯 +679 Fiji</option>
+                      <option value="+358">🇫🇮 +358 Finland</option>
+                      <option value="+33">🇫🇷 +33 France</option>
+                      <option value="+241">🇬🇦 +241 Gabon</option>
+                    </optgroup>
+                    <!-- G -->
+                    <optgroup label="── G ──">
+                      <option value="+220">🇬🇲 +220 Gambia</option>
+                      <option value="+995">🇬🇪 +995 Georgia</option>
+                      <option value="+49">🇩🇪 +49 Germany</option>
+                      <option value="+233">🇬🇭 +233 Ghana</option>
+                      <option value="+30">🇬🇷 +30 Greece</option>
+                      <option value="+1-473">🇬🇩 +1 Grenada</option>
+                      <option value="+502">🇬🇹 +502 Guatemala</option>
+                      <option value="+224">🇬🇳 +224 Guinea</option>
+                      <option value="+245">🇬🇼 +245 Guinea-Bissau</option>
+                      <option value="+592">🇬🇾 +592 Guyana</option>
+                    </optgroup>
+                    <!-- H -->
+                    <optgroup label="── H ──">
+                      <option value="+509">🇭🇹 +509 Haiti</option>
+                      <option value="+504">🇭🇳 +504 Honduras</option>
+                      <option value="+36">🇭🇺 +36 Hungary</option>
+                    </optgroup>
+                    <!-- I -->
+                    <optgroup label="── I ──">
+                      <option value="+354">🇮🇸 +354 Iceland</option>
+                      <option value="+91">🇮🇳 +91 India</option>
+                      <option value="+62">🇮🇩 +62 Indonesia</option>
+                      <option value="+98">🇮🇷 +98 Iran</option>
+                      <option value="+964">🇮🇶 +964 Iraq</option>
+                      <option value="+353">🇮🇪 +353 Ireland</option>
+                      <option value="+972">🇮🇱 +972 Israel</option>
+                      <option value="+39">🇮🇹 +39 Italy</option>
+                    </optgroup>
+                    <!-- J -->
+                    <optgroup label="── J ──">
+                      <option value="+1-876">🇯🇲 +1 Jamaica</option>
+                      <option value="+81">🇯🇵 +81 Japan</option>
+                      <option value="+962">🇯🇴 +962 Jordan</option>
+                    </optgroup>
+                    <!-- K -->
+                    <optgroup label="── K ──">
+                      <option value="+7">🇰🇿 +7 Kazakhstan</option>
+                      <option value="+254">🇰🇪 +254 Kenya</option>
+                      <option value="+686">🇰🇮 +686 Kiribati</option>
+                      <option value="+965">🇰🇼 +965 Kuwait</option>
+                      <option value="+996">🇰🇬 +996 Kyrgyzstan</option>
+                    </optgroup>
+                    <!-- L -->
+                    <optgroup label="── L ──">
+                      <option value="+856">🇱🇦 +856 Laos</option>
+                      <option value="+371">🇱🇻 +371 Latvia</option>
+                      <option value="+961">🇱🇧 +961 Lebanon</option>
+                      <option value="+266">🇱🇸 +266 Lesotho</option>
+                      <option value="+231">🇱🇷 +231 Liberia</option>
+                      <option value="+218">🇱🇾 +218 Libya</option>
+                      <option value="+423">🇱🇮 +423 Liechtenstein</option>
+                      <option value="+370">🇱🇹 +370 Lithuania</option>
+                      <option value="+352">🇱🇺 +352 Luxembourg</option>
+                    </optgroup>
+                    <!-- M -->
+                    <optgroup label="── M ──">
+                      <option value="+261">🇲🇬 +261 Madagascar</option>
+                      <option value="+265">🇲🇼 +265 Malawi</option>
+                      <option value="+60">🇲🇾 +60 Malaysia</option>
+                      <option value="+960">🇲🇻 +960 Maldives</option>
+                      <option value="+223">🇲🇱 +223 Mali</option>
+                      <option value="+356">🇲🇹 +356 Malta</option>
+                      <option value="+692">🇲🇭 +692 Marshall Islands</option>
+                      <option value="+222">🇲🇷 +222 Mauritania</option>
+                      <option value="+230">🇲🇺 +230 Mauritius</option>
+                      <option value="+52">🇲🇽 +52 Mexico</option>
+                      <option value="+691">🇫🇲 +691 Micronesia</option>
+                      <option value="+373">🇲🇩 +373 Moldova</option>
+                      <option value="+377">🇲🇨 +377 Monaco</option>
+                      <option value="+976">🇲🇳 +976 Mongolia</option>
+                      <option value="+382">🇲🇪 +382 Montenegro</option>
+                      <option value="+212">🇲🇦 +212 Morocco</option>
+                      <option value="+258">🇲🇿 +258 Mozambique</option>
+                      <option value="+95">🇲🇲 +95 Myanmar</option>
+                    </optgroup>
+                    <!-- N -->
+                    <optgroup label="── N ──">
+                      <option value="+264">🇳🇦 +264 Namibia</option>
+                      <option value="+674">🇳🇷 +674 Nauru</option>
+                      <option value="+977">🇳🇵 +977 Nepal</option>
+                      <option value="+31">🇳🇱 +31 Netherlands</option>
+                      <option value="+64">🇳🇿 +64 New Zealand</option>
+                      <option value="+505">🇳🇮 +505 Nicaragua</option>
+                      <option value="+227">🇳🇪 +227 Niger</option>
+                      <option value="+234">🇳🇬 +234 Nigeria</option>
+                      <option value="+47">🇳🇴 +47 Norway</option>
+                    </optgroup>
+                    <!-- O -->
+                    <optgroup label="── O ──">
+                      <option value="+968">🇴🇲 +968 Oman</option>
+                    </optgroup>
+                    <!-- P -->
+                    <optgroup label="── P ──">
+                      <option value="+92">🇵🇰 +92 Pakistan</option>
+                      <option value="+680">🇵🇼 +680 Palau</option>
+                      <option value="+970">🇵🇸 +970 Palestine</option>
+                      <option value="+507">🇵🇦 +507 Panama</option>
+                      <option value="+675">🇵🇬 +675 Papua New Guinea</option>
+                      <option value="+595">🇵🇾 +595 Paraguay</option>
+                      <option value="+51">🇵🇪 +51 Peru</option>
+                      <option value="+63">🇵🇭 +63 Philippines</option>
+                      <option value="+48">🇵🇱 +48 Poland</option>
+                      <option value="+351">🇵🇹 +351 Portugal</option>
+                    </optgroup>
+                    <!-- Q -->
+                    <optgroup label="── Q ──">
+                      <option value="+974">🇶🇦 +974 Qatar</option>
+                    </optgroup>
+                    <!-- R -->
+                    <optgroup label="── R ──">
+                      <option value="+40">🇷🇴 +40 Romania</option>
+                      <option value="+7">🇷🇺 +7 Russia</option>
+                      <option value="+250">🇷🇼 +250 Rwanda</option>
+                    </optgroup>
+                    <!-- S -->
+                    <optgroup label="── S ──">
+                      <option value="+1-869">🇰🇳 +1 Saint Kitts & Nevis</option>
+                      <option value="+1-758">🇱🇨 +1 Saint Lucia</option>
+                      <option value="+1-784">🇻🇨 +1 Saint Vincent</option>
+                      <option value="+685">🇼🇸 +685 Samoa</option>
+                      <option value="+378">🇸🇲 +378 San Marino</option>
+                      <option value="+239">🇸🇹 +239 São Tomé & Príncipe</option>
+                      <option value="+966">🇸🇦 +966 Saudi Arabia</option>
+                      <option value="+221">🇸🇳 +221 Senegal</option>
+                      <option value="+381">🇷🇸 +381 Serbia</option>
+                      <option value="+248">🇸🇨 +248 Seychelles</option>
+                      <option value="+232">🇸🇱 +232 Sierra Leone</option>
+                      <option value="+65">🇸🇬 +65 Singapore</option>
+                      <option value="+421">🇸🇰 +421 Slovakia</option>
+                      <option value="+386">🇸🇮 +386 Slovenia</option>
+                      <option value="+677">🇸🇧 +677 Solomon Islands</option>
+                      <option value="+252">🇸🇴 +252 Somalia</option>
+                      <option value="+27">🇿🇦 +27 South Africa</option>
+                      <option value="+211">🇸🇸 +211 South Sudan</option>
+                      <option value="+34">🇪🇸 +34 Spain</option>
+                      <option value="+94">🇱🇰 +94 Sri Lanka</option>
+                      <option value="+249">🇸🇩 +249 Sudan</option>
+                      <option value="+597">🇸🇷 +597 Suriname</option>
+                      <option value="+46">🇸🇪 +46 Sweden</option>
+                      <option value="+41">🇨🇭 +41 Switzerland</option>
+                      <option value="+963">🇸🇾 +963 Syria</option>
+                    </optgroup>
+                    <!-- T -->
+                    <optgroup label="── T ──">
+                      <option value="+886">🇹🇼 +886 Taiwan</option>
+                      <option value="+992">🇹🇯 +992 Tajikistan</option>
+                      <option value="+255">🇹🇿 +255 Tanzania</option>
+                      <option value="+66">🇹🇭 +66 Thailand</option>
+                      <option value="+670">🇹🇱 +670 Timor-Leste</option>
+                      <option value="+228">🇹🇬 +228 Togo</option>
+                      <option value="+676">🇹🇴 +676 Tonga</option>
+                      <option value="+1-868">🇹🇹 +1 Trinidad & Tobago</option>
+                      <option value="+216">🇹🇳 +216 Tunisia</option>
+                      <option value="+90">🇹🇷 +90 Turkey</option>
+                      <option value="+993">🇹🇲 +993 Turkmenistan</option>
+                      <option value="+688">🇹🇻 +688 Tuvalu</option>
+                    </optgroup>
+                    <!-- U -->
+                    <optgroup label="── U ──">
+                      <option value="+256">🇺🇬 +256 Uganda</option>
+                      <option value="+380">🇺🇦 +380 Ukraine</option>
+                      <option value="+971">🇦🇪 +971 UAE</option>
+                      <option value="+44">🇬🇧 +44 United Kingdom</option>
+                      <option value="+1">🇺🇸 +1 United States</option>
+                      <option value="+598">🇺🇾 +598 Uruguay</option>
+                      <option value="+998">🇺🇿 +998 Uzbekistan</option>
+                    </optgroup>
+                    <!-- V -->
+                    <optgroup label="── V ──">
+                      <option value="+678">🇻🇺 +678 Vanuatu</option>
+                      <option value="+379">🇻🇦 +379 Vatican City</option>
+                      <option value="+58">🇻🇪 +58 Venezuela</option>
+                      <option value="+84">🇻🇳 +84 Vietnam</option>
+                    </optgroup>
+                    <!-- Y Z -->
+                    <optgroup label="── Y-Z ──">
+                      <option value="+967">🇾🇪 +967 Yemen</option>
+                      <option value="+260">🇿🇲 +260 Zambia</option>
+                      <option value="+263">🇿🇼 +263 Zimbabwe</option>
+                    </optgroup>
+                  </select>
+                  <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-gray-600">
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </span>
+                </div>
+
+                <!-- Phone number input — no left icon, just padding -->
+                <input type="tel" name="phone" id="phone" required
+                       value="{{ request.form.phone if request.form else '' }}"
+                       placeholder="Phone number"
+                       class="xsm-input flex-1"
+                       oninput="validatePhone(this)">
+              </div>
+
+              <input type="hidden" name="full_phone" id="fullPhone">
+              <p class="text-[10px] font-rajdhani mt-1" id="phoneHint" style="color:#374151">
+                Enter your local number without the country code
+              </p>
+            </div>
+          </div>
+
+          <!-- ── Address ── -->
+          <div class="space-y-1.5">
+            <label class="text-[11px] font-bold font-orbitron tracking-wider uppercase text-gray-500">
+              Address <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <span class="absolute left-3 top-3.5 text-gray-600 pointer-events-none z-10">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>
+                </svg>
+              </span>
+              <textarea name="address" id="address" rows="2" required
+                        placeholder="Street, City, Country"
+                        class="xsm-input xsm-icon-left resize-none">{{ request.form.address if request.form else '' }}</textarea>
+            </div>
+          </div>
+
+          <!-- ── Terms ── -->
+          <div class="flex items-start gap-3 py-1">
+            <div class="relative mt-0.5 flex-shrink-0">
+              <input type="checkbox" name="terms" id="terms" required
+                     class="peer w-4 h-4 rounded opacity-0 absolute cursor-pointer z-10">
+              <div id="checkBox"
+                   class="w-4 h-4 rounded border flex items-center justify-center transition-all"
+                   style="border-color:rgba(255,255,255,0.15); background:#08080f;">
+                <svg id="checkIcon" class="w-2.5 h-2.5 text-neon-blue" fill="none"
+                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"
+                     style="display:none;">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
+            </div>
+            <label for="terms" class="text-xs font-rajdhani text-gray-500 leading-relaxed cursor-pointer">
+              I agree to the
+              <a href="/terms" class="text-neon-blue hover:text-neon-blue/80 transition-colors">Terms of Service</a>
+              and
+              <a href="/privacy-policy" class="text-neon-blue hover:text-neon-blue/80 transition-colors">Privacy Policy</a>.
+              I understand that email verification is required before logging in.
+            </label>
+          </div>
+
+          <!-- ── Submit ── -->
+          <button type="submit" id="submitBtn"
+                  class="w-full py-3.5 rounded-xl text-sm font-bold font-rajdhani text-white
+                         transition-all duration-200 flex items-center justify-center gap-2.5
+                         hover:-translate-y-0.5"
+                  style="background:linear-gradient(135deg,#00f3ff,#bd00ff);
+                         box-shadow:0 4px 24px rgba(0,243,255,0.25);">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" id="btnIcon">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"/>
+            </svg>
+            <span id="btnText">Create Account</span>
+          </button>
+
+          <p class="text-center text-sm font-rajdhani text-gray-500">
+            Already have an account?
+            <a href="{{ url_for('auth.login') }}"
+               class="text-neon-blue hover:text-neon-blue/80 font-semibold transition-colors ml-1">
+              Sign in
+            </a>
+          </p>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- Verification notice -->
+    <div class="mt-4 flex items-start gap-2.5 px-4 py-3 rounded-xl"
+         style="background:rgba(0,243,255,0.04); border:1px solid rgba(0,243,255,0.12);">
+      <svg class="w-4 h-4 text-neon-blue flex-shrink-0 mt-0.5" fill="none"
+           viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+      </svg>
+      <p class="text-xs font-rajdhani text-gray-500 leading-relaxed">
+        After signup, a <span class="text-neon-blue">verification email</span> will be sent.
+        You must verify before logging in. Check your spam folder if it doesn't arrive.
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  /* Base input */
+  .xsm-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    background: #08080f;
+    border: 1px solid rgba(0,243,255,0.15);
+    color: #e5e7eb;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+  }
+  /* Left icon padding — enough room so text doesn't sit under the icon */
+  .xsm-icon-left  { padding-left: 2.25rem !important; }
+  /* Right icon padding (eye toggle) */
+  .xsm-icon-right { padding-right: 2.5rem !important; }
+
+  .xsm-input::placeholder { color: #374151; }
+  .xsm-input:focus {
+    border-color: rgba(0,243,255,0.5);
+    box-shadow: 0 0 0 3px rgba(0,243,255,0.07);
+  }
+  .xsm-input.error {
+    border-color: rgba(255,80,80,0.6) !important;
+    box-shadow: 0 0 0 3px rgba(255,80,80,0.07) !important;
+  }
+  .xsm-input.valid {
+    border-color: rgba(0,255,142,0.5) !important;
+  }
+  select.xsm-input option,
+  select.xsm-input optgroup { background: #0f0f22; color: #e5e7eb; }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  /* ── Profile picture preview ── */
+  function previewPic(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('profilePreview').src = e.target.result;
+      document.getElementById('profilePreview').classList.remove('hidden');
+      document.getElementById('defaultAvatar').classList.add('hidden');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  /* ── Password toggle ── */
+  function togglePassword() {
+    const f = document.getElementById('password');
+    f.type = f.type === 'text' ? 'password' : 'text';
+    document.getElementById('eyeIcon').style.opacity = f.type === 'text' ? '0.5' : '1';
+  }
+
+  /* ── Password strength ── */
+  function checkStrength(val) {
+    const colors = ['#ff5c5c','#ff9f43','#00f3ff','#00ff8e'];
+    const labels = ['Too weak','Weak','Fair','Strong','Very strong'];
+    let score = 0;
+    if (val.length >= 8)           score++;
+    if (/[A-Z]/.test(val))         score++;
+    if (/[0-9]/.test(val))         score++;
+    if (/[^A-Za-z0-9]/.test(val))  score++;
+
+    ['s1','s2','s3','s4'].forEach((id, i) => {
+      document.getElementById(id).style.background = i < score
+        ? colors[Math.min(score - 1, 3)]
+        : '#1a1a36';
+    });
+
+    const lbl = document.getElementById('strengthLabel');
+    lbl.textContent = val.length === 0 ? 'Enter a password to see strength' : labels[score];
+    lbl.style.color  = val.length === 0 ? '#3a4060' : colors[Math.min(score - 1, 3)] || '#3a4060';
+  }
+
+  /* ── Phone validation ── */
+  function updateDialCode() {
+    validatePhone(document.getElementById('phone'));
+  }
+
+  function validatePhone(input) {
+    let v = input.value.replace(/\D/g, '');
+    input.value = v;
+
+    const hint     = document.getElementById('phoneHint');
+    const rawCode  = document.getElementById('countryCode').value;
+    const dialCode = rawCode.replace(/-[A-Z]+$/, ''); // strip suffixes like -CA
+
+    document.getElementById('fullPhone').value = dialCode + v;
+
+    if (v.length === 0) {
+      input.classList.remove('error','valid');
+      hint.textContent = 'Enter your local number without the country code';
+      hint.style.color = '#374151';
+    } else if (v.length >= 4 && v.length <= 15) {
+      input.classList.remove('error');
+      input.classList.add('valid');
+      hint.textContent = `✓ ${dialCode} ${v}`;
+      hint.style.color = '#00ff8e';
+    } else {
+      input.classList.remove('valid');
+      input.classList.add('error');
+      hint.textContent = v.length < 4 ? 'Number too short' : 'Number too long';
+      hint.style.color = '#ff5c5c';
+    }
+  }
+
+  /* ── Custom checkbox ── */
+  const termsBox  = document.getElementById('terms');
+  const checkBox  = document.getElementById('checkBox');
+  const checkIcon = document.getElementById('checkIcon');
+
+  termsBox.addEventListener('change', () => {
+    if (termsBox.checked) {
+      checkBox.style.background  = 'rgba(0,243,255,0.15)';
+      checkBox.style.borderColor = 'rgba(0,243,255,0.6)';
+      checkIcon.style.display    = 'block';
+    } else {
+      checkBox.style.background  = '#08080f';
+      checkBox.style.borderColor = 'rgba(255,255,255,0.15)';
+      checkIcon.style.display    = 'none';
+    }
+  });
+
+  /* ── Focus/blur validation ── */
+  document.querySelectorAll('.xsm-input[required]').forEach(el => {
+    el.addEventListener('blur',  () => { if (!el.value.trim()) el.classList.add('error'); });
+    el.addEventListener('input', () => { if (el.value.trim())  el.classList.remove('error'); });
+  });
+
+  /* ── Form submit ── */
+  document.getElementById('signupForm').addEventListener('submit', function(e) {
+    let valid = true;
+
+    this.querySelectorAll('.xsm-input[required]').forEach(el => {
+      if (!el.value.trim()) { el.classList.add('error'); valid = false; }
+    });
+
+    const phone = document.getElementById('phone').value.replace(/\D/g,'');
+    if (phone.length < 4 || phone.length > 15) {
+      document.getElementById('phone').classList.add('error');
+      valid = false;
+    }
+
+    if (document.getElementById('password').value.length < 8) {
+      document.getElementById('password').classList.add('error');
+      valid = false;
+    }
+
+    if (!termsBox.checked) {
+      checkBox.style.borderColor = 'rgba(255,80,80,0.6)';
+      valid = false;
+    }
+
+    if (!valid) {
+      e.preventDefault();
+      const first = this.querySelector('.error');
+      if (first) first.scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    document.getElementById('btnText').textContent = 'Creating Account…';
+  });
+</script>
+
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+{% endblock %}

@@ -1,0 +1,684 @@
+{% extends "base.html" %}
+{% block title %}XSM Market — Buy & Sell Digital Assets Securely{% endblock %}
+{% block meta_description %}XSM Market is a secure digital marketplace for buying and selling social media accounts, websites, and online businesses with escrow protection.{% endblock %}
+{% block canonical_url %}{{ request.url_root.rstrip('/') }}/{% endblock %}
+{% block og_type %}website{% endblock %}
+{% block og_title %}XSM Market — Buy & Sell Digital Assets Securely{% endblock %}
+{% block og_description %}Securely buy and sell social media accounts, websites, and digital businesses with escrow protection on XSM Market.{% endblock %}
+{% block twitter_title %}XSM Market — Buy & Sell Digital Assets Securely{% endblock %}
+{% block twitter_description %}Securely buy and sell social media accounts, websites, and digital businesses with escrow protection on XSM Market.{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "XSM Market",
+  "url": "{{ request.url_root.rstrip('/') }}/",
+  "description": "Secure marketplace for digital assets with escrow protection.",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "{{ request.url_root.rstrip('/') }}/marketplace?search={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "XSM Market",
+  "url": "{{ request.url_root.rstrip('/') }}/",
+  "logo": "{{ request.url_root.rstrip('/') }}/static/favicon_32.png"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<style>
+  /* ── Hero typewriter cursor ── */
+  .cursor {
+    display: inline-block;
+    width: 3px;
+    height: 0.85em;
+    background: #00f3ff;
+    margin-left: 4px;
+    vertical-align: middle;
+    border-radius: 1px;
+    animation: blink 0.9s step-end infinite;
+    box-shadow: 0 0 8px #00f3ff;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* ── Floating orbs ── */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    pointer-events: none;
+    animation: orbFloat linear infinite;
+  }
+  @keyframes orbFloat {
+    0%   { transform: translate(0,0)   scale(1); }
+    33%  { transform: translate(30px,-40px) scale(1.05); }
+    66%  { transform: translate(-20px,20px)  scale(0.97); }
+    100% { transform: translate(0,0)   scale(1); }
+  }
+
+  /* ── Reveal stagger ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* ── Scanning beam ── */
+  @keyframes scanBeam {
+    0%   { transform: translateX(-100%); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateX(400%); opacity: 0; }
+  }
+  .scan-beam {
+    position: absolute;
+    top: 0; left: 0;
+    width: 25%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0,243,255,0.06), transparent);
+    animation: scanBeam 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* ── Pulsing ring ── */
+  @keyframes ringPulse {
+    0%   { transform: scale(0.95); opacity: 0.6; }
+    50%  { transform: scale(1.05); opacity: 0.2; }
+    100% { transform: scale(0.95); opacity: 0.6; }
+  }
+  .ring-pulse { animation: ringPulse 3s ease-in-out infinite; }
+
+  /* ── Counter number ── */
+  .counter-num {
+    display: inline-block;
+    font-variant-numeric: tabular-nums;
+    transition: all 0.1s;
+  }
+
+  /* ── Floating listing cards ── */
+  @keyframes floatCard {
+    0%,100% { transform: translateY(0px) rotate(var(--rot)); }
+    50%     { transform: translateY(-14px) rotate(var(--rot)); }
+  }
+  .float-card {
+    animation: floatCard ease-in-out infinite;
+    animation-duration: var(--dur, 5s);
+    animation-delay: var(--delay, 0s);
+  }
+
+  /* ── Gradient text animation ── */
+  @keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .grad-animate {
+    background-size: 200% 200%;
+    animation: gradientShift 4s ease infinite;
+  }
+
+  /* ── Step hover ── */
+  .step-card { transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+  .step-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(0,243,255,0.3);
+    box-shadow: 0 20px 50px rgba(0,243,255,0.08);
+  }
+
+  /* Feature card hover */
+  .feat-card { transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s; }
+  .feat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+  }
+</style>
+
+{# ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ #}
+<section class="relative overflow-hidden" style="min-height:100vh; display:flex; align-items:center;">
+
+  {# ── Background atmosphere ── #}
+  <div class="absolute inset-0 pointer-events-none overflow-hidden">
+
+    {# Dot grid #}
+    <div class="absolute inset-0"
+         style="background-image:radial-gradient(rgba(0,243,255,0.35) 1px,transparent 1px);
+                background-size:44px 44px; opacity:0.06;"></div>
+
+    {# Floating orbs #}
+    <div class="orb" style="width:600px;height:600px;top:-100px;left:-150px;
+                background:rgba(0,243,255,0.07);
+                animation-duration:18s; animation-delay:0s;"></div>
+    <div class="orb" style="width:500px;height:500px;bottom:-100px;right:-100px;
+                background:rgba(189,0,255,0.07);
+                animation-duration:22s; animation-delay:-6s;"></div>
+    <div class="orb" style="width:350px;height:350px;top:40%;left:55%;
+                background:rgba(0,243,255,0.05);
+                animation-duration:15s; animation-delay:-3s;"></div>
+
+    {# Diagonal light beams #}
+    <div style="position:absolute;top:-80px;left:18%;width:1px;height:130%;
+                background:linear-gradient(180deg,transparent,rgba(0,243,255,0.1),transparent);
+                transform:rotate(-22deg);"></div>
+    <div style="position:absolute;top:-80px;left:62%;width:1px;height:130%;
+                background:linear-gradient(180deg,transparent,rgba(189,0,255,0.07),transparent);
+                transform:rotate(-22deg);"></div>
+
+    {# Scan beam #}
+    <div class="scan-beam" style="animation-delay:1s;"></div>
+  </div>
+
+  <div class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+      {# ── LEFT: Copy ── #}
+      <div>
+
+        {# Kicker #}
+        <div class="reveal inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-8
+                    border border-neon-blue/20 bg-neon-blue/5 backdrop-blur-sm"
+             style="transition-delay:0.1s;">
+          <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse flex-shrink-0"
+                style="box-shadow:0 0 8px rgba(0,255,142,0.8);"></span>
+          <span class="text-[11px] font-rajdhani uppercase tracking-widest text-neon-blue/80">
+            The Most Trusted Platform for Digital Assets
+          </span>
+        </div>
+
+        {# Headline #}
+        <div class="reveal mb-6" style="transition-delay:0.2s;">
+          <h1 class="font-orbitron font-black text-white leading-none tracking-tight"
+              style="font-size:clamp(2.4rem,5vw,4rem);">
+            Buy &amp; Sell<br>
+            <span class="grad-animate"
+                  style="background:linear-gradient(90deg,#00f3ff,#bd00ff,#00f3ff);
+                         -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+                         background-clip:text;">
+              Digital Assets
+            </span>
+          </h1>
+          <p class="font-orbitron font-black text-gray-500 mt-2 leading-tight"
+             style="font-size:clamp(1.1rem,2vw,1.6rem); letter-spacing:-0.01em;">
+            With Full Confidence
+          </p>
+        </div>
+
+        {# Typewriter line #}
+        <div class="reveal mb-8" style="transition-delay:0.3s;">
+          <p class="font-rajdhani text-gray-400 text-lg leading-relaxed max-w-xl">
+            XSM Market is the most secure platform for trading social media
+            accounts, websites, and digital businesses — every transaction
+            protected by our
+            <span class="text-neon-blue font-semibold" id="typeTarget"></span><span class="cursor"></span>
+          </p>
+        </div>
+
+        {# CTAs #}
+        <div class="reveal flex flex-col sm:flex-row gap-4 mb-12" style="transition-delay:0.4s;">
+          <a href="/marketplace"
+             class="group relative inline-flex items-center justify-center gap-2.5
+                    px-8 py-4 rounded-2xl font-rajdhani font-bold text-base text-white
+                    overflow-hidden transition-all duration-300 hover:-translate-y-1"
+             style="background:linear-gradient(135deg,#00f3ff,#bd00ff);
+                    box-shadow:0 8px 32px rgba(0,243,255,0.25);"
+             onmouseover="this.style.boxShadow='0 12px 40px rgba(0,243,255,0.45)'"
+             onmouseout="this.style.boxShadow='0 8px 32px rgba(0,243,255,0.25)'">
+            <i class="fas fa-store text-sm"></i>
+            Browse Marketplace
+            <i class="fas fa-arrow-right text-xs transition-transform duration-200 group-hover:translate-x-1"></i>
+          </a>
+
+          {% if not session.user %}
+          <a href="/signup"
+             class="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl
+                    font-rajdhani font-bold text-base text-white transition-all duration-300
+                    hover:-translate-y-1 hover:border-neon-blue/40 hover:bg-neon-blue/5"
+             style="border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04);">
+            <i class="fas fa-user-plus text-sm text-neon-blue/70"></i>
+            Create Free Account
+          </a>
+          {% else %}
+          <a href="/add_listing"
+             class="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl
+                    font-rajdhani font-bold text-base text-white transition-all duration-300
+                    hover:-translate-y-1 hover:border-neon-blue/40 hover:bg-neon-blue/5"
+             style="border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04);">
+            <i class="fas fa-plus-circle text-neon-blue text-sm"></i>
+            List Your Asset
+          </a>
+          {% endif %}
+        </div>
+
+        {# Trust strip #}
+        <div class="reveal flex flex-wrap items-center gap-5" style="transition-delay:0.5s;">
+          {% for icon, label in [
+            ('fa-shield-halved','Escrow Protected'),
+            ('fa-bolt','Instant Delivery'),
+            ('fa-headset','Admin Support'),
+          ] %}
+          <div class="flex items-center gap-2 text-xs font-rajdhani text-gray-500">
+            <i class="fas {{ icon }} text-neon-blue/60 text-xs"></i>
+            {{ label }}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      {# ── RIGHT: Floating UI mockup ── #}
+      <div class="reveal hidden lg:block" style="transition-delay:0.35s;">
+        <div class="relative" style="height:500px;">
+
+          {# Pulsing ring behind main card #}
+          <div class="ring-pulse absolute"
+               style="width:340px;height:340px;top:50%;left:50%;
+                      transform:translate(-50%,-50%);
+                      border:1px solid rgba(0,243,255,0.15);
+                      border-radius:50%;"></div>
+          <div class="ring-pulse absolute"
+               style="width:420px;height:420px;top:50%;left:50%;
+                      transform:translate(-50%,-50%);
+                      border:1px solid rgba(0,243,255,0.07);
+                      border-radius:50%; animation-delay:-1.5s;"></div>
+
+          {# Main card — center #}
+          <div class="float-card absolute"
+               style="--rot:-2deg;--dur:6s;--delay:0s;
+                      top:50%;left:50%;transform:translate(-50%,-50%) rotate(-2deg);
+                      width:260px;
+                      background:rgba(18,18,38,0.95);
+                      border:1px solid rgba(0,243,255,0.25);
+                      border-radius:20px;
+                      box-shadow:0 0 60px rgba(0,243,255,0.1),0 32px 64px rgba(0,0,0,0.5);
+                      backdrop-filter:blur(12px); overflow:hidden;">
+            <div style="height:130px;background:linear-gradient(135deg,rgba(0,243,255,0.1),rgba(189,0,255,0.1));
+                        position:relative; overflow:hidden;">
+              <div style="position:absolute;inset:0;
+                          background:radial-gradient(circle at 40% 40%,rgba(0,243,255,0.15),transparent 60%);"></div>
+              <div style="position:absolute;top:10px;left:12px;
+                          font-size:9px;font-family:Orbitron,monospace;font-weight:700;
+                          letter-spacing:0.15em;text-transform:uppercase;
+                          color:#00f3ff;opacity:0.9;
+                          background:rgba(10,10,22,0.7);border:1px solid rgba(0,243,255,0.3);
+                          padding:3px 8px;border-radius:6px;">YouTube</div>
+              <div style="position:absolute;bottom:12px;left:12px;">
+                <p style="font-family:Orbitron,monospace;font-size:18px;font-weight:900;
+                           color:#fff;text-shadow:0 0 20px rgba(0,243,255,0.4);">$4,500</p>
+              </div>
+              <div style="position:absolute;top:10px;right:12px;
+                          display:flex;align-items:center;gap:4px;
+                          background:rgba(0,255,100,0.12);border:1px solid rgba(0,255,100,0.3);
+                          padding:2px 7px;border-radius:20px;">
+                <span style="width:5px;height:5px;border-radius:50%;background:#00ff8e;"></span>
+                <span style="font-family:Rajdhani,sans-serif;font-size:9px;color:#00ff8e;font-weight:700;">LIVE</span>
+              </div>
+            </div>
+            <div style="padding:14px;">
+              <p style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:14px;color:#fff;margin-bottom:4px;">
+                @TechWithAli
+              </p>
+              <p style="font-family:Rajdhani,sans-serif;font-size:11px;color:#6b7280;margin-bottom:10px;">
+                <i class="fas fa-users" style="color:rgba(0,243,255,0.4);font-size:10px;margin-right:4px;"></i>
+                125,000 subscribers
+              </p>
+              <div style="display:flex;align-items:center;justify-content:space-between;
+                          border-top:1px solid rgba(255,255,255,0.05);padding-top:10px;">
+                <div style="display:flex;gap:1px;">
+                  {% for _ in range(5) %}
+                  <i class="fas fa-star" style="color:#facc15;font-size:10px;"></i>
+                  {% endfor %}
+                </div>
+                <span style="font-family:Rajdhani,sans-serif;font-size:10px;
+                              color:#00f3ff;font-weight:700;display:flex;align-items:center;gap:4px;">
+                  View <i class="fas fa-arrow-right" style="font-size:8px;"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {# Card 2 — top right #}
+          <div class="float-card absolute"
+               style="--rot:4deg;--dur:7s;--delay:-2s;
+                      top:5%;right:2%;transform:rotate(4deg);
+                      width:160px;
+                      background:rgba(18,18,38,0.9);
+                      border:1px solid rgba(189,0,255,0.2);
+                      border-radius:16px;
+                      box-shadow:0 16px 40px rgba(0,0,0,0.4);
+                      backdrop-filter:blur(8px);
+                      padding:14px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+              <div style="width:28px;height:28px;border-radius:8px;
+                          background:linear-gradient(135deg,rgba(189,0,255,0.2),rgba(0,243,255,0.1));
+                          border:1px solid rgba(189,0,255,0.3);
+                          display:flex;align-items:center;justify-content:center;">
+                <i class="fab fa-instagram" style="color:#bd00ff;font-size:12px;"></i>
+              </div>
+              <div>
+                <p style="font-family:Rajdhani,sans-serif;font-size:11px;font-weight:700;color:#fff;">@FashionHub</p>
+                <p style="font-family:Rajdhani,sans-serif;font-size:9px;color:#6b7280;">48k followers</p>
+              </div>
+            </div>
+            <div style="font-family:Orbitron,monospace;font-size:15px;font-weight:900;
+                        color:#facc15;margin-bottom:4px;">$890</div>
+            <div style="font-family:Rajdhani,sans-serif;font-size:9px;color:#00ff8e;
+                        display:flex;align-items:center;gap:3px;">
+              <i class="fas fa-dollar-sign" style="font-size:8px;"></i> Monetized
+            </div>
+          </div>
+
+          {# Card 3 — bottom left #}
+          <div class="float-card absolute"
+               style="--rot:-5deg;--dur:8s;--delay:-4s;
+                      bottom:8%;left:0%;transform:rotate(-5deg);
+                      width:155px;
+                      background:rgba(18,18,38,0.9);
+                      border:1px solid rgba(0,243,255,0.15);
+                      border-radius:16px;
+                      box-shadow:0 16px 40px rgba(0,0,0,0.4);
+                      backdrop-filter:blur(8px);
+                      padding:14px;">
+            <div style="display:flex;align-items:center;gap:3px;margin-bottom:8px;">
+              {% for _ in range(5) %}
+              <i class="fas fa-star" style="color:#facc15;font-size:9px;"></i>
+              {% endfor %}
+              <span style="font-family:Rajdhani,sans-serif;font-size:9px;color:#6b7280;margin-left:3px;">5.0</span>
+            </div>
+            <p style="font-family:Rajdhani,sans-serif;font-size:11px;color:#d1d5db;line-height:1.5;margin-bottom:8px;">
+              "Smooth transaction, account exactly as described!"
+            </p>
+            <p style="font-family:Rajdhani,sans-serif;font-size:9px;color:#6b7280;">
+              — Verified Buyer
+            </p>
+          </div>
+
+          {# Escrow badge — top left #}
+          <div class="float-card absolute"
+               style="--rot:0deg;--dur:5.5s;--delay:-1s;
+                      top:12%;left:2%;
+                      background:rgba(0,255,100,0.06);
+                      border:1px solid rgba(0,255,100,0.2);
+                      border-radius:12px;
+                      padding:8px 14px;
+                      display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-shield-halved" style="color:#00ff8e;font-size:13px;"></i>
+            <div>
+              <p style="font-family:Orbitron,monospace;font-size:8px;font-weight:700;
+                         letter-spacing:0.1em;color:#00ff8e;">ESCROW</p>
+              <p style="font-family:Rajdhani,sans-serif;font-size:9px;color:#4b5563;">Protected</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    {# ── Stats bar ── #}
+    <div class="reveal mt-16 pt-10 grid grid-cols-2 sm:grid-cols-4 gap-6
+                border-t border-white/5"
+         style="transition-delay:0.6s;">
+      {% for value, suffix, label in [
+        ('100','%','Escrow Protected'),
+        ('24','/7','Support Available'),
+        ('500','+','Active Listings'),
+        ('0','%','Fraud Rate'),
+      ] %}
+      <div class="text-center">
+        <p class="font-orbitron font-black text-neon-blue leading-none mb-1"
+           style="font-size:clamp(1.5rem,3vw,2.2rem);">
+          <span class="counter-num" data-target="{{ value }}">{{ value }}</span>{{ suffix }}
+        </p>
+        <p class="text-[11px] font-rajdhani uppercase tracking-widest text-gray-500">{{ label }}</p>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+{# Divider #}
+<div class="w-full h-px"
+     style="background:linear-gradient(90deg,transparent,rgba(0,243,255,0.15),transparent);"></div>
+
+{# ═══════════════════════════════════════
+   HOW IT WORKS
+═══════════════════════════════════════ #}
+<section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-28">
+
+  <div class="text-center mb-16 reveal">
+    <p class="text-[11px] font-rajdhani uppercase tracking-[0.35em] text-neon-blue/60 mb-3">
+      Simple &amp; Secure
+    </p>
+    <h2 class="text-3xl md:text-4xl font-black font-orbitron text-white">
+      How It Works
+    </h2>
+  </div>
+
+  <div class="grid md:grid-cols-4 gap-6">
+    {% for step, icon, title, desc in [
+      ('01','fa-search','Browse Listings','Explore hundreds of verified digital assets — filter by platform, price, and follower count.'),
+      ('02','fa-wallet','Add Credits','Top up your XSM wallet via JazzCash, Easypaisa, or crypto. Fast and hassle-free.'),
+      ('03','fa-lock','Secure Purchase','Credits are held in escrow — the seller only gets paid when you confirm receipt.'),
+      ('04','fa-check-circle','Receive &amp; Confirm','Get credentials via secure chat, confirm receipt, and you\'re done.')
+    ] %}
+    <div class="step-card reveal flex flex-col items-center text-center p-6
+                bg-cyber-800 border border-white/5 rounded-2xl"
+         style="transition-delay:{{ loop.index0 * 0.1 }}s;">
+      <div class="w-14 h-14 rounded-2xl mb-4 flex items-center justify-center
+                  bg-gradient-to-br from-neon-blue/10 to-neon-purple/10
+                  border border-neon-blue/15"
+           style="box-shadow:0 0 20px rgba(0,243,255,0.07);">
+        <i class="fas {{ icon }} text-neon-blue text-xl"></i>
+      </div>
+      <span class="text-[10px] font-orbitron text-neon-blue/40 tracking-widest mb-1">STEP {{ step }}</span>
+      <h3 class="text-sm font-bold font-rajdhani text-white mb-2">{{ title }}</h3>
+      <p class="text-gray-500 text-xs font-rajdhani leading-relaxed">{{ desc }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<div class="w-full h-px"
+     style="background:linear-gradient(90deg,transparent,rgba(189,0,255,0.1),transparent);"></div>
+
+{# ═══════════════════════════════════════
+   WHY XSM
+═══════════════════════════════════════ #}
+<section class="relative overflow-hidden py-28"
+         style="background:linear-gradient(180deg,transparent,rgba(0,243,255,0.02),transparent);">
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16 reveal">
+      <p class="text-[11px] font-rajdhani uppercase tracking-[0.35em] text-neon-blue/60 mb-3">
+        Why Choose Us
+      </p>
+      <h2 class="text-3xl md:text-4xl font-black font-orbitron text-white">
+        Built for Trust
+      </h2>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {% for icon, color, border_color, title, desc in [
+        ('fa-shield-halved','#00f3ff','rgba(0,243,255,0.2)','Escrow Protection','Your money is held safely until you confirm receipt. No risk, no fraud.'),
+        ('fa-comments','#bd00ff','rgba(189,0,255,0.2)','Built-in Chat','Talk directly with buyers and sellers — including secure 2FA code sharing.'),
+        ('fa-star','#facc15','rgba(250,204,21,0.2)','Seller Ratings','Every seller is rated by real buyers. Make informed decisions every time.'),
+        ('fa-bolt','#00ff8e','rgba(0,255,142,0.2)','Fast Transactions','From payment to delivery in minutes. Our streamlined flow keeps things moving.'),
+        ('fa-user-shield','#00f3ff','rgba(0,243,255,0.2)','Dispute Resolution','Disagree with a transaction? Our admin team reviews and resolves disputes fairly.'),
+        ('fa-wallet','#bd00ff','rgba(189,0,255,0.2)','Flexible Payments','JazzCash, Easypaisa, Bank Transfer, Binance USDT, and PayPal all supported.')
+      ] %}
+      <div class="feat-card reveal p-6 bg-cyber-800 border border-white/5 rounded-2xl group"
+           style="transition-delay:{{ loop.index0 * 0.07 }}s;">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4
+                    border transition-colors duration-300"
+             style="background:{{ border_color | replace('rgba','rgba') }}15;
+                    border-color:{{ border_color }}40;">
+          <i class="fas {{ icon }} text-sm" style="color:{{ color }};"></i>
+        </div>
+        <h3 class="text-sm font-bold font-rajdhani text-white mb-2">{{ title }}</h3>
+        <p class="text-gray-500 text-xs font-rajdhani leading-relaxed">{{ desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ═══════════════════════════════════════
+   PLATFORMS
+═══════════════════════════════════════ #}
+<section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="text-center mb-12 reveal">
+    <p class="text-[11px] font-rajdhani uppercase tracking-[0.35em] text-neon-blue/60 mb-3">
+      What You Can Buy &amp; Sell
+    </p>
+    <h2 class="text-3xl font-black font-orbitron text-white">
+      All Platforms Welcome
+    </h2>
+  </div>
+
+  <div class="flex flex-wrap justify-center gap-3 reveal">
+    {% for icon_class, label, color in [
+      ('fab fa-youtube','YouTube','#ff4444'),
+      ('fab fa-instagram','Instagram','#e1306c'),
+      ('fab fa-tiktok','TikTok','#ffffff'),
+      ('fab fa-facebook','Facebook','#1877f2'),
+      ('fab fa-twitter','Twitter / X','#1da1f2'),
+      ('fab fa-telegram','Telegram','#2ca5e0'),
+      ('fas fa-globe','Websites','#00f3ff'),
+      ('fas fa-store','Online Stores','#bd00ff'),
+    ] %}
+    <div class="flex items-center gap-2.5 px-5 py-3 rounded-2xl
+                bg-cyber-800 border border-white/5 cursor-default
+                transition-all duration-200 hover:-translate-y-1"
+         style="transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s;"
+         onmouseover="this.style.borderColor='{{ color }}33';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.3)'"
+         onmouseout="this.style.borderColor='rgba(255,255,255,0.05)';this.style.boxShadow=''">
+      <i class="{{ icon_class }} text-sm" style="color:{{ color }};"></i>
+      <span class="text-sm font-rajdhani font-semibold text-gray-300">{{ label }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{# ═══════════════════════════════════════
+   CTA BANNER
+═══════════════════════════════════════ #}
+<section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-28">
+  <div class="reveal relative overflow-hidden rounded-3xl p-10 md:p-16 text-center
+              border border-neon-blue/12"
+       style="background:linear-gradient(135deg,
+              rgba(0,243,255,0.06) 0%,
+              rgba(10,10,22,1) 50%,
+              rgba(189,0,255,0.06) 100%);">
+
+    {# Dot overlay #}
+    <div class="absolute inset-0 opacity-[0.035] pointer-events-none"
+         style="background-image:radial-gradient(rgba(0,243,255,1) 1px,transparent 1px);
+                background-size:32px 32px;"></div>
+    {# Scan beam inside CTA #}
+    <div class="scan-beam" style="animation-duration:6s;"></div>
+
+    <div class="relative">
+      <p class="text-[11px] font-rajdhani uppercase tracking-[0.35em] text-neon-blue/60 mb-3">
+        Get Started Today
+      </p>
+      <h2 class="text-3xl md:text-4xl font-black font-orbitron text-white mb-4">
+        Ready to Trade?
+      </h2>
+      <p class="text-gray-400 font-rajdhani text-lg max-w-xl mx-auto mb-10 leading-relaxed">
+        Join thousands of buyers and sellers on the most trusted
+        digital asset marketplace. Secure. Fast. Reliable.
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="/marketplace"
+           class="px-8 py-3.5 rounded-2xl font-rajdhani font-bold text-white
+                  transition-all hover:-translate-y-1"
+           style="background:linear-gradient(135deg,#00f3ff,#bd00ff);
+                  box-shadow:0 6px 24px rgba(0,243,255,0.25);"
+           onmouseover="this.style.boxShadow='0 10px 36px rgba(0,243,255,0.4)'"
+           onmouseout="this.style.boxShadow='0 6px 24px rgba(0,243,255,0.25)'">
+          Browse Listings
+        </a>
+        {% if not session.user %}
+        <a href="/signup"
+           class="px-8 py-3.5 rounded-2xl font-rajdhani font-bold text-white
+                  transition-all hover:-translate-y-1 hover:border-neon-blue/30 hover:bg-neon-blue/5"
+           style="border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04);">
+          Sign Up Free
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  /* ── Scroll reveal ── */
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        revealObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  /* Trigger hero elements immediately */
+  revealEls.forEach(el => {
+    const delay = parseFloat(el.style.transitionDelay || '0') * 1000;
+    if (delay < 700) {
+      setTimeout(() => el.classList.add('in'), delay + 80);
+    } else {
+      revealObs.observe(el);
+    }
+  });
+
+  /* ── Typewriter ── */
+  const phrases = [
+    'built-in escrow system.',
+    'zero-fraud guarantee.',
+    'admin-backed protection.',
+    'instant dispute resolution.',
+  ];
+  let pIdx = 0, cIdx = 0, deleting = false;
+  const target = document.getElementById('typeTarget');
+
+  function type() {
+    if (!target) return;
+    const phrase = phrases[pIdx];
+    if (!deleting) {
+      target.textContent = phrase.slice(0, ++cIdx);
+      if (cIdx === phrase.length) {
+        deleting = true;
+        setTimeout(type, 2200);
+        return;
+      }
+      setTimeout(type, 48);
+    } else {
+      target.textContent = phrase.slice(0, --cIdx);
+      if (cIdx === 0) {
+        deleting = false;
+        pIdx = (pIdx + 1) % phrases.length;
+        setTimeout(type, 400);
+        return;
+      }
+      setTimeout(type, 28);
+    }
+  }
+  setTimeout(type, 1200);
+</script>
+{% endblock %}

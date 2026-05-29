@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}Disputes – Admin Panel{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto py-8 px-4">
+
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h3 class="text-2xl font-bold text-white">⚖️ Dispute Resolution</h3>
+      <p class="text-gray-400 text-sm mt-1">Review disputed transactions and release or refund escrow.</p>
+    </div>
+    <span class="bg-red-600 text-white text-sm font-bold px-4 py-1 rounded-full">
+      {{ disputes|length }} Open
+    </span>
+  </div>
+
+  {% if not disputes %}
+    <div class="text-center py-20 text-gray-500">
+      <div class="text-5xl mb-3">🎉</div>
+      <p class="text-lg">No active disputes right now.</p>
+    </div>
+
+  {% else %}
+    {% for listing_id, listing in disputes.items() %}
+      {% set escrow   = listing.get('escrow',   {}) %}
+      {% set dispute  = listing.get('dispute',  {}) %}
+      {% set delivery = listing.get('delivery', {}) %}
+      {% set amount   = escrow.get('amount', 0) %}
+
+      <div class="bg-gray-900 border border-red-800 rounded-2xl mb-6 overflow-hidden">
+
+        <!-- Card header -->
+        <div class="bg-red-900 bg-opacity-40 px-5 py-3 flex justify-between items-center">
+          <span class="text-red-400 font-semibold text-sm">🚨 Disputed Transaction</span>
+          <span class="text-gray-500 text-xs font-mono">{{ listing_id }}</span>
+        </div>
+
+        <div class="p-5 grid md:grid-cols-2 gap-6">
+
+          <!-- LEFT: listing + escrow info -->
+          <div>
+            <div class="flex items-center gap-3 mb-4">
+              <img src="{{ listing.thumbnail or '/static/default_thumbnail.png' }}"
+                   class="w-14 h-14 rounded-xl object-cover flex-shrink-0"
+                   onerror="this.src='/static/default_thumbnail.png'" alt="thumb">
+              <div>
+                <p class="font-bold text-white">{{ listing.platform }} — @{{ listing.username }}</p>
+                <p class="text-gray-400 text-sm">{{ listing.followers }} followers</p>
+              </div>
+            </div>
+
+            <div class="bg-gray-800 rounded-xl p-4 text-sm space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-400">Escrow Amount</span>
+                <span class="text-green-400 font-bold">{{ amount }} credits</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Disputed At</span>
+                <span class="text-gray-300">{{ dispute.get('raised_at', '')[:19].replace('T', ' ') }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Buyer UID</span>
+                <span class="text-gray-300 font-mono text-xs truncate max-w-xs">{{ listing.buyer_uid or '—' }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Seller UID</span>
+                <span class="text-gray-300 font-mono text-xs truncate max-w-xs">{{ listing.seller_uid or '—' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: reason + credentials + actions -->
+          <div class="flex flex-col gap-4">
+
+            <!-- Dispute reason -->
+            <div>
+              <p class="text-sm font-semibold text-gray-300 mb-1">🗣 Buyer's Reason</p>
+              <div class="bg-gray-800 rounded-xl p-3 text-sm text-gray-300 min-h-12">
+                {{ dispute.get('reason') or 'No reason provided.' }}
+              </div>
+            </div>
+
+            <!-- Delivered credentials -->
+            <div>
+              <p class="text-sm font-semibold text-gray-300 mb-1">🔑 Credentials Delivered</p>
+              {% if delivery %}
+                <pre class="bg-gray-800 rounded-xl p-3 text-sm text-green-300 font-mono whitespace-pre-wrap">{{ delivery.get('credentials', '—') }}</pre>
+                {% if delivery.get('notes') %}
+                  <p class="text-xs text-gray-500 mt-1">Notes: {{ delivery.get('notes') }}</p>
+                {% endif %}
+                <p class="text-xs text-gray-600 mt-1">
+                  Delivered: {{ delivery.get('delivered_at', '')[:19].replace('T', ' ') }}
+                </p>
+              {% else %}
+                <div class="bg-gray-800 rounded-xl p-3 text-sm text-gray-500">
+                  Seller had not delivered credentials when dispute was raised.
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex flex-wrap gap-2 mt-auto pt-2">
+
+              <!-- Refund buyer -->
+              <form method="POST" action="/admin/resolve_dispute/{{ listing_id }}"
+                    onsubmit="return confirm('Refund {{ amount }} credits to the buyer?')">
+                <input type="hidden" name="decision" value="refund">
+                <button type="submit"
+                        class="px-4 py-2 bg-blue-700 hover:bg-blue-600 text-white rounded-xl text-sm font-semibold transition">
+                  💸 Refund Buyer ({{ amount }} cr)
+                </button>
+              </form>
+
+              <!-- Release to seller -->
+              <form method="POST" action="/admin/resolve_dispute/{{ listing_id }}"
+                    onsubmit="return confirm('Release {{ amount }} credits to the seller?')">
+                <input type="hidden" name="decision" value="release">
+                <button type="submit"
+                        class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-xl text-sm font-semibold transition">
+                  ✅ Release to Seller ({{ amount }} cr)
+                </button>
+              </form>
+
+              <!-- View chat -->
+              <a href="/chat/{{ listing.buyer_uid }}/{{ listing.seller_uid }}"
+                 target="_blank"
+                 class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-xl text-sm font-semibold transition">
+                💬 View Chat
+              </a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+Flask>=3.0.0
+python-dotenv>=1.0.1
+firebase-admin>=6.5.0
+requests>=2.31.0
+yagmail>=0.15.293
+Flask-Caching>=2.3.0
+Flask-Limiter>=3.8.0
+boto3>=1.34.0

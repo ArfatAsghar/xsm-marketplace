@@ -1,0 +1,456 @@
+{% extends "base.html" %}
+{% block title %}@{{ listing.username }} on {{ listing.platform }} — XSM Marketplace{% endblock %}
+{% block meta_description %}Buy @{{ listing.username }} on {{ listing.platform }}. {{ listing.description[:155] if listing.description else 'Escrow-protected digital asset listing on XSM Marketplace.' }}{% endblock %}
+{% block canonical_url %}{{ request.url_root.rstrip('/') }}{{ url_for('listings.listing_detail', listing_id=listing_id) }}{% endblock %}
+{% block og_type %}product{% endblock %}
+{% block og_title %}@{{ listing.username }} on {{ listing.platform }} — XSM Marketplace{% endblock %}
+{% block og_description %}{{ listing.description[:200] if listing.description else 'Escrow-protected digital asset listing on XSM Marketplace.' }}{% endblock %}
+{% block twitter_title %}@{{ listing.username }} on {{ listing.platform }} — XSM Marketplace{% endblock %}
+{% block twitter_description %}{{ listing.description[:200] if listing.description else 'Escrow-protected digital asset listing on XSM Marketplace.' }}{% endblock %}
+{% block og_image %}{{ listing.thumbnail or request.url_root.rstrip('/') + '/static/favicon_32.png' }}{% endblock %}
+{% block twitter_image %}{{ listing.thumbnail or request.url_root.rstrip('/') + '/static/favicon_32.png' }}{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "@{{ listing.username }} on {{ listing.platform }}",
+  "description": {{ (listing.description or 'Escrow-protected digital asset listing on XSM Marketplace.') | tojson }},
+  "image": {{ (listing.thumbnail or request.url_root.rstrip('/') + '/static/favicon_32.png') | tojson }},
+  "brand": {
+    "@type": "Brand",
+    "name": "XSM Marketplace"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "{{ listing.price | int }}",
+    "priceCurrency": "XSM Credit",
+    "availability": "https://schema.org/{% if listing.status == 'available' %}InStock{% else %}OutOfStock{% endif %}",
+    "url": "{{ request.url_root.rstrip('/') }}{{ url_for('listings.listing_detail', listing_id=listing_id) }}"
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+  <!-- Breadcrumb -->
+  <div class="flex items-center gap-2 text-xs font-rajdhani text-gray-600 mb-8">
+    <a href="{{ url_for('listings.marketplace') }}" class="hover:text-neon-blue transition-colors">Marketplace</a>
+    <i class="fas fa-chevron-right text-[9px]"></i>
+    <span class="text-gray-500">{{ listing.platform }}</span>
+    <i class="fas fa-chevron-right text-[9px]"></i>
+    <span class="text-gray-300">@{{ listing.username }}</span>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+
+    <!-- LEFT COLUMN (spans 3) -->
+    <div class="lg:col-span-3 space-y-5">
+
+      <!-- Main Thumbnail -->
+      <div class="cyber-card overflow-hidden relative group">
+        <div class="h-px w-full" style="background:linear-gradient(90deg,transparent,rgba(0,243,255,.45),rgba(189,0,255,.45),transparent)"></div>
+
+        <div class="relative overflow-hidden" style="aspect-ratio:16/9;">
+          <img src="{{ listing.thumbnail or '/static/default_thumbnail.png' }}"
+               alt="@{{ listing.username }}"
+               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+               onerror="this.src='/static/default_thumbnail.png'">
+
+          <div class="absolute inset-0" style="background:linear-gradient(to top, rgba(10,10,22,0.85) 0%, transparent 55%)"></div>
+
+          <div class="absolute top-4 left-4 flex items-center gap-1.5 px-3 py-1.5 rounded-xl
+                      font-orbitron text-[10px] font-bold tracking-widest uppercase
+                      bg-cyber-900/80 backdrop-blur-sm"
+               style="border:1px solid rgba(0,243,255,0.35); color:#00f3ff;">
+            <i class="fas fa-hashtag text-[9px]"></i>
+            {{ listing.platform }}
+          </div>
+
+          {% if listing.monetized in ('1','true','yes','on',True) %}
+          <div class="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-xl
+                      font-rajdhani text-[11px] font-bold
+                      bg-green-950/80 backdrop-blur-sm"
+               style="border:1px solid rgba(0,255,100,0.35); color:#00ff8e;">
+            <i class="fas fa-dollar-sign text-[10px]"></i> Monetized
+          </div>
+          {% endif %}
+
+          {% if listing.is_boosted %}
+          <div class="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-xl
+                      font-rajdhani text-[11px] font-bold bg-yellow-950/80 backdrop-blur-sm"
+               style="border:1px solid rgba(234,179,8,0.35); color:#facc15;">
+            <i class="fas fa-bolt text-[10px]"></i> Boosted
+          </div>
+          {% endif %}
+
+          <div class="absolute bottom-4 left-5">
+            <h1 class="font-orbitron text-2xl sm:text-3xl font-bold tracking-tight"
+                style="text-shadow: 0 2px 20px rgba(0,0,0,0.9);">
+              @{{ listing.username }}
+            </h1>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gallery -->
+      {% if listing.gallery %}
+      <div class="cyber-card p-4">
+        <p class="text-[10px] font-orbitron tracking-widest uppercase text-gray-500 mb-3">Gallery</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {% for img in listing.gallery %}
+          <div class="overflow-hidden rounded-xl cursor-pointer group/g"
+               onclick="openLightbox('{{ img }}')"
+               style="aspect-ratio:16/9; border:1px solid rgba(0,243,255,0.1);">
+            <img src="{{ img }}"
+                 alt="Gallery"
+                 class="w-full h-full object-cover group-hover/g:scale-110 transition-transform duration-300"
+                 onerror="this.src='/static/default_thumbnail.png'">
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Description -->
+      <div class="cyber-card p-6">
+        <p class="text-[10px] font-orbitron tracking-widest uppercase text-gray-500 mb-3">About This Account</p>
+        <p class="text-gray-300 font-rajdhani text-[15px] leading-relaxed">
+          {{ listing.description or 'No description provided.' }}
+        </p>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-6">
+          {% if listing.followers %}
+          <div class="rounded-xl p-4 text-center" style="background:rgba(0,243,255,0.04); border:1px solid rgba(0,243,255,0.1);">
+            <p class="font-orbitron text-xl font-bold text-neon-blue">
+              {{ "{:,}".format(listing.followers | int) if listing.followers else '—' }}
+            </p>
+            <p class="text-[10px] font-rajdhani text-gray-500 uppercase tracking-wider mt-1">Followers</p>
+          </div>
+          {% endif %}
+          {% if listing.income %}
+          <div class="rounded-xl p-4 text-center" style="background:rgba(0,255,100,0.04); border:1px solid rgba(0,255,100,0.1);">
+            <p class="font-orbitron text-xl font-bold text-green-400">${{ listing.income }}</p>
+            <p class="text-[10px] font-rajdhani text-gray-500 uppercase tracking-wider mt-1">Monthly Income</p>
+          </div>
+          {% endif %}
+          {% if listing.topic %}
+          <div class="rounded-xl p-4 text-center" style="background:rgba(189,0,255,0.04); border:1px solid rgba(189,0,255,0.1);">
+            <p class="font-rajdhani text-base font-semibold text-purple-400">{{ listing.topic }}</p>
+            <p class="text-[10px] font-rajdhani text-gray-500 uppercase tracking-wider mt-1">Niche / Topic</p>
+          </div>
+          {% endif %}
+          {% if listing.page_link %}
+<div class="rounded-xl p-4 text-center"
+     style="background:rgba(0,243,255,0.04); border:1px solid rgba(0,243,255,0.1);">
+  <a href="{{ listing.page_link }}" target="_blank" rel="noopener noreferrer"
+     class="inline-flex items-center gap-2 font-rajdhani text-sm font-semibold
+            text-neon-blue hover:text-neon-blue/70 transition-colors">
+    <i class="fas fa-arrow-up-right-from-square text-xs"></i>
+    View Live Page
+  </a>
+  <p class="text-[10px] font-rajdhani text-gray-600 mt-1 truncate max-w-full px-2">
+    {{ listing.page_link }}
+  </p>
+</div>
+{% endif %}
+        </div>
+      </div>
+
+      <!-- Seller Info -->
+      <div class="cyber-card p-6">
+        <p class="text-[10px] font-orbitron tracking-widest uppercase text-gray-500 mb-4">Seller</p>
+        <div class="flex items-center gap-4">
+          <div class="relative flex-shrink-0">
+            <img src="{{ seller_pic or '/static/default_user.png' }}"
+                 alt="{{ seller_name }}"
+                 class="w-14 h-14 rounded-2xl object-cover"
+                 style="border:1px solid rgba(0,243,255,0.3); box-shadow:0 0 16px rgba(0,243,255,0.12);"
+                 onerror="this.src='/static/default_user.png'">
+            <span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full"
+                  style="background:#00ff8e; border:2px solid #0a0a16; box-shadow:0 0 6px rgba(0,255,142,0.8);"></span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <a href="{{ url_for('misc.seller_profile', seller_id=seller_id) }}"
+                 class="font-orbitron text-base font-bold hover:text-neon-blue transition-colors"
+                 style="color:#00f3ff;">
+                @{{ seller_name }}
+              </a>
+              <!-- ✅ VERIFIED BADGE — only shows when seller is verified -->
+              {% if seller_verified %}
+              <span title="Verified Seller"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full
+                           text-[9px] font-bold font-rajdhani uppercase tracking-wide
+                           bg-neon-blue/10 border border-neon-blue/40 text-neon-blue">
+                <i class="fas fa-circle-check text-[9px]"></i> Verified
+              </span>
+              {% endif %}
+            </div>
+            <div class="flex items-center gap-1.5 mt-1">
+              {% for _ in range(stars_full)  %}<span class="text-yellow-400 text-sm">★</span>{% endfor %}
+              {% for _ in range(stars_half)  %}<span class="text-yellow-400 text-sm opacity-50">★</span>{% endfor %}
+              {% for _ in range(stars_empty) %}<span class="text-gray-700 text-sm">★</span>{% endfor %}
+              <span class="text-xs text-gray-500 font-rajdhani ml-1">{{ avg_rating }} rating</span>
+            </div>
+          </div>
+          <a href="{{ url_for('misc.seller_profile', seller_id=seller_id) }}"
+             class="cyber-button px-4 py-2 rounded-xl text-xs font-bold font-rajdhani text-gray-300
+                    hover:text-neon-blue flex-shrink-0">
+            View Profile
+          </a>
+        </div>
+      </div>
+
+      <!-- Escrow explanation -->
+      <div class="rounded-2xl p-4 flex items-start gap-3"
+           style="background:rgba(0,255,100,0.04); border:1px solid rgba(0,255,100,0.15);">
+        <i class="fas fa-shield-alt text-green-400 mt-0.5 flex-shrink-0"></i>
+        <div>
+          <p class="text-green-400 text-sm font-semibold font-rajdhani">Escrow Protection</p>
+          <p class="text-gray-500 text-xs font-rajdhani mt-0.5 leading-relaxed">
+            Your credits are held securely in escrow until you confirm receipt of the account credentials. Disputes can be raised within 72 hours.
+          </p>
+        </div>
+      </div>
+
+    </div>
+    <!-- /LEFT -->
+
+    <!-- RIGHT COLUMN (spans 2) — sticky purchase card -->
+    <div class="lg:col-span-2">
+      <div class="sticky top-24 space-y-4">
+
+        <!-- Price card -->
+        <div class="cyber-card overflow-hidden">
+          <div class="h-px w-full" style="background:linear-gradient(90deg,transparent,rgba(0,243,255,.45),rgba(189,0,255,.45),transparent)"></div>
+          <div class="p-6">
+
+            <p class="text-[10px] font-orbitron tracking-widest uppercase text-gray-500 mb-2">Listing Price</p>
+            <div class="flex items-baseline gap-2 mb-1">
+              <span class="font-orbitron text-4xl font-bold text-yellow-400">
+                {{ listing.price | int }}
+              </span>
+              <span class="text-gray-500 font-rajdhani text-sm">credits</span>
+            </div>
+
+            <!-- Status badge -->
+            <div class="mt-3 mb-5">
+              {% if listing.status == 'available' %}
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold font-rajdhani
+                           bg-green-900/30 border border-green-700/40 text-green-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse-slow"></span>
+                Available
+              </span>
+              {% elif listing.status == 'pending_delivery' %}
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold font-rajdhani
+                           bg-yellow-900/30 border border-yellow-700/40 text-yellow-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
+                Pending Delivery
+              </span>
+              {% elif listing.status == 'pending_confirmation' %}
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold font-rajdhani
+                           bg-blue-900/30 border border-blue-700/40 text-blue-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                Awaiting Confirmation
+              </span>
+              {% elif listing.status == 'completed' %}
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold font-rajdhani
+                           bg-gray-800 border border-gray-700 text-gray-400">
+                Sold
+              </span>
+              {% endif %}
+            </div>
+
+            <!-- BUY / LOGIN / SOLD -->
+            {% if listing.status == 'available' %}
+              {% if session.user %}
+                {% if session.user.uid == listing.seller_uid %}
+                  <div class="w-full py-3 rounded-xl text-center text-sm font-bold font-rajdhani text-gray-500
+                              bg-gray-800/50 border border-gray-700/50 cursor-not-allowed">
+                    This is your listing
+                  </div>
+                {% else %}
+                  {% set can_buy = session.user.credit >= (listing.price | int) %}
+                  <form method="POST" action="{{ url_for('listings.buy', listing_id=listing_id) }}">
+                    <button type="submit"
+                            class="w-full py-3 rounded-xl text-sm font-bold font-rajdhani text-white
+                                   transition-all shadow-lg {% if not can_buy %}opacity-50 cursor-not-allowed{% endif %}"
+                            style="background:linear-gradient(135deg,#00f3ff,#bd00ff);
+                                   box-shadow:0 4px 24px rgba(0,243,255,0.25);"
+                            {% if not can_buy %}disabled{% endif %}>
+                      <i class="fas fa-bolt mr-2 text-xs"></i>
+                      Buy Now
+                    </button>
+                    {% if session.user and session.user.uid != seller_id %}
+  <a href="{{ url_for('reports.report_listing', listing_id=listing_id) }}"
+     class="flex items-center gap-2 text-xs font-rajdhani text-gray-600
+            hover:text-red-400 transition-colors mt-3">
+    <i class="fas fa-flag text-[10px]"></i> Report this listing
+  </a>
+{% endif %}
+                  </form>
+                  {% if not can_buy %}
+                  <p class="text-center text-xs text-red-400 font-rajdhani mt-2">
+                    Insufficient credits —
+                    <a href="{{ url_for('wallet.add_payment') }}" class="underline hover:text-red-300">Top up wallet</a>
+                  </p>
+                  {% else %}
+                  <p class="text-center text-xs text-gray-600 font-rajdhani mt-2">
+                    Your balance: <span class="text-yellow-400">${{ session.user.credit }}</span>
+                  </p>
+                  {% endif %}
+                {% endif %}
+              {% else %}
+                <a href="{{ url_for('auth.login') }}"
+                   class="block w-full py-3 rounded-xl text-sm font-bold font-rajdhani text-white
+                          text-center transition-all"
+                   style="background:linear-gradient(135deg,rgba(0,243,255,0.15),rgba(189,0,255,0.15));
+                          border:1px solid rgba(0,243,255,0.35);">
+                  <i class="fas fa-sign-in-alt mr-2 text-xs"></i> Login to Buy
+                </a>
+              {% endif %}
+
+            {% elif listing.status == 'pending_confirmation' and session.user and session.user.uid == listing.buyer_uid %}
+              <div class="space-y-3">
+                {% if listing.delivery %}
+                <div class="rounded-xl p-4" style="background:rgba(0,243,255,0.04); border:1px solid rgba(0,243,255,0.15);">
+                  <p class="text-[10px] font-orbitron tracking-widest uppercase text-neon-blue mb-2">Credentials Delivered</p>
+                  <p class="text-gray-300 text-sm font-rajdhani break-all">{{ listing.delivery.credentials }}</p>
+                  {% if listing.delivery.notes %}
+                  <p class="text-gray-500 text-xs mt-2 font-rajdhani">{{ listing.delivery.notes }}</p>
+                  {% endif %}
+                </div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('listings.confirm_delivery', listing_id=listing_id) }}">
+                  <button type="submit"
+                          class="w-full py-3 rounded-xl text-sm font-bold font-rajdhani text-white transition-all"
+                          style="background:linear-gradient(135deg,#00ff8e22,#00ff8e44);
+                                 border:1px solid rgba(0,255,142,0.4); color:#00ff8e;">
+                    <i class="fas fa-check mr-2 text-xs"></i> Confirm Receipt
+                  </button>
+                </form>
+
+                <form method="POST" action="{{ url_for('listings.dispute_delivery', listing_id=listing_id) }}">
+                  <input type="hidden" name="reason" value="">
+                  <button type="submit"
+                          onclick="return promptReason(this.form)"
+                          class="w-full py-3 rounded-xl text-sm font-bold font-rajdhani transition-all"
+                          style="background:rgba(255,50,50,0.06); border:1px solid rgba(255,80,80,0.3); color:#ff5c5c;">
+                    <i class="fas fa-exclamation-triangle mr-2 text-xs"></i> Raise Dispute
+                  </button>
+                </form>
+              </div>
+
+            {% elif listing.status == 'pending_delivery' and session.user and session.user.uid == listing.seller_uid %}
+              <a href="{{ url_for('listings.deliver_credentials', listing_id=listing_id) }}"
+                 class="block w-full py-3 rounded-xl text-sm font-bold font-rajdhani text-center transition-all"
+                 style="background:linear-gradient(135deg,rgba(0,243,255,0.15),rgba(189,0,255,0.15));
+                        border:1px solid rgba(0,243,255,0.35); color:white;">
+                <i class="fas fa-key mr-2 text-xs"></i> Deliver Credentials
+              </a>
+
+            {% else %}
+              <div class="w-full py-3 rounded-xl text-center text-sm font-bold font-rajdhani text-gray-500
+                          bg-gray-800/50 border border-gray-700/50">
+                <i class="fas fa-lock mr-2 text-xs"></i> Not Available
+              </div>
+            {% endif %}
+
+            <div class="my-5 h-px" style="background:rgba(255,255,255,0.05)"></div>
+
+            <ul class="space-y-2.5">
+              {% for icon, label in [
+                ('fa-shield-alt','Escrow-protected transaction'),
+                ('fa-clock','72-hour dispute window'),
+                ('fa-headset','Admin dispute resolution'),
+                ('fa-lock','Secure credential delivery')
+              ] %}
+              <li class="flex items-center gap-2.5 text-xs font-rajdhani text-gray-500">
+                <i class="fas {{ icon }} text-neon-blue/60 w-4 text-center text-[11px]"></i>
+                {{ label }}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Escrow state -->
+        {% if escrow and escrow.state %}
+        <div class="cyber-card p-4">
+          <p class="text-[10px] font-orbitron tracking-widest uppercase text-gray-500 mb-3">Escrow Status</p>
+          <div class="flex items-center gap-2">
+            <i class="fas fa-vault text-yellow-400 text-sm"></i>
+            <span class="font-rajdhani text-sm text-yellow-400 font-semibold capitalize">
+              {{ escrow.state.replace('_', ' ') }}
+            </span>
+          </div>
+          {% if escrow.amount %}
+          <p class="text-xs text-gray-500 font-rajdhani mt-1">
+            {{ escrow.amount }} credits in escrow
+          </p>
+          {% endif %}
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+    <!-- /RIGHT -->
+
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox"
+     class="fixed inset-0 z-50 hidden items-center justify-center"
+     style="background:rgba(10,10,22,0.95); backdrop-filter:blur(8px);"
+     onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="Preview"
+       class="max-w-[90vw] max-h-[85vh] rounded-2xl object-contain"
+       style="border:1px solid rgba(0,243,255,0.2); box-shadow:0 0 60px rgba(0,243,255,0.15);">
+  <button onclick="closeLightbox()"
+          class="absolute top-5 right-5 w-10 h-10 rounded-xl flex items-center justify-center
+                 text-gray-400 hover:text-white cyber-border transition-colors text-sm"
+          style="background:rgba(10,10,22,0.8);">
+    <i class="fas fa-times"></i>
+  </button>
+</div>
+
+<!-- FLOATING CHAT -->
+{% if session.user and listing.seller_uid != session.user.uid %}
+<a href="{{ url_for('chat.chat', buyer_uid=session.user.uid, seller_uid=listing.seller_uid) }}"
+   class="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-5 py-3.5 rounded-2xl
+          font-rajdhani font-bold text-sm text-white shadow-2xl transition-all hover:-translate-y-1"
+   style="background:linear-gradient(135deg,#00f3ff,#bd00ff);
+          box-shadow:0 8px 32px rgba(0,243,255,0.3);">
+  <i class="fas fa-comment-dots text-sm"></i>
+  <span>Chat with Seller</span>
+</a>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function openLightbox(src) {
+    const lb = document.getElementById('lightbox');
+    document.getElementById('lightbox-img').src = src;
+    lb.classList.remove('hidden');
+    lb.classList.add('flex');
+  }
+  function closeLightbox() {
+    const lb = document.getElementById('lightbox');
+    lb.classList.add('hidden');
+    lb.classList.remove('flex');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+  function promptReason(form) {
+    const reason = prompt('Please describe the issue (optional):') || '';
+    form.querySelector('[name="reason"]').value = reason;
+    return true;
+  }
+</script>
+{% endblock %}

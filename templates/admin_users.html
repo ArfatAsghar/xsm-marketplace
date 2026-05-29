@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-5xl mx-auto mt-8">
+  <h1 class="text-2xl font-bold mb-6 text-indigo-400">All Users</h1>
+
+  <table class="w-full border border-gray-700 rounded-lg overflow-hidden">
+    <thead class="bg-gray-800">
+      <tr>
+        <th class="px-4 py-2 text-left">Username</th>
+        <th class="px-4 py-2 text-left">Email</th>
+        <th class="px-4 py-2 text-left">Role</th>
+        <th class="px-4 py-2 text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for uid, user in users.items() %}
+      <tr class="border-t border-gray-700">
+        <td class="px-4 py-2">{{ user.username }}</td>
+        <td class="px-4 py-2">{{ user.email }}</td>
+        <td class="px-4 py-2">{{ user.role }}</td>
+        <td class="px-4 py-2">
+          <a href="{{ url_for('admin.admin_user_profile', uid=uid) }}" class="text-indigo-400 hover:underline">View</a> |
+          <a href="{{ url_for('admin.admin_delete_user', uid=uid) }}" class="text-red-400 hover:underline"
+             onclick="return confirm('Delete this user and all listings?')">Delete</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="4" class="px-4 py-4 text-center text-gray-500">No users found</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

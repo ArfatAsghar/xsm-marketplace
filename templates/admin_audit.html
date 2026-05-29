@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Audit Logs — Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-10">
+    <div class="mb-10">
+        <h1 class="text-3xl font-orbitron font-bold glow-text bg-gradient-to-r from-red-500 to-neon-purple bg-clip-text text-transparent">
+            SYSTEM AUDIT LOGS
+        </h1>
+        <p class="text-gray-400 font-rajdhani tracking-wider">Security tracking for all administrative actions.</p>
+    </div>
+
+    <div class="cyber-card overflow-hidden">
+        <div class="p-4 border-b border-gray-800 bg-cyber-800/30 flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+            <h3 class="font-orbitron text-xs tracking-widest text-gray-300 uppercase">Live Event Stream</h3>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left font-rajdhani">
+                <thead class="bg-cyber-900">
+                    <tr class="text-gray-500 text-[10px] uppercase tracking-[0.2em] border-b border-gray-800">
+                        <th class="px-6 py-4 font-bold">Timestamp</th>
+                        <th class="px-6 py-4 font-bold">Admin</th>
+                        <th class="px-6 py-4 font-bold">Action</th>
+                        <th class="px-6 py-4 font-bold">Target / Detail</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-800/40">
+                    {% for log in logs %}
+                    <tr class="hover:bg-white/[0.02] transition-colors">
+                        <td class="px-6 py-4 text-xs text-gray-500 font-mono">
+                            {{ log.get('timestamp', '') | datetimeformat }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded bg-cyber-700 flex items-center justify-center text-[10px] text-neon-blue border border-neon-blue/20">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <span class="text-sm font-semibold text-gray-200">{{ log.get('admin_name', 'Unknown') }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            {% set action = log.get('action', '') %}
+                            <span class="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-tighter
+                                {% if 'approve' in action or 'release' in action %} bg-green-500/10 text-green-400 border border-green-500/20
+                                {% elif 'reject' in action or 'delete' in action or 'refund' in action %} bg-red-500/10 text-red-400 border border-red-500/20
+                                {% else %} bg-neon-blue/10 text-neon-blue border border-neon-blue/20 {% endif %}">
+                                {{ action.replace('_', ' ') }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <p class="text-sm text-gray-400 max-w-xs truncate" title="{{ log.get('detail', '') }}">
+                                {{ log.get('detail', '—') }}
+                            </p>
+                            {% if log.get('target_id') %}
+                            <p class="text-[10px] text-gray-600 font-mono mt-1">ID: {{ log.get('target_id') }}</p>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-20 text-center">
+                            <i class="fas fa-database text-3xl text-gray-800 mb-3 block"></i>
+                            <span class="text-gray-600 font-rajdhani">No audit events found in logs.</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

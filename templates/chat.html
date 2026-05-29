@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% block title %}Chat with {{ other_user_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-3 py-4 flex flex-col" style="height: calc(100dvh - 80px);">
+
+  <!-- Header -->
+  <div class="bg-gray-900 border border-gray-700 rounded-2xl px-4 py-3 flex items-center gap-3 mb-3 flex-shrink-0">
+    <img src="{{ other_user_pic }}" alt="{{ other_user_name }}"
+         class="w-11 h-11 rounded-full object-cover border-2 border-indigo-500">
+    <div class="flex-1 min-w-0">
+      <p class="font-bold text-white truncate">{{ other_user_name }}</p>
+      <p class="text-xs text-gray-400">
+        {{ "Seller" if session.user.uid == buyer_uid else "Buyer" }}
+      </p>
+    </div>
+    <a href="{{ url_for('chat.inbox') }}"
+       class="flex-shrink-0 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-xl text-sm text-gray-300 transition">
+      ← Inbox
+    </a>
+  </div>
+
+  <!-- Messages -->
+  <div id="chat-messages"
+       class="flex-1 overflow-y-auto bg-gray-900 border border-gray-700 rounded-2xl px-4 py-4 space-y-3 mb-4">
+
+    {% if messages %}
+      {% for msg_id, msg in messages.items() %}
+        {% if msg is mapping %}
+          {% set is_me = msg.sender == session.user.uid %}
+
+          {# ── 2FA code bubble ── #}
+          {% if msg.get('type') == '2fa_code' %}
+            <div class="flex justify-center">
+              <div class="bg-indigo-900 border border-indigo-500 rounded-2xl px-6 py-3 text-center max-w-xs">
+                <p class="text-xs text-indigo-300 font-semibold mb-1">🔐 2FA Verification Code</p>
+                <p class="text-3xl font-mono font-bold text-white tracking-widest">{{ msg.message }}</p>
+                <p class="text-xs text-indigo-400 mt-1">Use now — expires in ~30s</p>
+              </div>
+            </div>
+
+          {# ── Normal message bubble ── #}
+          {% else %}
+            <div class="flex {% if is_me %}justify-end{% else %}justify-start{% endif %} items-end gap-2">
+
+              {% if not is_me %}
+                <img src="{{ other_user_pic }}" class="w-7 h-7 rounded-full object-cover flex-shrink-0 mb-1">
+              {% endif %}
+
+              <div class="max-w-xs lg:max-w-sm px-4 py-2.5 rounded-2xl
+                {% if is_me %}
+                  bg-indigo-600 text-white rounded-br-sm
+                {% else %}
+                  bg-gray-800 text-gray-100 rounded-bl-sm border border-gray-700
+                {% endif %}">
+                <p class="text-sm leading-relaxed">{{ msg.message }}</p>
+                <p class="text-xs mt-1 {% if is_me %}text-indigo-300{% else %}text-gray-500{% endif %} text-right">
+                  {{ msg.timestamp | timestamp_to_datetime | format_datetime }}
+                </p>
+              </div>
+
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+
+    {% else %}
+      <div class="flex flex-col items-center justify-center h-full text-gray-500 gap-3 py-16">
+        <div class="text-5xl">💬</div>
+        <p class="text-sm">No messages yet. Say hello!</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Input -->
+  <form method="POST" action="{{ url_for('chat.send_message') }}"
+        class="flex-shrink-0 flex items-center gap-3 bg-gray-900 border border-gray-700 rounded-2xl px-4 py-3">
+    <input type="hidden" name="chat_id"      value="{{ chat_id }}">
+    <input type="hidden" name="sender_uid"   value="{{ session.user.uid }}">
+    <input type="hidden" name="receiver_uid" value="{{ seller_uid if session.user.uid == buyer_uid else buyer_uid }}">
+
+    <input
+      type="text"
+      name="message"
+      placeholder="Type a message…"
+      autocomplete="off"
+      required
+      class="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-white
+             placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition"
+    >
+    <button type="submit"
+            class="flex-shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5
+                   rounded-xl text-sm font-semibold transition">
+      Send
+    </button>
+  </form>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const box = document.getElementById('chat-messages');
+  if (box) box.scrollTop = box.scrollHeight;
+
+  // ── Smart polling: only fetch new messages, no full page reload ──
+  const chatId    = "{{ chat_id }}";
+  const myUid     = "{{ session.user.uid }}";
+  const otherPic  = "{{ other_user_pic }}";
+  let   lastKey   = null;
+
+  // Track existing message keys so we don't duplicate
+  document.querySelectorAll('[data-msg-key]').forEach(el => {
+    lastKey = el.dataset.msgKey;
+  });
+
+  function formatTime(ms) {
+    const d = new Date(ms > 1e12 ? ms : ms * 1000);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function buildBubble(key, msg) {
+    const isMe = msg.sender === myUid;
+    const wrap = document.createElement('div');
+    wrap.dataset.msgKey = key;
+    wrap.className = `flex ${isMe ? 'justify-end' : 'justify-start'} items-end gap-2`;
+
+    if (msg.type === '2fa_code') {
+      wrap.className = 'flex justify-center';
+      wrap.innerHTML = `
+        <div class="bg-indigo-900 border border-indigo-500 rounded-2xl px-6 py-3 text-center max-w-xs">
+          <p class="text-xs text-indigo-300 font-semibold mb-1">🔐 2FA Verification Code</p>
+          <p class="text-3xl font-mono font-bold text-white tracking-widest">${msg.message}</p>
+          <p class="text-xs text-indigo-400 mt-1">Use now — expires in ~30s</p>
+        </div>`;
+      return wrap;
+    }
+
+    if (!isMe) {
+      const av = document.createElement('img');
+      av.src = otherPic;
+      av.className = 'w-7 h-7 rounded-full object-cover flex-shrink-0 mb-1';
+      av.onerror = () => { av.src = '/static/default_user.png'; };
+      wrap.appendChild(av);
+    }
+
+    const bubble = document.createElement('div');
+    bubble.className = `max-w-xs lg:max-w-sm px-4 py-2.5 rounded-2xl
+      ${isMe
+        ? 'bg-indigo-600 text-white rounded-br-sm'
+        : 'bg-gray-800 text-gray-100 rounded-bl-sm border border-gray-700'}`;
+    bubble.innerHTML = `
+      <p class="text-sm leading-relaxed">${msg.message}</p>
+      <p class="text-xs mt-1 ${isMe ? 'text-indigo-300' : 'text-gray-500'} text-right">
+        ${formatTime(msg.timestamp)}
+      </p>`;
+    wrap.appendChild(bubble);
+    return wrap;
+  }
+
+  async function pollMessages() {
+    try {
+      const res  = await fetch(`/chat_messages/${chatId}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      const msgs = data.messages || {};
+
+      let appended = false;
+      for (const [key, msg] of Object.entries(msgs)) {
+        if (document.querySelector(`[data-msg-key="${key}"]`)) continue;
+        if (!msg || !msg.message) continue;
+        const bubble = buildBubble(key, msg);
+        box.appendChild(bubble);
+        lastKey  = key;
+        appended = true;
+      }
+      if (appended) box.scrollTop = box.scrollHeight;
+    } catch(e) {}
+  }
+
+  // Poll every 3 seconds — no full reload
+  setInterval(pollMessages, 3000);
+</script>
+{% endblock %}

@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% block title %}Profile Settings — XSM Market{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-8">
+
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold font-orbitron bg-gradient-to-r from-neon-blue to-neon-cyan
+               bg-clip-text text-transparent">⚙️ Profile Settings</h1>
+    <p class="text-gray-500 font-rajdhani mt-1">Update your profile picture and personal information</p>
+  </div>
+
+  <!-- CRITICAL: action must be explicit, method POST, enctype multipart -->
+  <form method="POST"
+        action="{{ url_for('auth.settings_profile') }}"
+        enctype="multipart/form-data"
+        id="settingsForm">
+
+    <!-- Profile picture -->
+    <div class="bg-cyber-800 border border-neon-blue/10 rounded-2xl p-6 mb-5">
+      <h2 class="text-sm font-bold font-rajdhani text-gray-300 uppercase tracking-widest mb-4">
+        Profile Picture
+      </h2>
+      <div class="flex items-center gap-6">
+
+        <img id="picPreview"
+             src="{{ user.profile_pic if user and user.profile_pic else '/static/default_user.png' }}"
+             alt="Profile"
+             class="w-20 h-20 rounded-full object-cover border-2 border-neon-blue/40 flex-shrink-0"
+             onerror="this.src='/static/default_user.png'">
+
+        <div class="flex-1">
+          <!-- Visible label acts as button -->
+          <label for="profile_pic"
+                 class="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5
+                        cyber-button rounded-xl text-sm font-rajdhani text-white
+                        hover:border-neon-blue/60 transition">
+            <i class="fas fa-upload text-neon-blue text-xs"></i>
+            Choose Photo
+          </label>
+
+          <!-- Input MUST have name="profile_pic" and NOT be disabled -->
+          <input type="file"
+                 id="profile_pic"
+                 name="profile_pic"
+                 accept="image/png, image/jpeg, image/jpg, image/gif"
+                 class="hidden"
+                 onchange="previewPic(this)">
+
+          <p class="text-gray-600 text-xs font-rajdhani mt-2">JPG, PNG or GIF · Max 5MB</p>
+          <p id="selectedFileName" class="text-neon-blue text-xs font-rajdhani mt-1"></p>
+
+          <!-- Upload only button — saves pic immediately without other fields -->
+          <button type="submit"
+                  name="action"
+                  value="pic_only"
+                  id="uploadPicBtn"
+                  class="hidden mt-3 px-4 py-2 bg-indigo-600 hover:bg-indigo-700
+                         text-white text-xs font-rajdhani rounded-xl transition">
+            ✅ Upload This Photo
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Personal info -->
+    <div class="bg-cyber-800 border border-neon-blue/10 rounded-2xl p-6 mb-5">
+      <h2 class="text-sm font-bold font-rajdhani text-gray-300 uppercase tracking-widest mb-4">
+        Personal Information
+      </h2>
+
+      <div class="grid md:grid-cols-2 gap-4">
+
+        <div>
+          <label class="block text-xs font-semibold font-rajdhani text-gray-400 mb-1">Username</label>
+          <input type="text" value="{{ user.username if user else '' }}" disabled
+                 class="w-full px-4 py-3 bg-cyber-900 border border-gray-700 rounded-xl
+                        text-gray-500 font-rajdhani text-sm cursor-not-allowed">
+          <p class="text-gray-700 text-xs font-rajdhani mt-1">Cannot be changed</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold font-rajdhani text-gray-400 mb-1">Email</label>
+          <input type="email" value="{{ user.email if user else '' }}" disabled
+                 class="w-full px-4 py-3 bg-cyber-900 border border-gray-700 rounded-xl
+                        text-gray-500 font-rajdhani text-sm cursor-not-allowed">
+          <p class="text-gray-700 text-xs font-rajdhani mt-1">Contact support to change</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold font-rajdhani text-gray-300 mb-1">Phone</label>
+          <input type="tel" name="phone"
+                 value="{{ user.phone if user else '' }}"
+                 placeholder="03001234567"
+                 class="w-full px-4 py-3 bg-cyber-700 border border-neon-blue/20 rounded-xl
+                        text-white font-rajdhani text-sm focus:outline-none
+                        focus:border-neon-blue/60 transition">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold font-rajdhani text-gray-400 mb-1">Date of Birth</label>
+          <input type="date" value="{{ user.dob if user else '' }}" disabled
+                 class="w-full px-4 py-3 bg-cyber-900 border border-gray-700 rounded-xl
+                        text-gray-500 font-rajdhani text-sm cursor-not-allowed">
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-xs font-semibold font-rajdhani text-gray-300 mb-1">Address</label>
+          <input type="text" name="address"
+                 value="{{ user.address if user else '' }}"
+                 placeholder="Your address"
+                 class="w-full px-4 py-3 bg-cyber-700 border border-neon-blue/20 rounded-xl
+                        text-white font-rajdhani text-sm focus:outline-none
+                        focus:border-neon-blue/60 transition">
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-xs font-semibold font-rajdhani text-gray-300 mb-1">Bio</label>
+          <textarea name="bio" rows="3" maxlength="500"
+                    placeholder="Tell buyers about yourself…"
+                    class="w-full px-4 py-3 bg-cyber-700 border border-neon-blue/20 rounded-xl
+                           text-white font-rajdhani text-sm focus:outline-none
+                           focus:border-neon-blue/60 transition resize-none"
+                    oninput="document.getElementById('bioCount').textContent=this.value.length"
+          >{{ user.bio if user and user.bio else '' }}</textarea>
+          <p class="text-right text-xs text-gray-600 font-rajdhani mt-1">
+            <span id="bioCount">{{ (user.bio|length) if user and user.bio else 0 }}</span>/500
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Account info -->
+    <div class="bg-cyber-800 border border-neon-blue/10 rounded-2xl p-5 mb-6">
+      <h2 class="text-sm font-bold font-rajdhani text-gray-300 uppercase tracking-widest mb-3">
+        Account Info
+      </h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm font-rajdhani">
+        <div>
+          <p class="text-gray-500 text-xs mb-0.5">Member Since</p>
+          <p class="text-white">{{ user.created_at[:10] if user and user.created_at else '—' }}</p>
+        </div>
+        <div>
+          <p class="text-gray-500 text-xs mb-0.5">Balance</p>
+          <p class="text-neon-blue font-bold">${{ user.credit if user else 0 }}</p>
+        </div>
+        <div>
+          <p class="text-gray-500 text-xs mb-0.5">Rating</p>
+          <p class="text-yellow-400">
+            {% if user and user.average_rating %}★ {{ user.average_rating }}
+            {% else %}No ratings yet{% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-between gap-3">
+      <a href="{{ url_for('misc.dashboard') }}"
+         class="px-5 py-2.5 cyber-button rounded-xl text-sm font-rajdhani text-gray-300 transition">
+        Cancel
+      </a>
+      <button type="submit" name="action" value="save_all" id="saveBtn"
+              class="px-8 py-2.5 bg-gradient-to-r from-neon-blue/80 to-neon-purple/80
+                     hover:from-neon-blue hover:to-neon-purple text-white font-rajdhani
+                     font-semibold text-sm rounded-xl transition shadow-lg flex items-center gap-2">
+        <i class="fas fa-check text-xs"></i>
+        Save Changes
+      </button>
+    </div>
+
+    <!-- Danger zone -->
+    <div class="mt-8 bg-red-900/20 border border-red-800/40 rounded-2xl p-5">
+      <h3 class="text-sm font-bold font-rajdhani text-red-400 uppercase tracking-widest mb-3">
+        Danger Zone
+      </h3>
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <p class="text-white text-sm font-rajdhani font-semibold">Delete Account</p>
+          <p class="text-red-400 text-xs font-rajdhani mt-0.5">
+            Permanently delete your account and all data. This cannot be undone.
+          </p>
+        </div>
+        <button type="button"
+                onclick="confirm('Are you absolutely sure? This cannot be undone.')"
+                class="flex-shrink-0 px-4 py-2 bg-red-700 hover:bg-red-600 text-white
+                       rounded-xl text-sm font-rajdhani font-semibold transition">
+          Delete
+        </button>
+      </div>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function previewPic(input) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+
+    // Show filename
+    document.getElementById('selectedFileName').textContent = '📎 ' + file.name;
+
+    // Show upload button
+    document.getElementById('uploadPicBtn').classList.remove('hidden');
+
+    // Preview image
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('picPreview').src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  document.getElementById('settingsForm').addEventListener('submit', function(e) {
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true;
+    btn.innerHTML = `
+      <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+      </svg> Saving…`;
+  });
+</script>
+{% endblock %}

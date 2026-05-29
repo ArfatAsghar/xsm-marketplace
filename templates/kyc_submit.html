@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}KYC Verification — XSM Market{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-10">
+
+  <h1 class="text-2xl font-bold mb-2 text-white">Identity Verification (KYC)</h1>
+  <p class="text-gray-400 text-sm mb-8">
+    KYC verification is required before you can withdraw funds. Submit your details below and an admin will review within 24–48 hours.
+  </p>
+
+  {% if kyc_status == 'pending' %}
+  <div class="bg-yellow-900/40 border border-yellow-600/40 rounded-xl p-5 mb-6">
+    <div class="flex items-center gap-3">
+      <i class="fas fa-clock text-yellow-400 text-lg"></i>
+      <div>
+        <p class="text-yellow-300 font-semibold">Application Under Review</p>
+        <p class="text-yellow-400/70 text-sm mt-0.5">Your KYC was submitted on {{ kyc_submitted_at[:10] if kyc_submitted_at else '' }}. We'll notify you once it's reviewed.</p>
+      </div>
+    </div>
+  </div>
+
+  {% elif kyc_status == 'rejected' %}
+  <div class="bg-red-900/40 border border-red-600/40 rounded-xl p-5 mb-6">
+    <div class="flex items-center gap-3">
+      <i class="fas fa-times-circle text-red-400 text-lg"></i>
+      <div>
+        <p class="text-red-300 font-semibold">Application Rejected</p>
+        <p class="text-red-400/70 text-sm mt-0.5">{{ kyc_rejection_reason or 'Please resubmit with clear, valid documents.' }}</p>
+      </div>
+    </div>
+  </div>
+
+  {% elif kyc_status == 'approved' %}
+  <div class="bg-green-900/40 border border-green-600/40 rounded-xl p-5 mb-6">
+    <div class="flex items-center gap-3">
+      <i class="fas fa-check-circle text-green-400 text-lg"></i>
+      <div>
+        <p class="text-green-300 font-semibold">KYC Verified</p>
+        <p class="text-green-400/70 text-sm mt-0.5">Your identity has been verified. You can now withdraw funds.</p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if kyc_status not in ['pending', 'approved'] %}
+  <form method="POST" action="{{ url_for('misc.kyc_submit') }}" enctype="multipart/form-data"
+        class="bg-gray-900 border border-gray-700 rounded-xl p-6 space-y-5">
+
+    <!-- Full Name -->
+    <div>
+      <label class="block text-sm font-semibold text-gray-300 mb-1">Full Name <span class="text-red-400">*</span></label>
+      <input type="text" name="full_name" required
+             placeholder="As written on your CNIC"
+             class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2.5 text-white text-sm
+                    focus:outline-none focus:border-indigo-500 placeholder-gray-500">
+    </div>
+
+    <!-- CNIC -->
+    <div>
+      <label class="block text-sm font-semibold text-gray-300 mb-1">CNIC Number <span class="text-red-400">*</span></label>
+      <input type="text" name="cnic" required
+             placeholder="e.g. 35202-1234567-1"
+             pattern="\d{5}-\d{7}-\d{1}"
+             title="Format: 35202-1234567-1"
+             class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2.5 text-white text-sm
+                    focus:outline-none focus:border-indigo-500 placeholder-gray-500 font-mono">
+      <p class="text-xs text-gray-500 mt-1">Format: XXXXX-XXXXXXX-X</p>
+    </div>
+
+    <!-- Phone -->
+    <div>
+      <label class="block text-sm font-semibold text-gray-300 mb-1">Phone Number <span class="text-red-400">*</span></label>
+      <div class="flex gap-2">
+        <span class="bg-gray-800 border border-gray-600 rounded-lg px-3 py-2.5 text-gray-400 text-sm">+92</span>
+        <input type="text" name="phone" required maxlength="10"
+               placeholder="3001234567"
+               class="flex-1 bg-gray-800 border border-gray-600 rounded-lg px-4 py-2.5 text-white text-sm
+                      focus:outline-none focus:border-indigo-500 placeholder-gray-500 font-mono">
+      </div>
+    </div>
+
+    <!-- Address -->
+    <div>
+      <label class="block text-sm font-semibold text-gray-300 mb-1">Home Address <span class="text-red-400">*</span></label>
+      <textarea name="address" required rows="2"
+                placeholder="Street, City, Province"
+                class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2.5 text-white text-sm
+                       focus:outline-none focus:border-indigo-500 placeholder-gray-500 resize-none"></textarea>
+    </div>
+
+    <!-- CNIC Front -->
+    <div>
+      <label class="block text-sm font-semibold text-gray-300 mb-1">CNIC Front Photo <span class="text-red-400">*</span></label>
+      <input type="file" name="cnic_front" required accept="image/*"
+             class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2.5 text-gray-300 text-sm
+                    focus:outline-none focus:border-indigo-500 file:mr-3 file:py-1 file:px-3
+                    file:rounded file:border-0 file:text-xs file:font-semibold
+                    file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer">
+    </div>
+
+    <!-- CNIC Back -->
+    <div>
+      <label class="block text-sm font-semibold text-gray-300 mb-1">CNIC Back Photo <span class="text-red-400">*</span></label>
+      <input type="file" name="cnic_back" required accept="image/*"
+             class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2.5 text-gray-300 text-sm
+                    focus:outline-none focus:border-indigo-500 file:mr-3 file:py-1 file:px-3
+                    file:rounded file:border-0 file:text-xs file:font-semibold
+                    file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer">
+    </div>
+
+    <!-- Selfie -->
+    <div>
+      <label class="block text-sm font-semibold text-gray-300 mb-1">Selfie Holding CNIC <span class="text-red-400">*</span></label>
+      <input type="file" name="selfie" required accept="image/*"
+             class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2.5 text-gray-300 text-sm
+                    focus:outline-none focus:border-indigo-500 file:mr-3 file:py-1 file:px-3
+                    file:rounded file:border-0 file:text-xs file:font-semibold
+                    file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer">
+      <p class="text-xs text-gray-500 mt-1">Clear photo of your face holding the CNIC card.</p>
+    </div>
+
+    <!-- Notice -->
+    <div class="bg-gray-800 border border-gray-700 rounded-lg p-4 text-xs text-gray-400 leading-relaxed">
+      <i class="fas fa-lock text-gray-500 mr-1"></i>
+      Your documents are stored securely and only used for identity verification. They are never shared with third parties.
+    </div>
+
+    <button type="submit"
+            class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white font-semibold text-sm transition">
+      Submit KYC Application
+    </button>
+
+  </form>
+  {% endif %}
+
+</div>
+{% endblock %}

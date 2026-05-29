@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}Add Payment — XSM Market{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto px-4 py-10">
+
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold font-orbitron bg-gradient-to-r from-neon-blue to-neon-cyan
+               bg-clip-text text-transparent">💳 Add Credits</h2>
+    <p class="text-gray-500 font-rajdhani mt-1">Submit your payment details and upload a slip for verification.</p>
+  </div>
+
+  <!-- Our payment accounts -->
+  <div class="bg-cyber-800 border border-neon-blue/20 rounded-2xl p-5 mb-6">
+    <p class="text-sm font-bold font-rajdhani text-gray-300 mb-3">📌 Send payment to one of these accounts:</p>
+    <div class="space-y-2 text-sm font-rajdhani">
+      <div class="flex justify-between items-center bg-cyber-700 rounded-xl px-4 py-2.5">
+        <span class="text-gray-400">JazzCash</span>
+        <span class="text-white font-semibold">03001234567</span>
+      </div>
+      <div class="flex justify-between items-center bg-cyber-700 rounded-xl px-4 py-2.5">
+        <span class="text-gray-400">Easypaisa</span>
+        <span class="text-white font-semibold">03111234567</span>
+      </div>
+      <div class="flex justify-between items-center bg-cyber-700 rounded-xl px-4 py-2.5">
+        <span class="text-gray-400">Binance (USDT TRC20)</span>
+        <span class="text-white font-semibold text-xs break-all">TXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span>
+      </div>
+    </div>
+    <p class="text-xs text-gray-600 font-rajdhani mt-3">
+      After sending, fill in the form below and upload your payment slip.
+    </p>
+  </div>
+
+  <!-- Form -->
+  <div class="bg-cyber-800 border border-neon-blue/10 rounded-2xl p-6">
+    <form method="POST" action="{{ url_for('wallet.add_payment') }}" enctype="multipart/form-data">
+
+      <!-- Full Name -->
+      <div class="mb-4">
+        <label class="block text-sm font-semibold font-rajdhani text-gray-300 mb-2">
+          Full Name <span class="text-red-400">*</span>
+        </label>
+        <input type="text" name="name" required
+               class="w-full px-4 py-3 bg-cyber-700 border border-neon-blue/20 rounded-xl
+                      text-white font-rajdhani focus:outline-none focus:border-neon-blue/60 transition"
+               placeholder="Your full name">
+      </div>
+
+      <!-- Email -->
+      <div class="mb-4">
+        <label class="block text-sm font-semibold font-rajdhani text-gray-300 mb-2">
+          Email <span class="text-red-400">*</span>
+        </label>
+        <input type="email" name="email" value="{{ user.email }}" required
+               class="w-full px-4 py-3 bg-cyber-700 border border-neon-blue/20 rounded-xl
+                      text-white font-rajdhani focus:outline-none focus:border-neon-blue/60 transition"
+               placeholder="your@email.com">
+      </div>
+
+      <!-- CNIC -->
+      <div class="mb-4">
+        <label class="block text-sm font-semibold font-rajdhani text-gray-300 mb-2">
+          CNIC <span class="text-red-400">*</span>
+        </label>
+        <input type="text" name="cnic" required maxlength="15"
+               class="w-full px-4 py-3 bg-cyber-700 border border-neon-blue/20 rounded-xl
+                      text-white font-rajdhani focus:outline-none focus:border-neon-blue/60 transition"
+               placeholder="35201-1234567-1">
+      </div>
+
+      <!-- Payment Method -->
+      <div class="mb-4">
+        <label class="block text-sm font-semibold font-rajdhani text-gray-300 mb-2">
+          Payment Method <span class="text-red-400">*</span>
+        </label>
+        <select name="method" required
+                class="w-full px-4 py-3 bg-cyber-700 border border-neon-blue/20 rounded-xl
+                       text-white font-rajdhani focus:outline-none focus:border-neon-blue/60 transition">
+          <option value="">Select method...</option>
+          <option value="JazzCash">JazzCash</option>
+          <option value="Easypaisa">Easypaisa</option>
+          <option value="Bank Transfer">Bank Transfer</option>
+          <option value="Binance">Binance (USDT TRC20)</option>
+          <option value="PayPal">PayPal</option>
+        </select>
+      </div>
+
+      <!-- Sender Account Number -->
+      <div class="mb-4">
+        <label class="block text-sm font-semibold font-rajdhani text-gray-300 mb-2">
+          Your Account / Wallet Number <span class="text-red-400">*</span>
+        </label>
+        <input type="text" name="account_no" required
+               class="w-full px-4 py-3 bg-cyber-700 border border-neon-blue/20 rounded-xl
+                      text-white font-rajdhani focus:outline-none focus:border-neon-blue/60 transition"
+               placeholder="Number you sent from (e.g. 03001234567)">
+        <p class="text-xs text-gray-600 font-rajdhani mt-1">
+          This helps us verify your payment on our end.
+        </p>
+      </div>
+
+      <!-- Amount -->
+      <div class="mb-4">
+        <label class="block text-sm font-semibold font-rajdhani text-gray-300 mb-2">
+          Amount (PKR / USD) <span class="text-red-400">*</span>
+        </label>
+        <div class="relative">
+          <input type="number" name="amount" required min="1"
+                 class="w-full px-4 py-3 bg-cyber-700 border border-neon-blue/20 rounded-xl
+                        text-white font-rajdhani focus:outline-none focus:border-neon-blue/60 transition"
+                 placeholder="Amount you sent">
+        </div>
+      </div>
+
+      <!-- Payment Slip -->
+      <div class="mb-6">
+        <label class="block text-sm font-semibold font-rajdhani text-gray-300 mb-2">
+          Payment Slip / Screenshot <span class="text-red-400">*</span>
+        </label>
+        <input type="file" name="slip" accept="image/*" required
+               class="w-full px-4 py-3 bg-cyber-700 border border-neon-blue/20 rounded-xl
+                      text-white font-rajdhani focus:outline-none focus:border-neon-blue/60 transition
+                      file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0
+                      file:text-xs file:font-semibold file:bg-neon-blue/20 file:text-neon-blue
+                      hover:file:bg-neon-blue/30">
+        <p class="text-xs text-gray-600 font-rajdhani mt-1">Upload a screenshot of your transaction.</p>
+      </div>
+
+      <!-- Warning -->
+      <div class="bg-yellow-900/30 border border-yellow-700/50 rounded-xl p-3 mb-5 flex gap-3">
+        <span class="text-yellow-400 flex-shrink-0">⚠️</span>
+        <p class="text-yellow-300 text-xs font-rajdhani">
+          Credits are added manually after admin verification. This usually takes a few hours.
+          Do not submit duplicate requests.
+        </p>
+      </div>
+
+      <button type="submit"
+              class="w-full py-3 rounded-xl font-bold font-rajdhani text-white transition
+                     bg-gradient-to-r from-neon-blue/80 to-neon-purple/80
+                     hover:from-neon-blue hover:to-neon-purple shadow-lg">
+        Submit Payment Request
+      </button>
+
+    </form>
+  </div>
+
+</div>
+{% endblock %}

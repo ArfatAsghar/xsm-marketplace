@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Terms of Use — XSM Marketplace{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-14">
+
+  <!-- Header -->
+  <div class="mb-10 pb-6 border-b border-gray-800">
+    <p class="text-xs text-gray-600 font-rajdhani uppercase tracking-[0.3em] mb-2">Legal</p>
+    <h1 class="text-2xl font-bold text-white font-rajdhani">Terms of Use</h1>
+    <p class="text-gray-600 text-xs font-rajdhani mt-1">Last updated: May 2026</p>
+  </div>
+
+  <!-- Intro -->
+  <p class="text-gray-400 text-sm font-rajdhani leading-relaxed mb-10">
+    These Terms of Use govern your access to and use of XSM Marketplace. By registering an
+    account or using any part of our service, you agree to be bound by these terms.
+    If you do not agree, do not use the Platform.
+  </p>
+
+  <!-- Sections -->
+  <div class="space-y-8">
+
+    {% set sections = [
+      ("1. Eligibility", [
+        ("", "You must be at least 18 years old to use XSM Marketplace. By registering, you confirm you meet this requirement and that all information you provide is accurate and truthful. Accounts found to belong to minors will be terminated immediately without refund."),
+      ]),
+      ("2. Account Responsibilities", [
+        ("", "You are responsible for maintaining the security of your account credentials. Do not share your password with anyone. You are responsible for all activity that occurs under your account. Each person may hold only one account — multiple accounts to abuse the platform, circumvent bans, or manipulate ratings are strictly prohibited."),
+      ]),
+      ("3. Listings & Selling", [
+        ("", "Sellers must only list accounts or assets they have full legal ownership of and the right to transfer. Listing stolen, hacked, or fraudulently obtained accounts is prohibited and will result in immediate suspension. All listing information must be accurate. Misrepresentation is grounds for dispute resolution in the buyer's favour and account suspension."),
+      ]),
+      ("4. Escrow System", [
+        ("Purchase", "When a buyer initiates a purchase, credits are immediately deducted from their wallet and held in escrow."),
+        ("Delivery", "The seller must deliver account credentials promptly after being notified of a purchase."),
+        ("Confirmation", "The buyer must confirm receipt of working credentials or raise a dispute within 72 hours of delivery."),
+        ("Auto-release", "If the buyer does not respond within 72 hours of credential delivery, escrow is automatically released to the seller."),
+        ("Finality", "Once escrow is released, the transaction is final and cannot be reversed unless fraud is proven."),
+      ]),
+      ("5. Platform Fee", [
+        ("", "XSM Marketplace charges an 8% platform fee on every completed transaction, deducted from the escrow amount before release to the seller. This fee is subject to change with prior notice. Boost fees are non-refundable regardless of listing outcome."),
+      ]),
+      ("6. Disputes", [
+        ("", "Buyers may raise a dispute within 72 hours of credential delivery if the account does not match the listing, is inaccessible, or has been misrepresented. Disputes are reviewed by admin staff and their decision is final. Abusing the dispute system repeatedly may result in account suspension."),
+      ]),
+      ("7. Deposits & Withdrawals", [
+        ("Deposits", "Credits are added by submitting a payment request with a valid payment slip. Deposits are manually reviewed and approved within 24–48 hours."),
+        ("Withdrawals", "Withdrawals require KYC verification. The minimum withdrawal is $10. Requests are processed within 24–48 hours. We reserve the right to hold or reject withdrawals if fraudulent activity is suspected."),
+        ("Credits", "Credits have no cash value outside the platform and cannot be transferred between accounts."),
+      ]),
+      ("8. Prohibited Activities", [
+        ("", "The following are strictly prohibited: listing or selling stolen or fraudulently obtained accounts; creating fake listings or misrepresenting account details; conducting transactions outside the escrow system; harassing or threatening other users; creating multiple accounts or impersonating others; using the platform for money laundering or illegal financial activity; manipulating the rating or dispute system; scraping or automating access without permission. Violations may result in immediate suspension, forfeiture of wallet balance, and reporting to authorities."),
+      ]),
+      ("9. Limitation of Liability", [
+        ("", "XSM Marketplace acts as an intermediary and escrow agent. We are not responsible for the quality, legality, or authenticity of listings beyond our escrow and dispute process. We are not liable for losses from buyer or seller misconduct, third-party platform policy changes, or circumstances beyond our control. Our total liability shall not exceed the credits held in your wallet at the time of the claim."),
+      ]),
+      ("10. Account Termination", [
+        ("", "We reserve the right to suspend or permanently ban any account for violation of these Terms, fraudulent activity, or behaviour harmful to the platform. You may request account deletion at any time via the Contact page. Pending transactions must be resolved before deletion proceeds."),
+      ]),
+      ("11. Changes to Terms", [
+        ("", "We may modify these Terms at any time. Changes will be posted on this page with a revised date. Continued use of the platform after changes constitutes acceptance."),
+      ]),
+      ("12. Governing Law", [
+        ("", "These Terms are governed by the laws of Pakistan. Any disputes arising from these Terms shall be subject to the exclusive jurisdiction of courts in Pakistan."),
+      ]),
+      ("13. Contact", [
+        ("", "For questions about these Terms, reach us through the Contact page."),
+      ]),
+    ] %}
+
+    {% for title, items in sections %}
+    <div class="border-b border-gray-800/60 pb-8">
+      <h2 class="text-sm font-bold text-gray-300 font-rajdhani mb-4">{{ title }}</h2>
+      <div class="space-y-3">
+        {% for label, body in items %}
+        <div>
+          {% if label %}<p class="text-xs text-gray-500 font-rajdhani font-semibold uppercase tracking-[0.15em] mb-1">{{ label }}</p>{% endif %}
+          <p class="text-gray-500 text-sm font-rajdhani leading-relaxed">{{ body }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+
+  <!-- Footer nav -->
+  <div class="flex items-center justify-between mt-10 pt-6">
+    <a href="{{ url_for('misc.privacy_policy') }}"
+       class="text-gray-700 hover:text-gray-400 text-xs font-rajdhani transition-colors">
+      ← Privacy Policy
+    </a>
+    <a href="{{ url_for('misc.home') }}"
+       class="text-gray-700 hover:text-gray-400 text-xs font-rajdhani transition-colors">
+      Home →
+    </a>
+  </div>
+
+</div>
+{% endblock %}

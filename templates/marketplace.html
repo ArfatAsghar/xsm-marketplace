@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+{% block title %}Marketplace — XSM{% endblock %}
+{% block meta_description %}Browse verified social media accounts, websites, and digital assets for sale on XSM Market with escrow protection and powerful filters.{% endblock %}
+{% block canonical_url %}{{ request.url_root.rstrip('/') }}/marketplace{% endblock %}
+{% block og_type %}website{% endblock %}
+{% block og_title %}Marketplace — XSM{% endblock %}
+{% block og_description %}Browse verified social media accounts, websites, and digital assets for sale on XSM Market with escrow protection and powerful filters.{% endblock %}
+{% block twitter_title %}Marketplace — XSM{% endblock %}
+{% block twitter_description %}Browse verified social media accounts, websites, and digital assets for sale on XSM Market with escrow protection and powerful filters.{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Marketplace — XSM",
+  "url": "{{ request.url_root.rstrip('/') }}/marketplace",
+  "description": "Browse verified social media accounts, websites, and digital assets for sale on XSM Market."
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Marketplace listings",
+  "itemListElement": [
+    {% for key, listing in listings.items() %}
+    {
+      "@type": "ListItem",
+      "position": {{ loop.index }},
+      "url": "{{ request.url_root.rstrip('/') }}{{ url_for('listings.listing_detail', listing_id=key) }}"
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-8">
+
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold font-orbitron bg-gradient-to-r from-neon-blue to-neon-cyan bg-clip-text text-transparent">
+      Marketplace
+    </h1>
+    <p class="text-gray-500 font-rajdhani mt-1">Browse premium digital assets for sale</p>
+  </div>
+
+  <!-- Filters -->
+  <form method="get"
+        class="bg-cyber-800 border border-neon-blue/10 rounded-2xl p-5 mb-8 shadow-lg">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+      <input type="text" name="search" value="{{ search_query }}"
+             placeholder="🔍 Search by username, platform, niche..."
+             class="px-4 py-3 rounded-xl bg-cyber-700 border border-neon-blue/20 text-white
+                    placeholder-gray-500 focus:outline-none focus:border-neon-blue/60 font-rajdhani transition">
+
+      <select name="platform"
+              class="px-4 py-3 rounded-xl bg-cyber-700 border border-neon-blue/20 text-white
+                     focus:outline-none focus:border-neon-blue/60 font-rajdhani transition">
+        <option value="">All Platforms</option>
+        <option value="YouTube"   {% if selected_platform=="YouTube"   %}selected{% endif %}>YouTube</option>
+        <option value="Instagram" {% if selected_platform=="Instagram" %}selected{% endif %}>Instagram</option>
+        <option value="TikTok"    {% if selected_platform=="TikTok"    %}selected{% endif %}>TikTok</option>
+        <option value="Facebook"  {% if selected_platform=="Facebook"  %}selected{% endif %}>Facebook</option>
+        <option value="Twitter"   {% if selected_platform=="Twitter"   %}selected{% endif %}>Twitter (X)</option>
+        <option value="Telegram"  {% if selected_platform=="Telegram"  %}selected{% endif %}>Telegram</option>
+      </select>
+
+      <label class="flex items-center gap-3 px-4 py-3 rounded-xl bg-cyber-700 border border-neon-blue/20 cursor-pointer font-rajdhani text-gray-300 hover:border-neon-blue/40 transition">
+        <input type="checkbox" name="monetized" value="1"
+               {% if request.args.get('monetized') %}checked{% endif %}
+               class="w-4 h-4 accent-neon-blue">
+        Monetized only
+      </label>
+
+      <div class="flex gap-2">
+        <input type="number" name="subs_min" value="{{ request.args.get('subs_min','') }}"
+               placeholder="Min followers"
+               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700 border border-neon-blue/20 text-white
+                      placeholder-gray-500 focus:outline-none focus:border-neon-blue/60 font-rajdhani transition text-sm">
+        <input type="number" name="subs_max" value="{{ request.args.get('subs_max','') }}"
+               placeholder="Max followers"
+               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700 border border-neon-blue/20 text-white
+                      placeholder-gray-500 focus:outline-none focus:border-neon-blue/60 font-rajdhani transition text-sm">
+      </div>
+
+      <div class="flex gap-2">
+        <input type="number" name="price_min" value="{{ request.args.get('price_min','') }}"
+               placeholder="Min $"
+               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700 border border-neon-blue/20 text-white
+                      placeholder-gray-500 focus:outline-none focus:border-neon-blue/60 font-rajdhani transition text-sm">
+        <input type="number" name="price_max" value="{{ request.args.get('price_max','') }}"
+               placeholder="Max $"
+               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700 border border-neon-blue/20 text-white
+                      placeholder-gray-500 focus:outline-none focus:border-neon-blue/60 font-rajdhani transition text-sm">
+      </div>
+
+      <button type="submit"
+              class="px-6 py-3 rounded-xl font-semibold font-rajdhani text-white transition
+                     bg-gradient-to-r from-neon-blue/80 to-neon-purple/80
+                     hover:from-neon-blue hover:to-neon-purple shadow-md">
+        Apply Filters
+      </button>
+
+    </div>
+  </form>
+
+  <!-- Results count -->
+  {% if total is defined %}
+  <p class="text-gray-500 text-sm font-rajdhani mb-4">
+    {{ total }} listing{{ 's' if total != 1 }} found
+    {% if total_pages > 1 %} · Page {{ page }} of {{ total_pages }}{% endif %}
+  </p>
+  {% endif %}
+
+  <!-- Listings Grid -->
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    {% for key, listing in listings.items() %}
+    <div class="bg-cyber-800 border border-neon-blue/10 hover:border-neon-blue/40
+                rounded-xl overflow-hidden shadow-md hover:shadow-neon-blue/10
+                transition-all duration-300 flex flex-col group
+                {% if listing.is_boosted %}ring-1 ring-yellow-500/30{% endif %}">
+
+      <!-- Thumbnail -->
+      <div class="relative">
+        <img src="{{ listing.thumbnail }}"
+             alt="Thumbnail"
+             class="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-500"
+             onerror="this.src='/static/default_thumbnail.png'">
+        <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full text-xs font-bold font-rajdhani
+                     bg-cyber-900/80 border border-neon-blue/30 text-neon-blue backdrop-blur-sm">
+          {{ listing.platform }}
+        </span>
+        <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-green-400 shadow shadow-green-400/50"></span>
+
+        <!-- BOOSTED badge -->
+        {% if listing.is_boosted %}
+        <span class="absolute bottom-2 left-2 inline-flex items-center gap-1 text-[9px] font-orbitron
+                     uppercase tracking-widest px-2 py-0.5 rounded
+                     bg-yellow-500/20 border border-yellow-500/40 text-yellow-400 backdrop-blur-sm">
+          <i class="fas fa-bolt text-[8px]"></i> BOOSTED
+        </span>
+        {% endif %}
+      </div>
+
+      <div class="p-3 flex flex-col flex-1">
+
+        <!-- Username + price -->
+        <div class="flex items-center justify-between mb-1">
+          <p class="font-bold text-white font-rajdhani truncate text-sm">@{{ listing.username }}</p>
+          <p class="text-neon-blue font-bold font-orbitron text-xs flex-shrink-0 ml-2">${{ listing.price }}</p>
+        </div>
+
+        <!-- Followers -->
+        <p class="text-gray-500 text-xs font-rajdhani mb-1">
+          <i class="fas fa-users mr-1 text-neon-blue/40 text-xs"></i>{{ listing.followers }} followers
+        </p>
+
+        <!-- Description -->
+        <p class="text-gray-400 text-xs font-rajdhani line-clamp-2 mb-2 flex-1">
+          {{ listing.description or 'No description provided.' }}
+        </p>
+
+        <!-- Stars -->
+        {% if listing.avg_rating %}
+        <div class="flex items-center gap-0.5 mb-2">
+          {% for i in range(listing.stars_full)  %}<span class="text-yellow-400 text-xs">★</span>{% endfor %}
+          {% for i in range(listing.stars_half)  %}<span class="text-yellow-400 text-xs opacity-50">★</span>{% endfor %}
+          {% for i in range(listing.stars_empty) %}<span class="text-gray-700 text-xs">★</span>{% endfor %}
+          <span class="text-xs text-gray-600 ml-1 font-rajdhani">{{ listing.avg_rating }}</span>
+        </div>
+        {% endif %}
+
+        <!-- Seller row with verified badge -->
+        <div class="flex items-center gap-2 mb-3 pt-2 border-t border-gray-800">
+          <img src="{{ listing.seller_pic }}"
+               alt="{{ listing.seller_username }}"
+               class="w-6 h-6 rounded-full border border-neon-blue/20 object-cover flex-shrink-0"
+               onerror="this.src='/static/default_user.png'">
+          <a href="{{ url_for('misc.seller_profile', seller_id=listing.seller_uid) }}"
+             class="text-neon-blue hover:text-neon-cyan text-xs font-rajdhani font-semibold truncate transition-colors">
+            {{ listing.seller_username }}
+          </a>
+          <!-- ✅ VERIFIED BADGE — only shows when seller_verified is True -->
+          {% if listing.seller_verified %}
+          <span title="Verified Seller"
+                class="flex-shrink-0 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full
+                       text-[9px] font-bold font-rajdhani uppercase tracking-wide
+                       bg-neon-blue/10 border border-neon-blue/30 text-neon-blue">
+            <i class="fas fa-circle-check text-[8px]"></i> Verified
+          </span>
+          {% endif %}
+        </div>
+
+        <!-- View button -->
+        <a href="{{ url_for('listings.listing_detail', listing_id=key) }}"
+           class="w-full block text-center py-2 rounded-lg font-semibold font-rajdhani text-xs
+                  text-white cyber-button hover:border-neon-blue/60
+                  bg-gradient-to-r from-neon-blue/10 to-neon-purple/10
+                  hover:from-neon-blue/20 hover:to-neon-purple/20 transition-all">
+          View →
+        </a>
+
+      </div>
+    </div>
+
+    {% else %}
+    <div class="col-span-3 text-center py-20">
+      <div class="text-5xl mb-4">🔍</div>
+      <p class="text-gray-400 font-rajdhani text-lg">No listings found matching your filters.</p>
+      <a href="/marketplace" class="text-neon-blue hover:underline text-sm font-rajdhani mt-2 inline-block">
+        Clear filters
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if total_pages > 1 %}
+  <div class="flex items-center justify-center gap-2 mt-10 flex-wrap">
+
+    {% if page > 1 %}
+      <a href="{{ request.path }}?{{ request.query_string.decode() | replace('page=' ~ page, 'page=' ~ (page - 1)) }}"
+         class="px-4 py-2 bg-cyber-800 hover:bg-cyber-700 border border-neon-blue/20
+                hover:border-neon-blue/50 text-white rounded-xl text-sm font-rajdhani transition">
+        ← Prev
+      </a>
+    {% else %}
+      <span class="px-4 py-2 bg-cyber-900 text-gray-700 rounded-xl text-sm font-rajdhani cursor-not-allowed">← Prev</span>
+    {% endif %}
+
+    {% for p in range(1, total_pages + 1) %}
+      {% if p == page %}
+        <span class="px-4 py-2 bg-gradient-to-r from-neon-blue/80 to-neon-purple/80
+                     text-white rounded-xl text-sm font-bold font-rajdhani">{{ p }}</span>
+      {% elif p == 1 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
+        <a href="{{ request.path }}?{{ request.query_string.decode() | replace('page=' ~ page, 'page=' ~ p) if 'page=' in request.query_string.decode() else request.query_string.decode() ~ ('&' if request.query_string else '') ~ 'page=' ~ p }}"
+           class="px-4 py-2 bg-cyber-800 hover:bg-cyber-700 border border-neon-blue/20
+                  hover:border-neon-blue/50 text-white rounded-xl text-sm font-rajdhani transition">
+          {{ p }}
+        </a>
+      {% elif p == page - 3 or p == page + 3 %}
+        <span class="px-2 text-gray-600 font-rajdhani">…</span>
+      {% endif %}
+    {% endfor %}
+
+    {% if page < total_pages %}
+      <a href="{{ request.path }}?{{ request.query_string.decode() | replace('page=' ~ page, 'page=' ~ (page + 1)) if 'page=' in request.query_string.decode() else request.query_string.decode() ~ ('&' if request.query_string else '') ~ 'page=' ~ (page + 1) }}"
+         class="px-4 py-2 bg-cyber-800 hover:bg-cyber-700 border border-neon-blue/20
+                hover:border-neon-blue/50 text-white rounded-xl text-sm font-rajdhani transition">
+        Next →
+      </a>
+    {% else %}
+      <span class="px-4 py-2 bg-cyber-900 text-gray-700 rounded-xl text-sm font-rajdhani cursor-not-allowed">Next →</span>
+    {% endif %}
+
+  </div>
+
+  <p class="text-center text-gray-600 text-xs font-rajdhani mt-3">
+    Showing {{ ((page - 1) * 9) + 1 }}–{{ [page * 9, total] | min }} of {{ total }} listings
+  </p>
+  {% endif %}
+
+</div>
+{% endblock %}

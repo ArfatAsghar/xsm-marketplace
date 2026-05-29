@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+ENV/
+
+# Local env and secrets
+.env
+.env.*
+cred.json
+*.pem
+*.key
+
+# OS and editor files
+.DS_Store
+.idea/
+.vscode/
+
+# Vercel
+.vercel/
+.vercel-build/
+
+# Runtime uploads and generated files
+static/payment_slips/*
+static/profile_pics/*
+static/listing_media/*
+static/kyc_docs/*
+static/uploads/*

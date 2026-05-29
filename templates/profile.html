@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}{{ username }}'s Profile — XSM Market{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-8">
+
+  <!-- Profile Header -->
+  <div class="bg-cyber-800 border border-neon-blue/10 rounded-2xl overflow-hidden mb-6">
+
+    <!-- Banner -->
+    <div class="h-24 bg-gradient-to-r from-neon-blue/10 via-neon-purple/10 to-neon-blue/10
+                border-b border-neon-blue/10 relative">
+      <div class="absolute inset-0"
+           style="background: repeating-linear-gradient(45deg, transparent, transparent 20px,
+                  rgba(0,243,255,0.02) 20px, rgba(0,243,255,0.02) 40px)"></div>
+    </div>
+
+    <div class="px-6 pb-6">
+      <!-- Avatar + name row -->
+      <div class="flex flex-col sm:flex-row sm:items-end gap-4 -mt-10 mb-4">
+        <div class="w-20 h-20 rounded-2xl border-4 border-cyber-800 overflow-hidden
+                    bg-cyber-700 flex-shrink-0 shadow-lg shadow-neon-blue/10">
+          <!-- We don't have profile pic here — show initials fallback -->
+          <div class="w-full h-full bg-gradient-to-br from-neon-blue/20 to-neon-purple/20
+                      flex items-center justify-center">
+            <span class="text-2xl font-bold font-orbitron text-neon-blue">
+              {{ username[0] | upper }}
+            </span>
+          </div>
+        </div>
+
+        <div class="flex-1 min-w-0 sm:pb-1">
+          <h1 class="text-xl font-bold font-orbitron text-white truncate">{{ username }}</h1>
+          <p class="text-gray-500 text-sm font-rajdhani">XSM Seller</p>
+        </div>
+
+        <!-- Stats chips -->
+        <div class="flex items-center gap-3 text-sm font-rajdhani flex-shrink-0">
+          <div class="bg-cyber-700 border border-neon-blue/10 rounded-xl px-3 py-1.5 text-center">
+            <p class="text-neon-blue font-bold text-lg leading-none">{{ listings | length }}</p>
+            <p class="text-gray-500 text-xs mt-0.5">Listings</p>
+          </div>
+          <div class="bg-cyber-700 border border-green-700/20 rounded-xl px-3 py-1.5 text-center">
+            <p class="text-green-400 font-bold text-lg leading-none">
+              {{ listings.values() | selectattr('status', 'equalto', 'completed') | list | length }}
+            </p>
+            <p class="text-gray-500 text-xs mt-0.5">Sold</p>
+          </div>
+          <div class="bg-cyber-700 border border-indigo-700/20 rounded-xl px-3 py-1.5 text-center">
+            <p class="text-indigo-400 font-bold text-lg leading-none">
+              {{ listings.values() | selectattr('status', 'equalto', 'available') | list | length }}
+            </p>
+            <p class="text-gray-500 text-xs mt-0.5">Active</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listings -->
+  <div class="mb-3 flex items-center justify-between">
+    <h2 class="text-lg font-bold font-orbitron text-white">
+      Listings
+      <span class="text-gray-600 font-rajdhani text-sm font-normal ml-1">({{ listings | length }})</span>
+    </h2>
+  </div>
+
+  {% if listings %}
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {% for key, listing in listings.items() %}
+    <a href="/listing/{{ key }}"
+       class="bg-cyber-800 border border-neon-blue/10 hover:border-neon-blue/40
+              rounded-2xl overflow-hidden transition-all duration-200
+              hover:shadow-lg hover:shadow-neon-blue/5 group flex flex-col">
+
+      <!-- Thumbnail -->
+      <div class="relative">
+        <img src="{{ listing.thumbnail or '/static/default_thumbnail.png' }}"
+             alt="thumbnail"
+             class="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-300"
+             onerror="this.src='/static/default_thumbnail.png'">
+        <!-- Platform badge -->
+        <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full text-xs font-bold font-rajdhani
+                     bg-cyber-900/80 border border-neon-blue/30 text-neon-blue backdrop-blur-sm">
+          {{ listing.platform }}
+        </span>
+        <!-- Status dot -->
+        {% if listing.status == 'available' %}
+          <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-green-400
+                       shadow shadow-green-400/50"></span>
+        {% elif listing.status in ['completed', 'sold'] %}
+          <span class="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-rajdhani
+                       bg-red-900/80 text-red-400 border border-red-700/50 backdrop-blur-sm">Sold</span>
+        {% endif %}
+      </div>
+
+      <!-- Info -->
+      <div class="p-4 flex flex-col flex-1">
+        <div class="flex items-center justify-between mb-1">
+          <p class="font-bold font-rajdhani text-white truncate">@{{ listing.username }}</p>
+          <p class="text-neon-blue font-bold font-orbitron text-sm flex-shrink-0 ml-2">
+            ${{ listing.price | int }}
+          </p>
+        </div>
+        <p class="text-gray-500 text-xs font-rajdhani mb-2">
+          <i class="fas fa-users mr-1 text-neon-blue/40"></i>{{ listing.followers }} followers
+        </p>
+        <p class="text-gray-400 text-xs font-rajdhani line-clamp-2 flex-1">
+          {{ listing.description or 'No description.' }}
+        </p>
+        <div class="mt-3 pt-3 border-t border-gray-800">
+          <span class="text-xs font-rajdhani font-semibold
+            {% if listing.status == 'available' %}text-green-400
+            {% elif listing.status in ['completed','sold'] %}text-red-400
+            {% else %}text-yellow-400{% endif %}">
+            ● {{ listing.status | capitalize }}
+          </span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="bg-cyber-800 border border-neon-blue/10 rounded-2xl p-12 text-center">
+    <div class="text-4xl mb-3">📭</div>
+    <p class="text-gray-400 font-rajdhani">{{ username }} hasn't listed anything yet.</p>
+    <a href="/marketplace"
+       class="inline-block mt-4 px-5 py-2 rounded-xl text-sm font-rajdhani font-semibold
+              text-white bg-gradient-to-r from-neon-blue/70 to-neon-purple/70
+              hover:from-neon-blue hover:to-neon-purple transition">
+      Browse Marketplace
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,347 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+  <!-- ── PAGE HEADER ─────────────────────────────────────────────────── -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+    <div>
+      <div class="flex items-center gap-2 mb-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-neon-green animate-pulse"></span>
+        <span class="text-[10px] uppercase tracking-[0.3em] text-gray-500 font-orbitron">System Online</span>
+      </div>
+      <h1 class="text-2xl font-bold text-white font-orbitron tracking-wide">Admin Dashboard</h1>
+      <p class="text-gray-500 text-xs font-rajdhani mt-0.5">XSM Marketplace — Command Center</p>
+    </div>
+
+    <!-- quick nav -->
+    <div class="flex flex-wrap gap-2">
+      {% for label, icon, route in [
+        ('Users',       'fa-users',                'admin.admin_users'),
+        ('Payments',    'fa-credit-card',           'admin.admin_payments'),
+        ('Disputes',    'fa-gavel',                 'admin.admin_disputes'),
+        ('Withdrawals', 'fa-arrow-up-from-bracket', 'admin.admin_withdrawals'),
+        ('Revenue',     'fa-chart-line',            'admin.admin_revenue'),
+        ('KYC',         'fa-id-card',               'admin.admin_kyc_list'),
+        ('Audit',       'fa-shield-alt',            'admin.admin_audit_log'),
+        ('Reports',       'fa-flag',            'reports.admin_reports')
+      ] %}
+
+      <a href="{{ url_for(route) }}"
+         class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg cyber-card
+                text-gray-500 hover:text-neon-blue hover:border-neon-blue/25
+                text-[10px] font-orbitron uppercase tracking-[0.15em] transition-all duration-200">
+        <i class="fas {{ icon }} text-[9px]"></i>{{ label }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- ── AUTO-RESOLVE ALERT ──────────────────────────────────────────── -->
+  {% if pending_confirmation_count > 0 %}
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3
+              rounded-xl border border-yellow-500/20 bg-yellow-500/5 px-5 py-3.5 mb-6">
+    <div class="flex items-center gap-3">
+      <i class="fas fa-clock text-yellow-400 text-xs shrink-0"></i>
+      <div>
+        <p class="text-yellow-200 text-sm font-rajdhani font-semibold leading-none">
+          {{ pending_confirmation_count }} listing(s) awaiting buyer confirmation
+        </p>
+        <p class="text-yellow-600/70 text-xs font-rajdhani mt-0.5">
+          Stuck over 72 hours will be auto-released to the seller.
+        </p>
+      </div>
+    </div>
+    <form method="POST" action="{{ url_for('admin.admin_auto_resolve') }}" class="shrink-0">
+      <button type="submit"
+              class="px-4 py-1.5 rounded-lg border border-yellow-500/30 bg-yellow-500/10
+                     text-yellow-300 text-[10px] font-orbitron uppercase tracking-[0.2em]
+                     hover:bg-yellow-500/20 transition-all duration-200 whitespace-nowrap">
+        Run Auto-Resolve
+      </button>
+    </form>
+  </div>
+  {% endif %}
+
+  <!-- ── STAT CARDS ──────────────────────────────────────────────────── -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 mb-6">
+
+    <!-- Users -->
+    <a href="{{ url_for('admin.admin_users') }}"
+       class="group cyber-card rounded-xl p-4 flex flex-col gap-3
+              hover:border-neon-blue/30 transition-all duration-200">
+      <div class="flex items-center justify-between">
+        <div class="w-8 h-8 rounded-lg bg-neon-blue/10 border border-neon-blue/20
+                    flex items-center justify-center shrink-0">
+          <i class="fas fa-users text-neon-blue text-xs"></i>
+        </div>
+        <i class="fas fa-arrow-right text-gray-700 text-[9px]
+                  group-hover:text-neon-blue group-hover:translate-x-0.5 transition-all duration-200"></i>
+      </div>
+      <div>
+        <p class="text-gray-600 text-[9px] uppercase tracking-[0.2em] font-orbitron">Users</p>
+        <p class="text-2xl font-bold text-white font-rajdhani leading-none mt-0.5">{{ users|length }}</p>
+      </div>
+    </a>
+
+    <!-- Listings -->
+    <div class="group cyber-card rounded-xl p-4 flex flex-col gap-3
+                hover:border-neon-cyan/30 transition-all duration-200">
+      <div class="flex items-center justify-between">
+        <div class="w-8 h-8 rounded-lg bg-neon-cyan/10 border border-neon-cyan/20
+                    flex items-center justify-center shrink-0">
+          <i class="fas fa-store text-neon-cyan text-xs"></i>
+        </div>
+        <span class="text-[9px] text-gray-600 font-orbitron">
+          {{ listings.values()|selectattr('status','equalto','available')|list|length }} live
+        </span>
+      </div>
+      <div>
+        <p class="text-gray-600 text-[9px] uppercase tracking-[0.2em] font-orbitron">Listings</p>
+        <p class="text-2xl font-bold text-white font-rajdhani leading-none mt-0.5">{{ listings|length }}</p>
+      </div>
+    </div>
+
+    <!-- Revenue -->
+    <a href="{{ url_for('admin.admin_revenue') }}"
+       class="group cyber-card rounded-xl p-4 flex flex-col gap-3
+              hover:border-neon-green/30 transition-all duration-200">
+      <div class="flex items-center justify-between">
+        <div class="w-8 h-8 rounded-lg bg-neon-green/10 border border-neon-green/20
+                    flex items-center justify-center shrink-0">
+          <i class="fas fa-dollar-sign text-neon-green text-xs"></i>
+        </div>
+        <i class="fas fa-arrow-right text-gray-700 text-[9px]
+                  group-hover:text-neon-green group-hover:translate-x-0.5 transition-all duration-200"></i>
+      </div>
+      <div>
+        <p class="text-gray-600 text-[9px] uppercase tracking-[0.2em] font-orbitron">Revenue</p>
+        <p class="text-2xl font-bold text-neon-green font-rajdhani leading-none mt-0.5">${{ platform_revenue or 0 }}</p>
+      </div>
+    </a>
+
+    <!-- Payments -->
+    <a href="{{ url_for('admin.admin_payments') }}"
+       class="group cyber-card rounded-xl p-4 flex flex-col gap-3
+              hover:border-neon-blue/30 transition-all duration-200">
+      <div class="flex items-center justify-between">
+        <div class="w-8 h-8 rounded-lg bg-neon-blue/10 border border-neon-blue/20
+                    flex items-center justify-center shrink-0">
+          <i class="fas fa-credit-card text-neon-blue text-xs"></i>
+        </div>
+        <i class="fas fa-arrow-right text-gray-700 text-[9px]
+                  group-hover:text-neon-blue group-hover:translate-x-0.5 transition-all duration-200"></i>
+      </div>
+      <div>
+        <p class="text-gray-600 text-[9px] uppercase tracking-[0.2em] font-orbitron">Payments</p>
+        <p class="text-2xl font-bold text-white font-rajdhani leading-none mt-0.5">{{ payments|length }}</p>
+      </div>
+    </a>
+
+    <!-- Disputes -->
+    <a href="{{ url_for('admin.admin_disputes') }}"
+       class="group cyber-card rounded-xl p-4 flex flex-col gap-3 relative
+              {% if dispute_count > 0 %}border-red-500/20 hover:border-red-500/35{% else %}hover:border-yellow-400/30{% endif %}
+              transition-all duration-200">
+      {% if dispute_count > 0 %}
+      <span class="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+      {% endif %}
+      <div class="flex items-center justify-between">
+        <div class="w-8 h-8 rounded-lg border flex items-center justify-center shrink-0
+                    {% if dispute_count > 0 %}bg-red-500/10 border-red-500/20{% else %}bg-yellow-400/10 border-yellow-400/20{% endif %}">
+          <i class="fas fa-gavel text-xs
+                    {% if dispute_count > 0 %}text-red-400{% else %}text-yellow-400{% endif %}"></i>
+        </div>
+        <i class="fas fa-arrow-right text-gray-700 text-[9px]
+                  {% if dispute_count > 0 %}group-hover:text-red-400{% else %}group-hover:text-yellow-400{% endif %}
+                  group-hover:translate-x-0.5 transition-all duration-200"></i>
+      </div>
+      <div>
+        <p class="text-gray-600 text-[9px] uppercase tracking-[0.2em] font-orbitron">Disputes</p>
+        <p class="text-2xl font-bold leading-none mt-0.5 font-rajdhani
+                  {% if dispute_count > 0 %}text-red-400{% else %}text-white{% endif %}">
+          {{ dispute_count }}
+        </p>
+      </div>
+    </a>
+
+    <!-- Withdrawals -->
+    <a href="{{ url_for('admin.admin_withdrawals') }}"
+       class="group cyber-card rounded-xl p-4 flex flex-col gap-3
+              hover:border-neon-purple/30 transition-all duration-200">
+      <div class="flex items-center justify-between">
+        <div class="w-8 h-8 rounded-lg bg-neon-purple/10 border border-neon-purple/20
+                    flex items-center justify-center shrink-0">
+          <i class="fas fa-arrow-up-from-bracket text-neon-purple text-xs"></i>
+        </div>
+        <i class="fas fa-arrow-right text-gray-700 text-[9px]
+                  group-hover:text-neon-purple group-hover:translate-x-0.5 transition-all duration-200"></i>
+      </div>
+      <div>
+        <p class="text-gray-600 text-[9px] uppercase tracking-[0.2em] font-orbitron">Withdrawals</p>
+        <p class="text-2xl font-bold text-white font-rajdhani leading-none mt-0.5">
+          {{ withdrawals.values()|selectattr('status','equalto','pending')|list|length }}
+        </p>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ── MAIN GRID ────────────────────────────────────────────────────── -->
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+
+    <!-- CHART -->
+    <div class="xl:col-span-2 cyber-card rounded-xl p-6">
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <h2 class="text-sm font-bold text-white font-orbitron tracking-wide">Payment Overview</h2>
+          <p class="text-gray-500 text-xs font-rajdhani mt-0.5">Approved · Pending · Rejected</p>
+        </div>
+        <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full
+                    border border-neon-blue/20 bg-neon-blue/5">
+          <span class="w-1 h-1 rounded-full bg-neon-green animate-pulse"></span>
+          <span class="text-[9px] uppercase tracking-[0.25em] text-neon-blue font-orbitron">Live</span>
+        </div>
+      </div>
+      <div id="usersChart" class="h-[300px]"></div>
+    </div>
+
+    <!-- CONFLICT LOG -->
+    <div class="cyber-card rounded-xl p-6 flex flex-col min-h-0">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-sm font-bold text-white font-orbitron tracking-wide">Conflict Logs</h2>
+          <p class="text-gray-500 text-xs font-rajdhani mt-0.5">Recently resolved disputes</p>
+        </div>
+        <span class="px-2 py-0.5 rounded bg-black/40 border border-white/5
+                     text-[9px] text-gray-600 font-orbitron">
+          {{ resolved_disputes|length }}
+        </span>
+      </div>
+
+      <div class="space-y-2 overflow-y-auto scrollbar-none flex-1" style="max-height:300px;">
+
+        {% for lid, listing in resolved_disputes.items() %}
+        {% set dispute = listing.get('dispute', {}) %}
+        {% set escrow  = listing.get('escrow',  {}) %}
+        <div class="rounded-lg border border-white/5 bg-black/20 px-3.5 py-3
+                    hover:border-neon-blue/15 hover:bg-black/30 transition-all duration-150">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-1.5 mb-1 flex-wrap">
+                <span class="text-neon-blue text-sm font-semibold font-rajdhani leading-none">
+                  @{{ listing.get('username', 'Unknown') }}
+                </span>
+                <span class="px-1.5 py-0.5 rounded bg-cyber-700/80 border border-white/5
+                             text-[8px] uppercase text-gray-500 font-orbitron">
+                  {{ listing.get('platform', '') }}
+                </span>
+              </div>
+              <p class="text-gray-600 text-xs font-rajdhani line-clamp-1 italic">
+                "{{ dispute.get('reason') or 'No reason provided.' }}"
+              </p>
+            </div>
+            <div class="text-right shrink-0">
+              {% if listing.get('status') == 'completed' %}
+              <span class="inline-block px-2 py-0.5 rounded bg-neon-green/10 border border-neon-green/20
+                           text-neon-green text-[8px] uppercase font-bold font-orbitron">Released</span>
+              {% elif listing.get('status') == 'refunded' %}
+              <span class="inline-block px-2 py-0.5 rounded bg-neon-blue/10 border border-neon-blue/20
+                           text-neon-blue text-[8px] uppercase font-bold font-orbitron">Refunded</span>
+              {% endif %}
+              <p class="text-gray-700 text-[9px] mt-1 font-mono">
+                {{ escrow.get('resolved_at', '')[:10] }}
+              </p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+        {% if not resolved_disputes %}
+        <div class="flex flex-col items-center justify-center py-12 gap-2">
+          <i class="fas fa-gavel text-gray-700 text-2xl"></i>
+          <p class="text-gray-700 text-xs font-rajdhani uppercase tracking-[0.2em]">
+            No resolved disputes
+          </p>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script>
+Highcharts.chart('usersChart', {
+  chart: {
+    type: 'pie',
+    backgroundColor: 'transparent',
+    custom: {},
+    events: {
+      render() {
+        const chart  = this;
+        const series = chart.series[0];
+        let   label  = chart.options.chart.custom.label;
+        const total  = series.points.reduce((s, p) => s + p.y, 0);
+        if (!label) {
+          label = chart.options.chart.custom.label =
+            chart.renderer.label('Total<br/><strong>' + total + '</strong>')
+              .css({ color: '#ffffff', textAnchor: 'middle', fontFamily: 'Rajdhani, sans-serif' })
+              .add();
+        } else {
+          label.attr({ text: 'Total<br/><strong>' + total + '</strong>' });
+        }
+        const x = series.center[0] + chart.plotLeft;
+        const y = series.center[1] + chart.plotTop - label.attr('height') / 2;
+        label.attr({ x, y });
+        label.css({ fontSize: series.center[2] / 10 + 'px' });
+      }
+    }
+  },
+  title:   { text: '' },
+  tooltip: {
+    pointFormat: '<span style="color:{point.color}">●</span> <b>{point.y}</b> payments',
+    backgroundColor: '#121226',
+    borderColor: 'rgba(0,243,255,0.2)',
+    style: { color: '#e5e7eb', fontFamily: 'Rajdhani, sans-serif', fontSize: '13px' }
+  },
+  legend: {
+    enabled: true,
+    align: 'center',
+    verticalAlign: 'bottom',
+    itemStyle: {
+      color: '#6b7280',
+      fontFamily: 'Orbitron, sans-serif',
+      fontSize: '10px',
+      fontWeight: '400'
+    },
+    itemHoverStyle: { color: '#ffffff' }
+  },
+  plotOptions: {
+    series: {
+      innerSize: '70%',
+      borderWidth: 0,
+      borderRadius: 4,
+      dataLabels: [{ enabled: false }],
+      states: { hover: { brightness: 0.1 } }
+    }
+  },
+  series: [{
+    name: 'Payments',
+    colorByPoint: true,
+    data: [
+      { name: 'Approved', y: {{ approved_count }}, color: '#00ff8e' },
+      { name: 'Rejected', y: {{ rejected_count }}, color: '#ef4444' },
+      { name: 'Pending',  y: {{ pending_count }},  color: '#f59e0b' }
+    ]
+  }]
+});
+</script>
+{% endblock %}

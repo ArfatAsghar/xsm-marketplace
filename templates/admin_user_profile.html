@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-5xl mx-auto mt-8 px-4">
+  <div class="flex items-center gap-3 mb-6">
+    <a href="{{ url_for('admin.admin_users') }}" class="text-gray-500 hover:text-gray-300 text-sm">← All Users</a>
+    <span class="text-gray-700">/</span>
+    <h1 class="text-2xl font-bold text-indigo-400">User Profile</h1>
+  </div>
+
+  <!-- User Info Card -->
+  <div class="p-5 rounded-xl bg-gray-900 border border-gray-700 mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-4">
+      <img src="{{ user.profile_pic or '/static/default_user.png' }}"
+           class="w-16 h-16 rounded-full object-cover border border-gray-600"
+           onerror="this.src='/static/default_user.png'">
+      <div>
+        <p class="text-xl font-bold text-white">{{ user.username }}</p>
+        <p class="text-sm text-gray-400">{{ user.email }}</p>
+        <div class="flex gap-2 mt-1 flex-wrap">
+          <span class="px-2 py-0.5 text-xs rounded-full font-semibold
+            {% if user.role == 'admin' %}bg-red-700 text-white
+            {% else %}bg-indigo-700 text-white{% endif %}">
+            {{ user.role|capitalize }}
+          </span>
+          {% if user.verified %}
+          <span class="px-2 py-0.5 text-xs rounded-full font-semibold bg-blue-700 text-white">
+            ✓ Verified Seller
+          </span>
+          {% endif %}
+          {% if user.kyc_verified %}
+          <span class="px-2 py-0.5 text-xs rounded-full font-semibold bg-green-700 text-white">
+            ✓ KYC Verified
+          </span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5 text-sm">
+      <div class="bg-gray-800 rounded-lg p-3 text-center">
+        <p class="text-gray-400">Credits</p>
+        <p class="text-lg font-bold text-green-400">${{ user.credit or 0 }}</p>
+      </div>
+      <div class="bg-gray-800 rounded-lg p-3 text-center">
+        <p class="text-gray-400">Phone</p>
+        <p class="font-semibold text-white">{{ user.phone or '—' }}</p>
+      </div>
+      <div class="bg-gray-800 rounded-lg p-3 text-center">
+        <p class="text-gray-400">Joined</p>
+        <p class="font-semibold text-white">{{ user.created_at[:10] if user.created_at else '—' }}</p>
+      </div>
+      <div class="bg-gray-800 rounded-lg p-3 text-center">
+        <p class="text-gray-400">Listings</p>
+        <p class="text-lg font-bold text-indigo-400">{{ listings|length }}</p>
+      </div>
+    </div>
+
+    <!-- Admin Actions -->
+    <div class="flex flex-wrap gap-3">
+
+      <!-- Verify Seller Badge -->
+     <!-- Verify Seller Badge -->
+      <form method="POST" action="{{ url_for('admin.admin_verify_seller', uid=uid) }}">
+        <button type="submit"
+                class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold font-rajdhani
+                       transition-all
+                       {% if user.verified %}
+                         text-neon-blue border border-neon-blue/30 bg-neon-blue/10 hover:bg-neon-blue/20
+                       {% else %}
+                         text-gray-400 border border-gray-700 bg-gray-800 hover:bg-gray-700
+                       {% endif %}">
+          <i class="fas fa-{% if user.verified %}check-circle{% else %}circle{% endif %} text-xs"></i>
+          {% if user.verified %}Verified Seller{% else %}Mark as Verified{% endif %}
+        </button>
+      </form>
+
+      <!-- KYC Verify -->
+      <form action="{{ url_for('admin.admin_kyc_verify', uid=uid) }}" method="POST">
+        <button type="submit"
+                class="px-4 py-2 rounded-lg text-sm font-semibold transition
+                       {% if user.kyc_verified %}
+                         bg-green-800 hover:bg-green-700 text-white
+                       {% else %}
+                         bg-green-600 hover:bg-green-500 text-white
+                       {% endif %}">
+          {% if user.kyc_verified %}✓ Revoke KYC{% else %}✓ KYC Verify{% endif %}
+        </button>
+      </form>
+
+      <!-- Delete User — POST form, not a GET link -->
+      <form action="{{ url_for('admin.admin_delete_user', uid=uid) }}" method="POST"
+            onsubmit="return confirm('Permanently delete this user and ALL their listings? This cannot be undone.')">
+        <button type="submit"
+                class="px-4 py-2 rounded-lg text-sm font-semibold bg-red-700 hover:bg-red-600 text-white transition">
+          🗑 Delete User
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Listings Table -->
+  <h2 class="text-xl font-semibold mb-3 text-white">User Listings</h2>
+  <div class="rounded-xl overflow-hidden border border-gray-700">
+    <table class="w-full text-sm">
+      <thead class="bg-gray-800 text-gray-400 uppercase text-xs tracking-wider">
+        <tr>
+          <th class="px-4 py-3 text-left">Platform</th>
+          <th class="px-4 py-3 text-left">Username</th>
+          <th class="px-4 py-3 text-left">Price</th>
+          <th class="px-4 py-3 text-left">Status</th>
+          <th class="px-4 py-3 text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-700 bg-gray-900">
+        {% for lid, listing in listings.items() %}
+        <tr class="hover:bg-gray-800 transition">
+          <td class="px-4 py-3 text-gray-200">{{ listing.platform }}</td>
+          <td class="px-4 py-3 text-gray-200">@{{ listing.username }}</td>
+          <td class="px-4 py-3 text-green-400 font-semibold">${{ listing.price }}</td>
+          <td class="px-4 py-3">
+            <span class="px-2 py-0.5 text-xs rounded-full font-semibold
+              {% if listing.status == 'available' %}       bg-indigo-700 text-white
+              {% elif listing.status == 'completed' %}     bg-green-700 text-white
+              {% elif listing.status == 'disputed' %}      bg-red-700 text-white
+              {% elif 'pending' in listing.status %}       bg-yellow-600 text-white
+              {% else %}                                   bg-gray-600 text-white
+              {% endif %}">
+              {{ listing.status|replace('_',' ')|capitalize }}
+            </span>
+          </td>
+          <td class="px-4 py-3">
+            <div class="flex gap-2">
+              <a href="{{ url_for('listings.listing_detail', listing_id=lid) }}"
+                 class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs text-white">
+                View
+              </a>
+              <!-- Delete listing — POST form -->
+              <form action="{{ url_for('admin.admin_delete_listing', lid=lid) }}" method="POST"
+                    onsubmit="return confirm('Delete this listing?')">
+                <button type="submit"
+                        class="px-3 py-1 bg-red-700 hover:bg-red-600 rounded text-xs text-white">
+                  Delete
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="5" class="px-4 py-8 text-center text-gray-500">
+            No listings found for this user.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+{% endblock %}

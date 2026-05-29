@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+{% block title %}Wallet — XSM Market{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold font-orbitron bg-gradient-to-r from-neon-blue to-neon-cyan
+               bg-clip-text text-transparent">💰 My Wallet</h1>
+    <p class="text-gray-500 font-rajdhani mt-1">Manage your balance, deposits and withdrawals</p>
+  </div>
+
+  <!-- ── KYC STATUS BANNER ── -->
+  {% if kyc_ok %}
+  <div class="flex items-center gap-3 bg-green-900/30 border border-green-600/30
+              rounded-xl px-4 py-3 mb-6 font-rajdhani">
+    <i class="fas fa-shield-alt text-green-400"></i>
+    <p class="text-green-300 text-sm">
+      Your identity is <span class="font-semibold">KYC verified</span>. Withdrawals are enabled.
+    </p>
+  </div>
+  {% else %}
+  <div class="flex items-start gap-3 bg-yellow-900/30 border border-yellow-600/30
+              rounded-xl px-4 py-4 mb-6 font-rajdhani">
+    <i class="fas fa-exclamation-triangle text-yellow-400 mt-0.5 flex-shrink-0"></i>
+    <div>
+      <p class="text-yellow-300 text-sm font-semibold">KYC Verification Required</p>
+      <p class="text-yellow-400/70 text-xs mt-0.5">
+        Submit your identity documents to enable withdrawals.
+      </p>
+      <a href="{{ url_for('misc.kyc_submit') }}"
+         class="inline-block mt-2 px-4 py-1.5 bg-yellow-600 hover:bg-yellow-500
+                rounded-lg text-xs text-white font-semibold transition">
+        Apply for KYC →
+      </a>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Balance + Stats -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+
+    <!-- Balance card (spans 2 cols) -->
+    <div class="col-span-2 bg-cyber-800 border border-neon-blue/30 rounded-2xl p-5
+                flex items-center justify-between">
+      <div>
+        <p class="text-gray-400 text-sm font-rajdhani">Available Balance</p>
+        <p class="text-4xl font-bold font-orbitron text-neon-blue mt-1">${{ credit }}</p>
+        <div class="flex gap-3 mt-4">
+          <a href="{{ url_for('wallet.add_payment') }}"
+             class="px-4 py-2 bg-gradient-to-r from-neon-blue/80 to-neon-purple/80
+                    hover:from-neon-blue hover:to-neon-purple text-white text-sm
+                    font-rajdhani font-semibold rounded-xl transition">
+            + Deposit
+          </a>
+          {% if kyc_ok %}
+          <a href="{{ url_for('wallet.withdraw') }}"
+             class="px-4 py-2 cyber-button text-white text-sm
+                    font-rajdhani font-semibold rounded-xl transition">
+            Withdraw
+          </a>
+          {% else %}
+          <a href="{{ url_for('misc.kyc_submit') }}"
+             title="Complete KYC to enable withdrawals"
+             class="px-4 py-2 rounded-xl text-sm font-rajdhani font-semibold
+                    bg-yellow-900/30 text-yellow-400 border border-yellow-700/40
+                    hover:bg-yellow-900/50 transition">
+            🔒 Verify KYC
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="w-16 h-16 rounded-full bg-neon-blue/10 border border-neon-blue/20
+                  flex items-center justify-center flex-shrink-0">
+        <i class="fas fa-wallet text-neon-blue text-2xl"></i>
+      </div>
+    </div>
+
+    <div class="bg-cyber-800 border border-green-800/40 rounded-2xl p-4">
+      <p class="text-gray-500 text-xs font-rajdhani mb-1">Total Earned</p>
+      <p class="text-2xl font-bold font-orbitron text-green-400">${{ total_earned }}</p>
+      <p class="text-gray-600 text-xs font-rajdhani mt-1">from sales</p>
+    </div>
+
+    <div class="bg-cyber-800 border border-purple-800/40 rounded-2xl p-4">
+      <p class="text-gray-500 text-xs font-rajdhani mb-1">Total Spent</p>
+      <p class="text-2xl font-bold font-orbitron text-purple-400">${{ total_spent }}</p>
+      <p class="text-gray-600 text-xs font-rajdhani mt-1">on purchases</p>
+    </div>
+
+    <div class="bg-cyber-800 border border-blue-800/40 rounded-2xl p-4">
+      <p class="text-gray-500 text-xs font-rajdhani mb-1">Deposited</p>
+      <p class="text-2xl font-bold font-orbitron text-blue-400">${{ total_deposited }}</p>
+      <p class="text-gray-600 text-xs font-rajdhani mt-1">approved</p>
+    </div>
+
+    <div class="bg-cyber-800 border border-yellow-800/40 rounded-2xl p-4">
+      <p class="text-gray-500 text-xs font-rajdhani mb-1">Withdrawn</p>
+      <p class="text-2xl font-bold font-orbitron text-yellow-400">${{ total_withdrawn }}</p>
+      <p class="text-gray-600 text-xs font-rajdhani mt-1">approved</p>
+    </div>
+
+  </div>
+
+  <!-- ── TABS ── -->
+  <div x-data="{ tab: 'deposits' }">
+
+    <div class="flex gap-1 mb-5 border-b border-gray-800 overflow-x-auto scrollbar-none -mx-1 px-1">
+      {% for t, label in [('deposits','Deposits'),('withdrawals','Withdrawals'),('purchases','Purchases'),('sales','Sales')] %}
+      <button @click="tab = '{{ t }}'"
+              :class="tab === '{{ t }}' ? 'border-b-2 border-neon-blue text-neon-blue' : 'text-gray-500 hover:text-gray-300'"
+              class="px-4 py-2 text-sm font-rajdhani font-semibold transition -mb-px whitespace-nowrap">
+        {{ label }}
+        {% if t == 'deposits' and payments %}
+          <span class="ml-1 text-xs bg-blue-900 text-blue-300 px-1.5 py-0.5 rounded-full">{{ payments|length }}</span>
+        {% elif t == 'withdrawals' and withdrawals %}
+          <span class="ml-1 text-xs bg-yellow-900 text-yellow-300 px-1.5 py-0.5 rounded-full">{{ withdrawals|length }}</span>
+        {% elif t == 'purchases' and purchases %}
+          <span class="ml-1 text-xs bg-purple-900 text-purple-300 px-1.5 py-0.5 rounded-full">{{ purchases|length }}</span>
+        {% elif t == 'sales' and sales %}
+          <span class="ml-1 text-xs bg-green-900 text-green-300 px-1.5 py-0.5 rounded-full">{{ sales|length }}</span>
+        {% endif %}
+      </button>
+      {% endfor %}
+    </div>
+
+    <!-- Deposits -->
+    <div x-show="tab === 'deposits'">
+      {% if payments %}
+        <div class="space-y-2">
+          {% for pid, p in payments.items() | sort(attribute='1.created_at', reverse=True) %}
+          <div class="flex items-center justify-between bg-cyber-800 border border-gray-800 rounded-xl px-4 py-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-blue-900/40 border border-blue-700/30
+                          flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-arrow-down text-blue-400 text-sm"></i>
+              </div>
+              <div>
+                <p class="text-white text-sm font-rajdhani font-semibold">{{ p.get('method', '—') }}</p>
+                <p class="text-gray-500 text-xs font-rajdhani">
+                  {{ p.get('created_at', '')[:10] }}
+                  {% if p.get('account_no') %} · from {{ p.get('account_no') }}{% endif %}
+                </p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-white font-semibold font-rajdhani">
+                ${{ p.get('approved_amount', p.get('amount', '—')) }}
+              </p>
+              <span class="text-xs font-rajdhani px-2 py-0.5 rounded-full
+                {% if p.get('status') == 'approved' %}bg-green-900/50 text-green-400
+                {% elif p.get('status') == 'rejected' %}bg-red-900/50 text-red-400
+                {% else %}bg-yellow-900/50 text-yellow-400{% endif %}">
+                {{ p.get('status', 'pending') | capitalize }}
+              </span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-12 text-gray-600 font-rajdhani">
+          <div class="text-4xl mb-2">💳</div>
+          No deposits yet.
+          <a href="{{ url_for('wallet.add_payment') }}" class="text-neon-blue hover:underline ml-1">Add one</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Withdrawals -->
+    <div x-show="tab === 'withdrawals'">
+      {% if withdrawals %}
+        <div class="space-y-2">
+          {% for wid, w in withdrawals.items() | sort(attribute='1.created_at', reverse=True) %}
+          <div class="flex items-center justify-between bg-cyber-800 border border-gray-800 rounded-xl px-4 py-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-yellow-900/40 border border-yellow-700/30
+                          flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-arrow-up text-yellow-400 text-sm"></i>
+              </div>
+              <div>
+                <p class="text-white text-sm font-rajdhani font-semibold">
+                  {{ w.get('method', '—') }} → {{ w.get('account_no', '—') }}
+                </p>
+                <p class="text-gray-500 text-xs font-rajdhani">
+                  {{ w.get('created_at', '')[:10] }} · {{ w.get('account_name', '') }}
+                </p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-white font-semibold font-rajdhani">${{ w.get('amount', '—') }}</p>
+              <span class="text-xs font-rajdhani px-2 py-0.5 rounded-full
+                {% if w.get('status') == 'approved' %}bg-green-900/50 text-green-400
+                {% elif w.get('status') == 'rejected' %}bg-red-900/50 text-red-400
+                {% else %}bg-yellow-900/50 text-yellow-400{% endif %}">
+                {{ w.get('status', 'pending') | capitalize }}
+              </span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-12 text-gray-600 font-rajdhani">
+          <div class="text-4xl mb-2">💸</div>
+          No withdrawals yet.
+          {% if kyc_ok %}
+          <a href="{{ url_for('wallet.withdraw') }}" class="text-neon-blue hover:underline ml-1">Request one</a>
+          {% else %}
+          <a href="{{ url_for('misc.kyc_submit') }}" class="text-yellow-400 hover:underline ml-1">Verify KYC first</a>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Purchases -->
+    <div x-show="tab === 'purchases'">
+      {% if purchases %}
+        <div class="space-y-2">
+          {% for lid, p in purchases.items() | sort(attribute='1.timestamp', reverse=True) %}
+          <div class="flex items-center justify-between bg-cyber-800 border border-gray-800 rounded-xl px-4 py-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-purple-900/40 border border-purple-700/30
+                          flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-shopping-cart text-purple-400 text-sm"></i>
+              </div>
+              <div>
+                <p class="text-white text-sm font-rajdhani font-semibold">Listing purchase</p>
+                <p class="text-gray-500 text-xs font-rajdhani">
+                  {{ p.get('timestamp', '')[:10] if p.get('timestamp') and p.get('timestamp')|string|length > 10 else '—' }}
+                </p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-purple-400 font-semibold font-rajdhani">-${{ p.get('price', '—') }}</p>
+              <span class="text-xs font-rajdhani px-2 py-0.5 rounded-full
+                {% if p.get('status') == 'completed' %}bg-green-900/50 text-green-400
+                {% elif p.get('status') == 'refunded' %}bg-blue-900/50 text-blue-400
+                {% else %}bg-yellow-900/50 text-yellow-400{% endif %}">
+                {{ p.get('status', '—') | capitalize }}
+              </span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-12 text-gray-600 font-rajdhani">
+          <div class="text-4xl mb-2">🛒</div>
+          No purchases yet.
+          <a href="{{ url_for('listings.marketplace') }}" class="text-neon-blue hover:underline ml-1">Browse marketplace</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Sales -->
+    <div x-show="tab === 'sales'">
+      {% if sales %}
+        <div class="space-y-2">
+          {% for lid, l in sales.items() %}
+          <div class="flex items-center justify-between bg-cyber-800 border border-gray-800 rounded-xl px-4 py-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-green-900/40 border border-green-700/30
+                          flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-tag text-green-400 text-sm"></i>
+              </div>
+              <div>
+                <p class="text-white text-sm font-rajdhani font-semibold">
+                  {{ l.get('platform', '—') }} — @{{ l.get('username', '—') }}
+                </p>
+                <p class="text-gray-500 text-xs font-rajdhani">{{ l.get('created_at', '')[:10] }}</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-green-400 font-semibold font-rajdhani">
+                +${{ l.get('escrow', {}).get('seller_gets', l.get('escrow', {}).get('amount', l.get('price', '—'))) }}
+              </p>
+              <span class="text-xs font-rajdhani px-2 py-0.5 rounded-full
+                {% if l.get('status') == 'completed' %}bg-green-900/50 text-green-400
+                {% elif l.get('status') == 'pending_confirmation' %}bg-blue-900/50 text-blue-400
+                {% else %}bg-yellow-900/50 text-yellow-400{% endif %}">
+                {% if l.get('status') == 'completed' %}Paid
+                {% elif l.get('status') == 'pending_confirmation' %}In Escrow
+                {% elif l.get('status') == 'pending_delivery' %}Awaiting Delivery
+                {% else %}{{ l.get('status', '—') | capitalize }}{% endif %}
+              </span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-12 text-gray-600 font-rajdhani">
+          <div class="text-4xl mb-2">🏷️</div>
+          No sales yet.
+          <a href="{{ url_for('listings.add_listing') }}" class="text-neon-blue hover:underline ml-1">List something</a>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

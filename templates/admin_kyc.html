@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}KYC Applications — Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-10">
+
+  <h1 class="text-2xl font-bold mb-2 text-indigo-400">KYC Applications</h1>
+  <p class="text-gray-500 text-sm mb-8">Review and approve or reject user identity verification requests.</p>
+
+  <!-- Filter tabs -->
+  <div class="flex gap-2 mb-6 flex-wrap">
+    {% for label, val in [('All', ''), ('Pending', 'pending'), ('Approved', 'approved'), ('Rejected', 'rejected')] %}
+    <a href="{{ url_for('admin.admin_kyc_list') }}{% if val %}?status={{ val }}{% endif %}"
+       class="px-4 py-2 rounded-lg text-sm font-semibold transition
+              {% if status_filter == val %}bg-indigo-600 text-white{% else %}bg-gray-800 text-gray-400 hover:bg-gray-700{% endif %}">
+      {{ label }}
+      {% if val == 'pending' and pending_count %}
+        <span class="ml-1 bg-yellow-600 text-white text-xs px-1.5 py-0.5 rounded-full">{{ pending_count }}</span>
+      {% endif %}
+    </a>
+    {% endfor %}
+  </div>
+
+  <div class="space-y-4">
+    {% for kid, kyc in applications.items() %}
+    <div class="bg-gray-900 border border-gray-700 rounded-xl p-5">
+
+      <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+
+        <!-- User info -->
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <p class="font-bold text-white text-base">{{ kyc.full_name }}</p>
+            <span class="px-2 py-0.5 text-xs rounded-full font-semibold
+              {% if kyc.status == 'pending' %}bg-yellow-600 text-white
+              {% elif kyc.status == 'approved' %}bg-green-700 text-white
+              {% elif kyc.status == 'rejected' %}bg-red-700 text-white
+              {% endif %}">
+              {{ kyc.status|capitalize }}
+            </span>
+          </div>
+          <p class="text-sm text-gray-400">{{ kyc.email }}</p>
+          <p class="text-sm text-gray-400">CNIC: <span class="font-mono text-gray-300">{{ kyc.cnic }}</span></p>
+          <p class="text-sm text-gray-400">Phone: {{ kyc.phone }}</p>
+          <p class="text-sm text-gray-400">Address: {{ kyc.address }}</p>
+          <p class="text-xs text-gray-600 mt-1">Submitted: {{ kyc.submitted_at[:10] if kyc.submitted_at else '—' }}</p>
+          {% if kyc.status == 'rejected' and kyc.rejection_reason %}
+          <p class="text-xs text-red-400 mt-1">Rejection reason: {{ kyc.rejection_reason }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Document images -->
+        <div class="flex gap-2 flex-wrap">
+          {% if kyc.cnic_front_url %}
+          <a href="{{ kyc.cnic_front_url }}" target="_blank">
+            <img src="{{ kyc.cnic_front_url }}" alt="CNIC Front"
+                 class="w-28 h-20 object-cover rounded-lg border border-gray-600 hover:border-indigo-500 transition">
+            <p class="text-xs text-gray-500 text-center mt-0.5">Front</p>
+          </a>
+          {% endif %}
+          {% if kyc.cnic_back_url %}
+          <a href="{{ kyc.cnic_back_url }}" target="_blank">
+            <img src="{{ kyc.cnic_back_url }}" alt="CNIC Back"
+                 class="w-28 h-20 object-cover rounded-lg border border-gray-600 hover:border-indigo-500 transition">
+            <p class="text-xs text-gray-500 text-center mt-0.5">Back</p>
+          </a>
+          {% endif %}
+          {% if kyc.selfie_url %}
+          <a href="{{ kyc.selfie_url }}" target="_blank">
+            <img src="{{ kyc.selfie_url }}" alt="Selfie"
+                 class="w-28 h-20 object-cover rounded-lg border border-gray-600 hover:border-indigo-500 transition">
+            <p class="text-xs text-gray-500 text-center mt-0.5">Selfie</p>
+          </a>
+          {% endif %}
+        </div>
+
+      </div>
+
+      <!-- Actions (only for pending) -->
+      {% if kyc.status == 'pending' %}
+      <div class="flex flex-wrap gap-3 pt-3 border-t border-gray-800">
+
+        <form action="{{ url_for('admin.admin_kyc_approve', kid=kid) }}" method="POST">
+          <button type="submit"
+                  class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-sm text-white font-semibold transition">
+            ✅ Approve
+          </button>
+        </form>
+
+        <form action="{{ url_for('admin.admin_kyc_reject', kid=kid) }}" method="POST"
+              onsubmit="
+                const reason = document.getElementById('reason-{{ kid }}').value.trim();
+                if (!reason) { alert('Please enter a rejection reason.'); return false; }
+              ">
+          <div class="flex gap-2">
+            <input type="text" id="reason-{{ kid }}" name="reason" required
+                   placeholder="Rejection reason…"
+                   class="bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white
+                          focus:outline-none focus:border-red-500 placeholder-gray-500 w-56">
+            <button type="submit"
+                    class="px-4 py-2 bg-red-700 hover:bg-red-600 rounded-lg text-sm text-white font-semibold transition">
+              ❌ Reject
+            </button>
+          </div>
+        </form>
+
+        <a href="{{ url_for('admin.admin_user_profile', uid=kyc.user_id) }}"
+           class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm text-white transition">
+          View Profile
+        </a>
+
+      </div>
+      {% endif %}
+
+    </div>
+    {% else %}
+    <div class="text-center py-16 text-gray-500">
+      <i class="fas fa-id-card text-4xl mb-3 block text-gray-700"></i>
+      No KYC applications found.
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

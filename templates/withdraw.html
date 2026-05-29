@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Withdraw — XSM Market{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto px-4 py-10">
+
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold font-orbitron bg-gradient-to-r from-neon-blue to-neon-cyan
+               bg-clip-text text-transparent">💸 Withdraw Funds</h2>
+    <p class="text-gray-500 font-rajdhani mt-1">Request a payout to your preferred payment method.</p>
+  </div>
+
+  <!-- Balance card -->
+  <div class="bg-cyber-800 border border-neon-blue/20 rounded-2xl p-5 mb-6 flex items-center justify-between">
+    <div>
+      <p class="text-gray-400 text-sm font-rajdhani">Available Balance</p>
+      <p class="text-3xl font-bold font-orbitron text-neon-blue">${{ credit }}</p>
+    </div>
+    <div class="w-14 h-14 rounded-full bg-neon-blue/10 border border-neon-blue/30
+                flex items-center justify-center">
+      <i class="fas fa-wallet text-neon-blue text-xl"></i>
+    </div>
+  </div>
+
+  {% if credit < 10 %}
+  <!-- Insufficient balance -->
+  <div class="bg-red-900/30 border border-red-700 rounded-2xl p-5 text-center">
+    <p class="text-red-400 font-rajdhani font-semibold">Minimum withdrawal is $10.</p>
+    <p class="text-gray-500 text-sm font-rajdhani mt-1">Earn more by selling digital assets on the marketplace.</p>
+    <a href="/marketplace" class="inline-block mt-3 px-5 py-2 bg-neon-blue/10 border border-neon-blue/30
+                                   text-neon-blue rounded-xl text-sm font-rajdhani hover:bg-neon-blue/20 transition">
+      Browse Marketplace
+    </a>
+  </div>
+
+  {% else %}
+  <!-- Withdrawal form -->
+  <div class="bg-cyber-800 border border-neon-blue/10 rounded-2xl p-6">
+    <form method="POST" action="/wallet/withdraw">
+
+      <!-- Amount -->
+      <div class="mb-5">
+        <label class="block text-sm font-semibold font-rajdhani text-gray-300 mb-2">
+          Amount <span class="text-red-400">*</span>
+          <span class="text-gray-500 font-normal">(min $10, max ${{ credit }})</span>
+        </label>
+        <div class="relative">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-neon-blue font-bold">$</span>
+          <input type="number" name="amount" min="10" max="{{ credit }}" required
+                 class="w-full pl-8 pr-4 py-3 bg-cyber-700 border border-neon-blue/20 rounded-xl
+                        text-white font-rajdhani focus:outline-none focus:border-neon-blue/60 transition"
+                 placeholder="Enter amount">
+        </div>
+      </div>
+
+      <!-- Payment method -->
+      <div class="mb-5">
+        <label class="block text-sm font-semibold font-rajdhani text-gray-300 mb-2">
+          Payment Method <span class="text-red-400">*</span>
+        </label>
+        <select name="method" required
+                class="w-full px-4 py-3 bg-cyber-700 border border-neon-blue/20 rounded-xl
+                       text-white font-rajdhani focus:outline-none focus:border-neon-blue/60 transition">
+          <option value="">Select method...</option>
+          <option value="JazzCash">JazzCash</option>
+          <option value="Easypaisa">Easypaisa</option>
+          <option value="Bank Transfer">Bank Transfer</option>
+          <option value="Binance">Binance (USDT TRC20)</option>
+          <option value="PayPal">PayPal</option>
+        </select>
+      </div>
+
+      <!-- Account name -->
+      <div class="mb-5">
+        <label class="block text-sm font-semibold font-rajdhani text-gray-300 mb-2">
+          Account Name <span class="text-red-400">*</span>
+        </label>
+        <input type="text" name="account_name" required
+               class="w-full px-4 py-3 bg-cyber-700 border border-neon-blue/20 rounded-xl
+                      text-white font-rajdhani focus:outline-none focus:border-neon-blue/60 transition"
+               placeholder="Full name on account">
+      </div>
+
+      <!-- Account number -->
+      <div class="mb-6">
+        <label class="block text-sm font-semibold font-rajdhani text-gray-300 mb-2">
+          Account Number / Address <span class="text-red-400">*</span>
+        </label>
+        <input type="text" name="account_no" required
+               class="w-full px-4 py-3 bg-cyber-700 border border-neon-blue/20 rounded-xl
+                      text-white font-rajdhani focus:outline-none focus:border-neon-blue/60 transition"
+               placeholder="e.g. 03001234567 or wallet address">
+      </div>
+
+      <!-- Warning -->
+      <div class="bg-yellow-900/30 border border-yellow-700/50 rounded-xl p-3 mb-5 flex gap-3">
+        <span class="text-yellow-400 flex-shrink-0">⚠️</span>
+        <p class="text-yellow-300 text-xs font-rajdhani">
+          Credits are deducted immediately. If rejected, they will be refunded.
+          Processing takes 24–48 hours.
+        </p>
+      </div>
+
+      <button type="submit"
+              class="w-full py-3 rounded-xl font-bold font-rajdhani text-white transition
+                     bg-gradient-to-r from-neon-blue/80 to-neon-purple/80
+                     hover:from-neon-blue hover:to-neon-purple shadow-lg">
+        Submit Withdrawal Request
+      </button>
+
+    </form>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

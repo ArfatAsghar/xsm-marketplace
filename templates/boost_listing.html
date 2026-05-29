@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}Boost Listing — XSM Market{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-12">
+
+  <!-- Header -->
+  <div class="mb-10">
+    <a href="{{ url_for('misc.dashboard') }}" class="text-gray-500 hover:text-neon-blue transition-colors text-sm font-rajdhani tracking-wider">
+      ← BACK TO DASHBOARD
+    </a>
+    <h1 class="mt-4 text-3xl font-orbitron font-bold bg-gradient-to-r from-yellow-400 to-neon-purple bg-clip-text text-transparent glow-text">
+      BOOST LISTING
+    </h1>
+    <p class="text-gray-400 font-rajdhani tracking-wider mt-1">
+      Promote <span class="text-white font-semibold">@{{ listing.username }}</span>
+      on <span class="text-neon-blue">{{ listing.platform }}</span> — pinned to the top of marketplace, search results, and seller profile.
+    </p>
+  </div>
+
+  <!-- Current boost status -->
+  {% if listing.is_boosted %}
+  <div class="flex items-center gap-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg px-5 py-4 mb-8 font-rajdhani">
+    <i class="fas fa-bolt text-yellow-400 text-lg"></i>
+    <div>
+      <p class="text-yellow-300 font-semibold text-sm uppercase tracking-wider">Currently Boosted</p>
+      <p class="text-yellow-400/70 text-xs mt-0.5">Active until {{ listing.boosted_until }}</p>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Boost tier cards -->
+  <form action="{{ url_for('listings.boost_listing', listing_id=listing_id) }}" method="POST" id="boost-form">
+    <input type="hidden" name="duration" id="selected-duration" value="24h">
+
+    <div class="grid grid-cols-1 gap-4 mb-8">
+
+      <!-- 24h — $1 -->
+      <label class="boost-card selected cursor-pointer group" data-duration="24h" data-cost="1" data-label="24-Hour Boost">
+        <input type="radio" name="_duration_ui" value="24h" class="sr-only" checked>
+        <div class="cyber-card px-6 py-5 border-2 border-neon-blue/60 transition-all relative overflow-hidden">
+          <div class="absolute -top-4 -right-4 w-24 h-24 bg-neon-blue/10 rounded-full blur-xl pointer-events-none"></div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-neon-blue/10 border border-neon-blue/30 flex items-center justify-center">
+                <i class="fas fa-bolt text-neon-blue"></i>
+              </div>
+              <div>
+                <p class="font-orbitron text-sm font-bold text-white">24-HOUR BOOST</p>
+                <p class="text-gray-400 font-rajdhani text-xs tracking-wider mt-0.5">Standard visibility push</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-2xl font-orbitron font-bold text-neon-blue">$1</p>
+              <p class="text-gray-500 text-xs font-rajdhani">1 credit</p>
+            </div>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="text-[10px] font-rajdhani uppercase tracking-wider px-2.5 py-1 rounded bg-neon-blue/10 text-neon-blue border border-neon-blue/20">Top of marketplace</span>
+            <span class="text-[10px] font-rajdhani uppercase tracking-wider px-2.5 py-1 rounded bg-neon-blue/10 text-neon-blue border border-neon-blue/20">Search priority</span>
+            <span class="text-[10px] font-rajdhani uppercase tracking-wider px-2.5 py-1 rounded bg-neon-blue/10 text-neon-blue border border-neon-blue/20">Seller profile pin</span>
+          </div>
+        </div>
+      </label>
+
+      <!-- 48h — $2 -->
+      <label class="boost-card cursor-pointer group" data-duration="48h" data-cost="2" data-label="48-Hour Boost">
+        <input type="radio" name="_duration_ui" value="48h" class="sr-only">
+        <div class="cyber-card px-6 py-5 border-2 border-neon-purple/40 hover:border-neon-purple/70 transition-all relative overflow-hidden">
+          <div class="absolute -top-4 -right-4 w-24 h-24 bg-neon-purple/10 rounded-full blur-xl pointer-events-none"></div>
+          <!-- Popular badge -->
+          <div class="absolute top-0 right-6 bg-neon-purple text-black text-[9px] font-orbitron font-bold px-3 py-0.5 tracking-widest uppercase rounded-b">
+            POPULAR
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-neon-purple/10 border border-neon-purple/30 flex items-center justify-center">
+                <i class="fas fa-rocket text-neon-purple"></i>
+              </div>
+              <div>
+                <p class="font-orbitron text-sm font-bold text-white">48-HOUR BOOST</p>
+                <p class="text-gray-400 font-rajdhani text-xs tracking-wider mt-0.5">Double the exposure</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-2xl font-orbitron font-bold text-neon-purple">$2</p>
+              <p class="text-gray-500 text-xs font-rajdhani">2 credits</p>
+            </div>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="text-[10px] font-rajdhani uppercase tracking-wider px-2.5 py-1 rounded bg-neon-purple/10 text-neon-purple border border-neon-purple/20">Everything in 24h</span>
+            <span class="text-[10px] font-rajdhani uppercase tracking-wider px-2.5 py-1 rounded bg-neon-purple/10 text-neon-purple border border-neon-purple/20">2× duration</span>
+            <span class="text-[10px] font-rajdhani uppercase tracking-wider px-2.5 py-1 rounded bg-neon-purple/10 text-neon-purple border border-neon-purple/20">Best value</span>
+          </div>
+        </div>
+      </label>
+
+      <!-- 10 Days — $5 -->
+      <label class="boost-card cursor-pointer group" data-duration="10d" data-cost="5" data-label="10-Day Boost">
+        <input type="radio" name="_duration_ui" value="10d" class="sr-only">
+        <div class="cyber-card px-6 py-5 border-2 border-neon-green/40 hover:border-neon-green/70 transition-all relative overflow-hidden">
+          <div class="absolute -top-4 -right-4 w-24 h-24 bg-neon-green/10 rounded-full blur-xl pointer-events-none"></div>
+          <!-- Premium badge -->
+          <div class="absolute top-0 right-6 bg-neon-green text-black text-[9px] font-orbitron font-bold px-3 py-0.5 tracking-widest uppercase rounded-b">
+            PREMIUM
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-neon-green/10 border border-neon-green/30 flex items-center justify-center">
+                <i class="fas fa-star text-neon-green"></i>
+              </div>
+              <div>
+                <p class="font-orbitron text-sm font-bold text-white">10-DAY BOOST</p>
+                <p class="text-gray-400 font-rajdhani text-xs tracking-wider mt-0.5">Maximum impact — 10 full days</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-2xl font-orbitron font-bold text-neon-green">$5</p>
+              <p class="text-gray-500 text-xs font-rajdhani">5 credits</p>
+            </div>
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="text-[10px] font-rajdhani uppercase tracking-wider px-2.5 py-1 rounded bg-neon-green/10 text-neon-green border border-neon-green/20">Everything in 48h</span>
+            <span class="text-[10px] font-rajdhani uppercase tracking-wider px-2.5 py-1 rounded bg-neon-green/10 text-neon-green border border-neon-green/20">10× duration</span>
+            <span class="text-[10px] font-rajdhani uppercase tracking-wider px-2.5 py-1 rounded bg-neon-green/10 text-neon-green border border-neon-green/20">Premium placement</span>
+          </div>
+        </div>
+      </label>
+
+    </div>
+
+    <!-- Summary bar -->
+    <div class="cyber-card px-6 py-5 border border-gray-700 mb-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-gray-400 font-rajdhani text-sm">Selected plan</p>
+          <p id="summary-label" class="text-white font-orbitron text-sm mt-0.5">24-Hour Boost</p>
+        </div>
+        <div class="text-right">
+          <p class="text-gray-400 font-rajdhani text-sm">Cost</p>
+          <p class="font-orbitron font-bold text-xl">
+            $<span id="summary-cost" class="text-neon-blue">1</span>
+            <span class="text-gray-500 text-sm font-rajdhani"> credit</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit"
+      class="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-neon-blue/20 to-neon-purple/20 hover:from-neon-blue/30 hover:to-neon-purple/30 border border-neon-blue/40 hover:border-neon-blue text-white font-orbitron text-sm tracking-widest uppercase py-4 rounded-lg transition-all">
+      <i class="fas fa-bolt text-yellow-400"></i>
+      ACTIVATE BOOST
+    </button>
+
+    <p class="text-center text-gray-600 text-xs font-rajdhani mt-4">
+      Credits are deducted immediately. Boost activates within seconds.
+    </p>
+
+  </form>
+</div>
+
+<script>
+const cards        = document.querySelectorAll('.boost-card');
+const hiddenInput  = document.getElementById('selected-duration');
+const summaryLabel = document.getElementById('summary-label');
+const summaryCost  = document.getElementById('summary-cost');
+const summaryUnit  = summaryCost.nextElementSibling;
+
+const colors = {
+  '24h': 'text-neon-blue',
+  '48h': 'text-neon-purple',
+  '10d': 'text-neon-green',
+};
+
+const borderSelected = {
+  '24h': 'border-neon-blue/60',
+  '48h': 'border-neon-purple/60',
+  '10d': 'border-neon-green/60',
+};
+
+const borderDefault = {
+  '24h': 'border-neon-blue/40',
+  '48h': 'border-neon-purple/40',
+  '10d': 'border-neon-green/40',
+};
+
+function selectCard(card) {
+  // Reset all
+  cards.forEach(c => {
+    c.classList.remove('selected');
+    const inner = c.querySelector('.cyber-card');
+    const dur   = c.dataset.duration;
+    inner.classList.remove('ring-2', 'shadow-lg', borderSelected[dur]);
+    inner.classList.add(borderDefault[dur]);
+  });
+
+  // Activate chosen
+  card.classList.add('selected');
+  const inner = card.querySelector('.cyber-card');
+  const dur   = card.dataset.duration;
+  inner.classList.remove(borderDefault[dur]);
+  inner.classList.add(borderSelected[dur], 'ring-2', 'shadow-lg');
+
+  // Update hidden input + summary
+  hiddenInput.value       = dur;
+  summaryLabel.textContent = card.dataset.label;
+  summaryCost.textContent  = card.dataset.cost;
+  summaryCost.className    = colors[dur];
+  summaryUnit.textContent  = card.dataset.cost === '1' ? ' credit' : ' credits';
+}
+
+// Init first card as selected
+selectCard(cards[0]);
+
+cards.forEach(card => card.addEventListener('click', () => selectCard(card)));
+</script>
+{% endblock %}

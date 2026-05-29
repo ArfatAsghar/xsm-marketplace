@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}XSM Marketplace{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{% block meta_description %}Buy and sell social media accounts, websites, and digital assets securely with escrow protection on XSM Marketplace.{% endblock %}">
+  <meta name="robots" content="{% block meta_robots %}{{ seo_robots }}{% endblock %}">
+  <link rel="canonical" href="{% block canonical_url %}{{ request.base_url }}{% endblock %}">
+
+  <meta property="og:site_name" content="XSM Marketplace">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Buy and sell social media accounts, websites, and digital assets securely with escrow protection on XSM Marketplace.{% endblock %}">
+  <meta property="og:url" content="{% block og_url %}{{ request.base_url }}{% endblock %}">
+  <meta property="og:image" content="{% block og_image %}{{ request.url_root.rstrip('/') }}/static/favicon_32.png{% endblock %}">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% block twitter_title %}{{ self.title() }}{% endblock %}">
+  <meta name="twitter:description" content="{% block twitter_description %}Buy and sell social media accounts, websites, and digital assets securely with escrow protection on XSM Marketplace.{% endblock %}">
+  <meta name="twitter:image" content="{% block twitter_image %}{{ request.url_root.rstrip('/') }}/static/favicon_32.png{% endblock %}">
+
+  {% block structured_data %}{% endblock %}
+  {% block extra_head %}{% endblock %}
+
+  <link rel="icon" type="image/x-icon"  href="/static/favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon_32.png">
+  <link rel="apple-touch-icon" sizes="180x180"    href="/static/apple-touch-icon.png">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        fontFamily: {
+          sans:     ['Exo 2', 'sans-serif'],
+          orbitron: ['Orbitron', 'sans-serif'],
+          rajdhani: ['Rajdhani', 'sans-serif'],
+        },
+        extend: {
+          colors: {
+            neon:  { blue: '#00f3ff', purple: '#bd00ff', pink: '#ff00c8', green: '#00ff8e', cyan: '#00f3ff' },
+            cyber: { 900: '#0a0a16', 800: '#121226', 700: '#1a1a36', 600: '#222246' }
+          },
+          animation: {
+            'fade-in':    'fadeIn 0.4s ease-out',
+            'slide-down': 'slideDown 0.3s ease-out',
+            'float':      'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 3s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeIn:    { '0%': { opacity: '0', transform: 'translateY(4px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+            slideDown: { '0%': { transform: 'translateY(-8px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+            float:     { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-12px)' } },
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      background: #0a0a16;
+      background-image:
+        radial-gradient(ellipse at 20% 0%,  rgba(0,243,255,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(189,0,255,0.06) 0%, transparent 50%);
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar       { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a16; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,243,255,0.3); border-radius: 3px; }
+
+    input, select, textarea { font-size: 16px !important; }
+
+    .cyber-border  { border: 1px solid rgba(0,243,255,0.25); box-shadow: 0 0 12px rgba(0,243,255,0.08); }
+    .cyber-card    { background: rgba(18,18,38,0.9); border: 1px solid rgba(0,243,255,0.12); border-radius: 1rem; backdrop-filter: blur(8px); }
+    .cyber-button  { background: rgba(10,10,22,0.8); border: 1px solid rgba(0,243,255,0.25); transition: all 0.25s ease; }
+    .cyber-button:hover { border-color: rgba(0,243,255,0.6); box-shadow: 0 0 16px rgba(0,243,255,0.2); }
+
+    .nav-gradient {
+      background: rgba(10,10,22,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,243,255,0.15);
+    }
+
+    .nav-link { position: relative; }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: 0;
+      width: 0; height: 1px;
+      background: linear-gradient(90deg, #00f3ff, #bd00ff);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    .glow-text { text-shadow: 0 0 20px rgba(0,243,255,0.5); }
+
+    .particle {
+      position: fixed;
+      border-radius: 50%;
+      background: rgba(0,243,255,0.25);
+      animation: float 15s infinite linear;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+
+    .flash-success { background: rgba(0,255,100,0.08); border-color: rgba(0,255,100,0.3); }
+    .flash-danger  { background: rgba(255,50,50,0.08);  border-color: rgba(255,50,50,0.3);  }
+    .flash-warning { background: rgba(255,200,0,0.08);  border-color: rgba(255,200,0,0.3);  }
+    .flash-info    { background: rgba(0,243,255,0.08);  border-color: rgba(0,243,255,0.3);  }
+
+    /* Notification dropdown scrollbar */
+    #notif-list::-webkit-scrollbar { width: 4px; }
+    #notif-list::-webkit-scrollbar-track { background: transparent; }
+    #notif-list::-webkit-scrollbar-thumb { background: rgba(0,243,255,0.2); border-radius: 2px; }
+
+    /* XSM logo hover glow */
+    .xsm-logo-wrap:hover .xsm-svg-icon {
+      filter: drop-shadow(0 0 8px rgba(0,243,255,0.55));
+    }
+  </style>
+</head>
+
+<body class="text-gray-200 min-h-screen flex flex-col font-sans">
+
+<!-- Ambient particles -->
+<div id="particles" class="fixed inset-0 pointer-events-none overflow-hidden" style="z-index:0"></div>
+
+<!-- ── NAVBAR ──────────────────────────────────── -->
+<nav class="nav-gradient sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+
+      <!-- Logo -->
+      <a href="/" class="xsm-logo-wrap flex items-center gap-3 group flex-shrink-0" style="text-decoration:none;">
+        <!-- XSM X icon — matches the brand logo exactly -->
+        <svg class="xsm-svg-icon" width="36" height="36" viewBox="0 0 36 36" fill="none"
+             xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0; transition: filter 0.3s ease;">
+          <defs>
+            <!-- Primary blue→purple gradient (outer bars) -->
+            <linearGradient id="xg1" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#60c8ff"/>
+              <stop offset="50%"  stop-color="#7b8cff"/>
+              <stop offset="100%" stop-color="#a855f7"/>
+            </linearGradient>
+            <!-- Lighter inner highlight bars -->
+            <linearGradient id="xg2" x1="36" y1="0" x2="0" y2="36" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#93c5fd" stop-opacity="0.95"/>
+              <stop offset="100%" stop-color="#c4b5fd" stop-opacity="0.7"/>
+            </linearGradient>
+          </defs>
+
+          <!--
+            Four diagonal strokes forming a double-line X.
+            Each side (left-arm / right-arm) has two parallel strokes:
+              • outer stroke  → primary gradient, thicker
+              • inner stroke  → highlight gradient, thinner, slightly inset
+          -->
+
+          <!-- LEFT ARM  outer  (top-left ↘ centre ↗ bottom-left) -->
+          <polyline points="2,2 18,18 2,34"
+            stroke="url(#xg1)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <!-- LEFT ARM  inner highlight -->
+          <polyline points="7,2 18,14 7,34"
+            stroke="url(#xg2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.85"/>
+
+          <!-- RIGHT ARM  outer  (top-right ↙ centre ↖ bottom-right) -->
+          <polyline points="34,2 18,18 34,34"
+            stroke="url(#xg1)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <!-- RIGHT ARM  inner highlight -->
+          <polyline points="29,2 18,14 29,34"
+            stroke="url(#xg2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.85"/>
+        </svg>
+
+        <!-- Wordmark -->
+        <div class="flex flex-col leading-none">
+          <span class="text-base font-bold font-orbitron tracking-widest glow-text
+                       bg-gradient-to-r from-neon-blue to-neon-cyan bg-clip-text text-transparent">
+            XSM
+          </span>
+          <span class="text-[8px] text-gray-400 font-rajdhani tracking-[0.3em] uppercase">
+            Marketplace
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop centre links -->
+      <div class="hidden md:flex items-center gap-7">
+        <a href="/marketplace"
+           class="nav-link text-sm font-rajdhani text-gray-300 hover:text-neon-blue transition-colors flex items-center gap-1.5">
+          <i class="fas fa-store text-neon-blue/70 text-xs"></i> Marketplace
+        </a>
+        {% if session.user %}
+          <a href="{{ url_for('chat.inbox') }}"
+             class="nav-link text-sm font-rajdhani text-gray-300 hover:text-neon-blue transition-colors flex items-center gap-1.5">
+            <i class="fas fa-comments text-neon-blue/70 text-xs"></i> Inbox
+          </a>
+          <a href="/add_listing"
+             class="nav-link text-sm font-rajdhani text-gray-300 hover:text-neon-blue transition-colors flex items-center gap-1.5">
+            <i class="fas fa-plus-circle text-neon-blue/70 text-xs"></i> Sell
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Desktop right -->
+      <div class="hidden md:flex items-center gap-3">
+        {% if session.user %}
+
+          <!-- Balance pill -->
+          <div class="flex items-center gap-1.5 bg-cyber-800 border border-yellow-500/20
+                      px-3 py-1.5 rounded-full text-xs font-rajdhani">
+            <i class="fas fa-coins text-yellow-400 text-xs"></i>
+            <span class="text-yellow-300 font-semibold" id="navCredit">${{ current_credit }}</span>
+          </div>
+
+          <!-- ── NOTIFICATION BELL ── -->
+          <div class="relative" x-data="{ open: false, count: {{ unread_notif_count }} }" id="notifWidget">
+
+            <button @click="open = !open; if(open) loadNotifs()"
+                    @click.outside="open = false"
+                    class="relative cyber-button p-2 rounded-xl"
+                    title="Notifications">
+              <i class="fas fa-bell text-gray-400 hover:text-neon-blue transition-colors text-sm"></i>
+              <!-- Unread badge -->
+              <span x-show="count > 0"
+                    x-text="count > 9 ? '9+' : count"
+                    class="absolute -top-1 -right-1 min-w-[16px] h-4 px-0.5 rounded-full
+                           text-[9px] font-bold flex items-center justify-center font-orbitron"
+                    style="background:linear-gradient(135deg,#00f3ff,#bd00ff); color:#0a0a16;">
+              </span>
+            </button>
+
+            <!-- Notification dropdown -->
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-150"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-100"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="absolute right-0 mt-2 w-80 rounded-2xl shadow-2xl z-50 overflow-hidden origin-top-right"
+                 style="background:#0f0f22; border:1px solid rgba(0,243,255,0.18);">
+
+              <!-- Header -->
+              <div class="flex items-center justify-between px-4 py-3"
+                   style="border-bottom:1px solid rgba(0,243,255,0.1);">
+                <span class="text-[10px] font-bold font-orbitron tracking-widest uppercase text-gray-400">
+                  Notifications
+                </span>
+                <button onclick="markAllRead()"
+                        class="text-[10px] font-rajdhani font-semibold transition-colors"
+                        style="color:#00f3ff;">
+                  Mark all read
+                </button>
+              </div>
+
+              <!-- List -->
+              <div id="notif-list" class="max-h-72 overflow-y-auto">
+                <div id="notif-empty"
+                     class="px-4 py-8 text-center text-xs text-gray-600 font-rajdhani">
+                  Loading…
+                </div>
+              </div>
+
+              <!-- Footer -->
+              <div style="border-top:1px solid rgba(0,243,255,0.08);" class="px-4 py-2.5 text-center">
+                <a href="/dashboard"
+                   class="text-[11px] font-rajdhani text-gray-500 hover:text-neon-blue transition-colors">
+                  Go to Dashboard
+                </a>
+              </div>
+            </div>
+          </div>
+          <!-- /NOTIFICATION BELL -->
+
+          <!-- Profile dropdown (Alpine) -->
+          <div class="relative" x-data="{ open: false }">
+            <button @click="open = !open" @click.outside="open = false"
+                    class="flex items-center gap-2 cyber-button px-2.5 py-1.5 rounded-xl">
+              <img src="{{ session.user.profile_pic or '/static/default_user.png' }}"
+                   alt="Profile"
+                   class="w-7 h-7 rounded-full border border-neon-blue/30 object-cover"
+                   onerror="this.src='/static/default_user.png'">
+              <span class="text-sm font-rajdhani text-gray-200 max-w-[80px] truncate">
+                {{ session.user.username }}
+              </span>
+              <i class="fas fa-chevron-down text-[10px] text-gray-500 transition-transform duration-200"
+                 :class="{ 'rotate-180': open }"></i>
+            </button>
+
+            <!-- Dropdown -->
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-150"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-100"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="absolute right-0 mt-2 w-56 bg-cyber-800 rounded-2xl cyber-border shadow-2xl py-2 z-50 origin-top-right">
+
+              <!-- User header -->
+              <div class="px-4 py-3 border-b border-gray-700/50">
+                <div class="flex items-center gap-3">
+                  <img src="{{ session.user.profile_pic or '/static/default_user.png' }}"
+                       class="w-9 h-9 rounded-full border border-neon-blue/30 object-cover"
+                       onerror="this.src='/static/default_user.png'">
+                  <div class="min-w-0">
+                    <p class="text-sm font-semibold text-white truncate">{{ session.user.username }}</p>
+                    <p class="text-xs text-gray-500 truncate">{{ session.user.email }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Menu items -->
+              <div class="py-1">
+                <a href="/dashboard"
+                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300
+                          hover:bg-neon-blue/5 hover:text-neon-blue font-rajdhani transition-colors">
+                  <i class="fas fa-chart-line text-neon-blue/70 w-4 text-center text-xs"></i> Dashboard
+                </a>
+                <a href="{{ url_for('wallet.wallet') }}"
+                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300
+                          hover:bg-neon-blue/5 hover:text-neon-blue font-rajdhani transition-colors">
+                  <i class="fas fa-wallet text-neon-blue/70 w-4 text-center text-xs"></i> Wallet
+                </a>
+                <a href="/settings/profile"
+                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300
+                          hover:bg-neon-blue/5 hover:text-neon-blue font-rajdhani transition-colors">
+                  <i class="fas fa-user-cog text-neon-blue/70 w-4 text-center text-xs"></i> Settings
+                </a>
+              </div>
+
+              {% if session.user.role == "admin" %}
+              <div class="border-t border-gray-700/50 py-1">
+                <a href="/admin"
+                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-400
+                          hover:bg-red-900/20 font-rajdhani transition-colors">
+                  <i class="fas fa-shield-alt w-4 text-center text-xs"></i> Admin Panel
+                </a>
+              </div>
+              {% endif %}
+
+              <div class="border-t border-gray-700/50 py-1">
+                <a href="/logout"
+                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-400
+                          hover:bg-red-900/10 font-rajdhani transition-colors">
+                  <i class="fas fa-sign-out-alt w-4 text-center text-xs"></i> Logout
+                </a>
+              </div>
+
+            </div>
+          </div>
+
+        {% else %}
+          <a href="/login"
+             class="px-5 py-2 rounded-xl font-semibold text-sm font-rajdhani text-white
+                    bg-gradient-to-r from-neon-blue to-neon-purple
+                    hover:opacity-90 transition shadow-lg shadow-neon-blue/20">
+            Login
+          </a>
+          <a href="/signup"
+             class="cyber-button px-5 py-2 rounded-xl font-semibold text-sm font-rajdhani text-white">
+            Sign Up
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Mobile hamburger -->
+      <button onclick="toggleMobile()"
+              class="md:hidden cyber-button p-2 rounded-lg text-neon-blue">
+        <i class="fas fa-bars text-lg" id="hamburgerIcon"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu"
+       class="md:hidden hidden bg-cyber-900/95 backdrop-blur-lg border-t border-neon-blue/15 shadow-2xl">
+    <div class="px-4 pt-3 pb-6 space-y-1">
+
+      {% if session.user %}
+      <!-- Mobile user card -->
+      <div class="flex items-center gap-3 px-3 py-3 mb-2 bg-cyber-800 rounded-xl border border-neon-blue/10">
+        <img src="{{ session.user.profile_pic or '/static/default_user.png' }}"
+             class="w-10 h-10 rounded-full border border-neon-blue/30 object-cover"
+             onerror="this.src='/static/default_user.png'">
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-semibold text-white truncate">{{ session.user.username }}</p>
+          <p class="text-xs text-yellow-400 font-rajdhani">${{ current_credit }} balance</p>
+        </div>
+        <!-- Mobile notification count badge -->
+        {% if unread_notif_count > 0 %}
+        <span class="text-[9px] font-bold font-orbitron px-1.5 py-0.5 rounded-full flex-shrink-0"
+              style="background:linear-gradient(135deg,#00f3ff,#bd00ff); color:#0a0a16;">
+          {{ unread_notif_count if unread_notif_count <= 9 else '9+' }}
+        </span>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <a href="/marketplace" class="flex items-center gap-3 px-3 py-2.5 rounded-xl
+         font-rajdhani text-gray-300 hover:bg-neon-blue/5 hover:text-neon-blue transition-colors">
+        <i class="fas fa-store text-neon-blue/70 w-4 text-xs text-center"></i> Marketplace
+      </a>
+
+      {% if session.user %}
+        <a href="{{ url_for('chat.inbox') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl
+           font-rajdhani text-gray-300 hover:bg-neon-blue/5 hover:text-neon-blue transition-colors">
+          <i class="fas fa-comments text-neon-blue/70 w-4 text-xs text-center"></i> Inbox
+        </a>
+        <a href="/dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-xl
+           font-rajdhani text-gray-300 hover:bg-neon-blue/5 hover:text-neon-blue transition-colors">
+          <i class="fas fa-chart-line text-neon-blue/70 w-4 text-xs text-center"></i> Dashboard
+        </a>
+        <a href="{{ url_for('wallet.wallet') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl
+           font-rajdhani text-gray-300 hover:bg-neon-blue/5 hover:text-neon-blue transition-colors">
+          <i class="fas fa-wallet text-neon-blue/70 w-4 text-xs text-center"></i> Wallet
+        </a>
+        <a href="/add_listing" class="flex items-center gap-3 px-3 py-2.5 rounded-xl
+           font-rajdhani text-gray-300 hover:bg-neon-blue/5 hover:text-neon-blue transition-colors">
+          <i class="fas fa-plus-circle text-neon-blue/70 w-4 text-xs text-center"></i> Sell
+        </a>
+        <a href="/settings/profile" class="flex items-center gap-3 px-3 py-2.5 rounded-xl
+           font-rajdhani text-gray-300 hover:bg-neon-blue/5 hover:text-neon-blue transition-colors">
+          <i class="fas fa-user-cog text-neon-blue/70 w-4 text-xs text-center"></i> Settings
+        </a>
+
+        <!-- Mobile: Notifications link -->
+        <a href="/dashboard" class="flex items-center justify-between px-3 py-2.5 rounded-xl
+           font-rajdhani text-gray-300 hover:bg-neon-blue/5 hover:text-neon-blue transition-colors">
+          <span class="flex items-center gap-3">
+            <i class="fas fa-bell text-neon-blue/70 w-4 text-xs text-center"></i> Notifications
+          </span>
+          {% if unread_notif_count > 0 %}
+          <span class="text-[9px] font-bold font-orbitron px-1.5 py-0.5 rounded-full"
+                style="background:linear-gradient(135deg,#00f3ff,#bd00ff); color:#0a0a16;">
+            {{ unread_notif_count if unread_notif_count <= 9 else '9+' }}
+          </span>
+          {% endif %}
+        </a>
+
+        {% if session.user.role == "admin" %}
+        <a href="/admin" class="flex items-center gap-3 px-3 py-2.5 rounded-xl
+           font-rajdhani text-red-400 hover:bg-red-900/10 transition-colors">
+          <i class="fas fa-shield-alt w-4 text-xs text-center"></i> Admin Panel
+        </a>
+        {% endif %}
+
+        <div class="pt-2 mt-1 border-t border-gray-800">
+          <a href="/logout" class="flex items-center gap-3 px-3 py-2.5 rounded-xl
+             font-rajdhani text-red-400 hover:bg-red-900/10 transition-colors">
+            <i class="fas fa-sign-out-alt w-4 text-xs text-center"></i> Logout
+          </a>
+        </div>
+      {% else %}
+        <div class="flex gap-3 pt-2">
+          <a href="/login"  class="flex-1 text-center py-2.5 rounded-xl font-rajdhani text-white text-sm
+                                   bg-gradient-to-r from-neon-blue to-neon-purple">Login</a>
+          <a href="/signup" class="flex-1 text-center py-2.5 rounded-xl font-rajdhani text-white text-sm cyber-button">Sign Up</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<!-- ── FLASH MESSAGES ── -->
+<main class="flex-grow" style="position:relative; z-index:1">
+  <div class="max-w-4xl mx-auto mt-4 px-4 space-y-2">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-{{ category }} flex items-start gap-3 px-4 py-3 rounded-xl
+                      border animate-slide-down" id="flash-{{ loop.index }}">
+            <i class="fas fa-
+              {%- if category == 'danger'  %}exclamation-circle text-red-400
+              {%- elif category == 'success' %}check-circle text-green-400
+              {%- elif category == 'warning' %}exclamation-triangle text-yellow-400
+              {%- else %}info-circle text-neon-blue{%- endif %}
+              flex-shrink-0 mt-0.5 text-sm"></i>
+            <span class="text-sm font-rajdhani flex-1 leading-snug">{{ message | safe }}</span>
+            <button onclick="this.parentElement.remove()"
+                    class="text-gray-600 hover:text-white transition ml-2 flex-shrink-0">
+              <i class="fas fa-times text-xs"></i>
+            </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  {% block content %}{% endblock %}
+</main>
+
+<!-- ── FOOTER ── -->
+<footer class="mt-20 border-t border-neon-blue/10" style="background: rgba(10,10,22,0.97)">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
+
+      <!-- Brand -->
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <!-- XSM X icon (footer — same SVG, slightly smaller) -->
+          <svg width="32" height="32" viewBox="0 0 36 36" fill="none"
+               xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+            <defs>
+              <linearGradient id="fg1" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stop-color="#60c8ff"/>
+                <stop offset="50%"  stop-color="#7b8cff"/>
+                <stop offset="100%" stop-color="#a855f7"/>
+              </linearGradient>
+              <linearGradient id="fg2" x1="36" y1="0" x2="0" y2="36" gradientUnits="userSpaceOnUse">
+                <stop offset="0%"   stop-color="#93c5fd" stop-opacity="0.95"/>
+                <stop offset="100%" stop-color="#c4b5fd" stop-opacity="0.7"/>
+              </linearGradient>
+            </defs>
+            <polyline points="2,2 18,18 2,34"  stroke="url(#fg1)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <polyline points="7,2 18,14 7,34"  stroke="url(#fg2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.85"/>
+            <polyline points="34,2 18,18 34,34" stroke="url(#fg1)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <polyline points="29,2 18,14 29,34" stroke="url(#fg2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.85"/>
+          </svg>
+
+          <div class="flex flex-col leading-none">
+            <span class="text-base font-bold font-orbitron tracking-widest
+                         bg-gradient-to-r from-neon-blue to-neon-cyan bg-clip-text text-transparent">XSM</span>
+            <span class="text-[8px] text-gray-500 font-rajdhani tracking-[0.3em] uppercase">Marketplace</span>
+          </div>
+        </div>
+        <p class="text-gray-500 text-sm font-rajdhani leading-relaxed">
+          The most secure marketplace for buying and selling premium digital assets.
+          Every transaction protected by escrow.
+        </p>
+        <div class="mt-5 flex items-center gap-2">
+          {% for icon in ['twitter','instagram','telegram'] %}
+          <a href="#" class="w-8 h-8 rounded-lg cyber-border flex items-center justify-center
+                             text-gray-500 hover:text-neon-blue hover:border-neon-blue/40 transition-colors">
+            <i class="fab fa-{{ icon }} text-sm"></i>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Platform -->
+      <div>
+        <h4 class="text-xs font-bold text-gray-400 font-orbitron tracking-widest mb-4 uppercase">Platform</h4>
+        <ul class="space-y-2.5">
+          <li><a href="/marketplace" class="text-gray-500 hover:text-neon-blue text-sm font-rajdhani transition-colors">Browse Listings</a></li>
+          <li><a href="/add_listing" class="text-gray-500 hover:text-neon-blue text-sm font-rajdhani transition-colors">Sell a Digital Asset</a></li>
+          {% if session.user %}
+          <li><a href="/dashboard"   class="text-gray-500 hover:text-neon-blue text-sm font-rajdhani transition-colors">My Dashboard</a></li>
+          <li><a href="{{ url_for('wallet.wallet') }}" class="text-gray-500 hover:text-neon-blue text-sm font-rajdhani transition-colors">My Wallet</a></li>
+          {% else %}
+          <li><a href="/login"  class="text-gray-500 hover:text-neon-blue text-sm font-rajdhani transition-colors">Login</a></li>
+          <li><a href="/signup" class="text-gray-500 hover:text-neon-blue text-sm font-rajdhani transition-colors">Create Account</a></li>
+          {% endif %}
+        </ul>
+      </div>
+
+      <!-- Support -->
+      <div>
+        <h4 class="text-xs font-bold text-gray-400 font-orbitron tracking-widest mb-4 uppercase">Support</h4>
+        <ul class="space-y-2.5">
+          <li><a href="/contact"        class="text-gray-500 hover:text-neon-blue text-sm font-rajdhani transition-colors">Contact Us</a></li>
+          <li><a href="/privacy-policy" class="text-gray-500 hover:text-neon-blue text-sm font-rajdhani transition-colors">Privacy Policy</a></li>
+          <li><a href="/terms"          class="text-gray-500 hover:text-neon-blue text-sm font-rajdhani transition-colors">Terms of Service</a></li>
+        </ul>
+        <div class="mt-5 inline-flex items-center gap-2 px-3 py-2 rounded-xl
+                    bg-green-900/20 border border-green-700/30">
+          <i class="fas fa-shield-alt text-green-400 text-xs"></i>
+          <span class="text-green-400 text-xs font-rajdhani font-semibold">Escrow Protected</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="border-t border-gray-800/80 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="text-gray-700 text-xs font-rajdhani">© 2026 XSM Marketplace. All rights reserved.</p>
+      <div class="flex gap-5">
+        <a href="/privacy-policy" class="text-gray-700 hover:text-gray-400 text-xs font-rajdhani transition-colors">Privacy</a>
+        <a href="/terms"          class="text-gray-700 hover:text-gray-400 text-xs font-rajdhani transition-colors">Terms</a>
+        <a href="/contact"        class="text-gray-700 hover:text-gray-400 text-xs font-rajdhani transition-colors">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+<script>
+  /* ── Mobile menu ── */
+  function toggleMobile() {
+    const menu = document.getElementById('mobile-menu');
+    const icon = document.getElementById('hamburgerIcon');
+    const open = menu.classList.toggle('hidden');
+    icon.className = open ? 'fas fa-bars text-lg' : 'fas fa-times text-lg';
+  }
+
+  /* ── Ambient particles ── */
+  function createParticles() {
+    const c = document.getElementById('particles');
+    for (let i = 0; i < 25; i++) {
+      const p  = document.createElement('div');
+      p.className = 'particle';
+      const s  = Math.random() * 2.5 + 0.5;
+      const op = (Math.random() * 0.2 + 0.05).toFixed(2);
+      p.style.cssText = [
+        `width:${s}px`, `height:${s}px`,
+        `left:${Math.random()*100}vw`,
+        `top:${Math.random()*100}vh`,
+        `opacity:${op}`,
+        `animation-duration:${12 + Math.random()*12}s`,
+        `animation-delay:-${Math.random()*10}s`
+      ].join(';');
+      c.appendChild(p);
+    }
+  }
+
+  /* ── Auto-dismiss flash messages after 5s ── */
+  function autoDismissFlash() {
+    document.querySelectorAll('[id^="flash-"]').forEach(el => {
+      setTimeout(() => {
+        el.style.transition = 'opacity 0.4s ease';
+        el.style.opacity    = '0';
+        setTimeout(() => el.remove(), 400);
+      }, 5000);
+    });
+  }
+
+  /* ════════════════════════════════════════════
+     NOTIFICATION SYSTEM
+  ════════════════════════════════════════════ */
+  const NOTIF_COLORS = {
+    success: '#00ff8e',
+    info:    '#00f3ff',
+    warning: '#ffc107',
+    danger:  '#ff5c5c',
+  };
+  const NOTIF_ICONS = {
+    success: 'fa-check-circle',
+    info:    'fa-info-circle',
+    warning: 'fa-exclamation-triangle',
+    danger:  'fa-times-circle',
+  };
+
+  function setNotifCount(n) {
+    const widget = document.getElementById('notifWidget');
+    if (!widget) return;
+    const el = widget.querySelector('[x-data]') || widget;
+    if (el._x_dataStack && el._x_dataStack[0]) {
+      el._x_dataStack[0].count = n;
+    }
+  }
+
+  async function loadNotifs() {
+    const list  = document.getElementById('notif-list');
+    if (!list) return;
+
+    try {
+      const res  = await fetch('/api/notifications');
+      const data = await res.json();
+
+      if (!data.notifications || data.notifications.length === 0) {
+        list.innerHTML = `
+          <div class="px-4 py-8 text-center">
+            <i class="fas fa-bell-slash text-gray-700 text-2xl mb-2 block"></i>
+            <p class="text-xs text-gray-600 font-rajdhani">No notifications yet</p>
+          </div>`;
+        setNotifCount(0);
+        return;
+      }
+
+      list.innerHTML = data.notifications.map(n => `
+        <a href="${n.link}"
+           onclick="markRead('${n.id}')"
+           class="flex items-start gap-3 px-4 py-3 transition-colors
+                  hover:bg-white/5 block ${n.read ? 'opacity-50' : ''}"
+           style="border-bottom:1px solid rgba(255,255,255,0.04);">
+          <i class="fas ${NOTIF_ICONS[n.type] || 'fa-bell'} text-xs mt-0.5 flex-shrink-0"
+             style="color:${NOTIF_COLORS[n.type] || '#00f3ff'}"></i>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-rajdhani text-gray-300 leading-snug">${n.message}</p>
+            <p class="text-[10px] text-gray-600 mt-0.5 font-rajdhani">
+              ${n.created_at ? n.created_at.slice(0,10) : ''}
+            </p>
+          </div>
+          ${!n.read
+            ? `<span class="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5"
+                          style="background:#00f3ff; box-shadow:0 0 4px #00f3ff;"></span>`
+            : ''}
+        </a>
+      `).join('');
+
+      setNotifCount(data.unread);
+
+    } catch(e) {
+      if (list) list.innerHTML = `
+        <p class="px-4 py-6 text-center text-xs text-gray-600 font-rajdhani">
+          Failed to load notifications.
+        </p>`;
+    }
+  }
+
+  async function markRead(id) {
+    try {
+      await fetch('/api/notifications/mark_read', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ id }),
+      });
+    } catch(e) {}
+  }
+
+  async function markAllRead() {
+    try {
+      await fetch('/api/notifications/mark_read', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({}),
+      });
+      const list = document.getElementById('notif-list');
+      if (list) list.innerHTML = `
+        <div class="px-4 py-8 text-center">
+          <i class="fas fa-check-circle text-green-700 text-2xl mb-2 block"></i>
+          <p class="text-xs text-gray-600 font-rajdhani">All caught up!</p>
+        </div>`;
+      setNotifCount(0);
+    } catch(e) {}
+  }
+
+  async function pollNotifCount() {
+    if (document.hidden) return;
+    try {
+      const res  = await fetch('/api/notifications');
+      const data = await res.json();
+      setNotifCount(data.unread || 0);
+
+      const creditEl = document.getElementById('navCredit');
+      if (creditEl && data.credit !== undefined) {
+        creditEl.textContent = `$${data.credit}`;
+      }
+    } catch(e) {}
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    createParticles();
+    autoDismissFlash();
+
+    {% if session.user %}
+    setInterval(pollNotifCount, 60000);
+    {% endif %}
+  });
+</script>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>
