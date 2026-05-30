@@ -44,7 +44,7 @@ def write_audit(action: str, admin_uid: str, admin_name: str,
 
 def send_email(to: str, subject: str, body: str):
     try:
-        yagmail.SMTP(GMAIL_USER, GMAIL_APP_PASSWORD).send(
+        yagmail.SMTP({GMAIL_USER: "XSM Marketplace"}, GMAIL_APP_PASSWORD).send(
             to=to, subject=subject, contents=body
         )
     except Exception as e:

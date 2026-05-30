@@ -376,7 +376,7 @@ def contact():
         email   = request.form.get("email","").strip()
         message = request.form.get("message","").strip()
         try:
-            yagmail.SMTP(GMAIL_USER, GMAIL_APP_PASSWORD).send(
+            yagmail.SMTP({GMAIL_USER: "XSM Marketplace"}, GMAIL_APP_PASSWORD).send(
                 to=GMAIL_USER,
                 subject=f"Contact: {name}",
                 contents=f"From: {name} ({email})\n\n{message}",

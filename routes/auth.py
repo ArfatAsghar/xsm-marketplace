@@ -250,7 +250,7 @@ def forgot():
         try:
             user_record = admin_auth.get_user_by_email(email)
             otp = "".join(random.choices(string.digits, k=6))
-            yagmail.SMTP(GMAIL_USER, GMAIL_APP_PASSWORD).send(
+            yagmail.SMTP({GMAIL_USER: "XSM Marketplace"}, GMAIL_APP_PASSWORD).send(
                 email, "XSM Password Reset Code", f"Your reset code is: {otp}"
             )
             session.update({
@@ -294,7 +294,7 @@ def resend_otp():
         return redirect(url_for("auth.forgot"))
     try:
         otp = "".join(random.choices(string.digits, k=6))
-        yagmail.SMTP(GMAIL_USER, GMAIL_APP_PASSWORD).send(
+        yagmail.SMTP({GMAIL_USER: "XSM Marketplace"}, GMAIL_APP_PASSWORD).send(
             email, "XSM Password Reset Code", f"Your new code is: {otp}"
         )
         session["reset_otp"]  = otp
@@ -378,3 +378,67 @@ def settings_profile():
         return redirect(url_for("auth.settings_profile"))
 
     return render_template("settings_profile.html", user=user_ref.get() or {})
+
+
+@auth_bp.route("/auth/google", methods=["POST"])
+def auth_google():
+    try:
+        data = request.get_json() or {}
+        id_token = data.get("idToken")
+        if not id_token:
+            return {"status": "error", "message": "Missing ID Token"}, 400
+
+        decoded_token = admin_auth.verify_id_token(id_token)
+        uid = decoded_token["uid"]
+        email = decoded_token.get("email")
+        name = decoded_token.get("name")
+        picture = decoded_token.get("picture")
+
+        user_ref = safe_db_reference("users", uid)
+        profile = user_ref.get()
+
+        if not profile:
+            profile = {
+                "username":       name or (email.split("@")[0] if email else "User"),
+                "email":          email or "",
+                "role":           "user",
+                "profile_pic":    picture or "/static/default_user.png",
+                "dob":            "",
+                "address":        "",
+                "phone":          "",
+                "country_code":   "",
+                "average_rating": 0.0,
+                "credit":         0,
+                "email_verified": True,
+                "verified":       False,
+                "kyc_verified":   False,
+                "created_at":     dt.now().isoformat(),
+            }
+            user_ref.set(profile)
+            invalidate_users_cache()
+        else:
+            if not profile.get("email_verified"):
+                user_ref.update({"email_verified": True})
+                profile["email_verified"] = True
+                invalidate_users_cache()
+
+        # Set Flask Session
+        pic = profile.get("profile_pic") or "/static/default_user.png"
+        if pic and not pic.startswith("/static/") and not pic.startswith("http"):
+            pic = f"/static/profile_pics/{pic}"
+
+        session.permanent = True
+        session["user"] = {
+            "uid":         uid,
+            "email":       profile.get("email"),
+            "username":    profile.get("username", "User"),
+            "role":        profile.get("role", "user"),
+            "profile_pic": pic,
+            "credit":      int(profile.get("credit", 0)),
+        }
+
+        return {"status": "success", "redirect": url_for("misc.dashboard")}
+    except Exception as e:
+        print(f"[GOOGLE AUTH ERROR] {e}")
+        return {"status": "error", "message": str(e)}, 500
+
