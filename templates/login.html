@@ -48,6 +48,7 @@
     </div>
   </div>
 </div>
+{% endblock %}
 
 {% block scripts %}
 <!-- Firebase Compat SDKs -->
@@ -62,25 +63,27 @@
     databaseURL: "https://xsm-market-default-rtdb.firebaseio.com"
   };
 
-  firebase.initializeApp(firebaseConfig);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
 
   async function loginWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
     const btn = document.getElementById("googleBtn");
-    
+
     try {
       btn.disabled = true;
       btn.innerHTML = `<i class="fas fa-circle-notch fa-spin text-sm"></i> Connecting…`;
-      
+
       const result = await firebase.auth().signInWithPopup(provider);
       const idToken = await result.user.getIdToken();
-      
+
       const response = await fetch("/auth/google", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idToken })
       });
-      
+
       const data = await response.json();
       if (data.status === "success") {
         window.location.href = data.redirect;
@@ -109,5 +112,4 @@
     `;
   }
 </script>
-{% endblock %}
 {% endblock %}
