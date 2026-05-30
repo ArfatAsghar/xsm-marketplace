@@ -110,5 +110,23 @@ def create_app() -> Flask:
 
 app = create_app()
 
+# ── Google Search Console ownership verification ──────────────────────────────
+from flask import Response as _Response
+
+@app.route("/google52150855c235b99a.html")
+def gsc_verify_old():
+    return _Response(
+        "google-site-verification: google52150855c235b99a.html",
+        mimetype="text/html"
+    )
+
+@app.route("/google3fa371a423b58e26.html")
+def gsc_verify_new():
+    return _Response(
+        "google-site-verification: google3fa371a423b58e26.html",
+        mimetype="text/html"
+    )
+# ─────────────────────────────────────────────────────────────────────────────
+
 if __name__ == "__main__":
     app.run(debug=True)
