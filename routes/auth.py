@@ -199,6 +199,7 @@ def login():
                 "role":        profile.get("role", "user"),
                 "profile_pic": pic,
                 "credit":      int(profile.get("credit", 0)),
+                "theme":       profile.get("theme", "cyberpunk"),
             }
             safe_db_reference("users", uid).update({"email_verified": True})
             session.pop("unverified_token", None)
@@ -363,7 +364,7 @@ def settings_profile():
                 flash("Invalid file type.", "danger")
                 return redirect(url_for("auth.settings_profile"))
 
-        for field in ("phone", "address", "bio"):
+        for field in ("phone", "address", "bio", "theme"):
             val = request.form.get(field, "").strip()
             if val:
                 updates[field] = val
@@ -371,6 +372,9 @@ def settings_profile():
         if updates:
             user_ref.update(updates)
             invalidate_users_cache()
+            if "theme" in updates:
+                session["user"]["theme"] = updates["theme"]
+                session.modified = True
             flash("Profile updated!", "success")
         else:
             flash("No changes detected.", "info")
@@ -435,6 +439,7 @@ def auth_google():
             "role":        profile.get("role", "user"),
             "profile_pic": pic,
             "credit":      int(profile.get("credit", 0)),
+            "theme":       profile.get("theme", "cyberpunk"),
         }
 
         return {"status": "success", "redirect": url_for("misc.dashboard")}

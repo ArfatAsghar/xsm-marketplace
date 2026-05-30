@@ -24,7 +24,9 @@ def inject_globals():
         try:
             user_data = safe_db_reference("users", uid).get() or {}
             credit    = int(user_data.get("credit", 0))
+            theme     = user_data.get("theme", "cyberpunk")
             session["user"]["credit"] = credit
+            session["user"]["theme"]  = theme
             session.modified = True
         except Exception:
             pass

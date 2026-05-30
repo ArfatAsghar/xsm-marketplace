@@ -119,6 +119,7 @@ def add_listing():
             ref = safe_db_reference("listings").push({
                 "platform":    request.form.get("platform","").strip(),
                 "username":    request.form.get("username","").strip(),
+                "page_link":   request.form.get("page_link","").strip(),
 
                 "followers":   request.form.get("followers","").strip(),
                 "price":       float(request.form.get("price",0) or 0),
@@ -201,7 +202,7 @@ def edit_listing(listing_id):
 
     if request.method == "POST":
         update = {k: request.form.get(k) for k in
-                  ("platform","username","followers","price","description","topic","income")}
+                  ("platform","username","followers","price","description","topic","income", "page_link")}
         thumb = request.form.get("thumbnail","").strip()
         if thumb:
             update["thumbnail"] = thumb

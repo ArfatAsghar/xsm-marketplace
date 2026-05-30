@@ -31,7 +31,7 @@
 
           {# ── 2FA code bubble ── #}
           {% if msg.get('type') == '2fa_code' %}
-            <div class="flex justify-center">
+            <div class="flex justify-center" data-msg-key="{{ msg_id }}">
               <div class="bg-indigo-900 border border-indigo-500 rounded-2xl px-6 py-3 text-center max-w-xs">
                 <p class="text-xs text-indigo-300 font-semibold mb-1">🔐 2FA Verification Code</p>
                 <p class="text-3xl font-mono font-bold text-white tracking-widest">{{ msg.message }}</p>
@@ -41,7 +41,7 @@
 
           {# ── Normal message bubble ── #}
           {% else %}
-            <div class="flex {% if is_me %}justify-end{% else %}justify-start{% endif %} items-end gap-2">
+            <div class="flex {% if is_me %}justify-end{% else %}justify-start{% endif %} items-end gap-2" data-msg-key="{{ msg_id }}">
 
               {% if not is_me %}
                 <img src="{{ other_user_pic }}" class="w-7 h-7 rounded-full object-cover flex-shrink-0 mb-1">

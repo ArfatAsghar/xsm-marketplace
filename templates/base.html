@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="{{ session.user.theme if (session.user and session.user.theme) else 'cyberpunk' }}">
 <head>
   <meta charset="utf-8">
   <title>{% block title %}XSM Marketplace{% endblock %}</title>
@@ -44,8 +44,33 @@
         },
         extend: {
           colors: {
-            neon:  { blue: '#00f3ff', purple: '#bd00ff', pink: '#ff00c8', green: '#00ff8e', cyan: '#00f3ff' },
-            cyber: { 900: '#0a0a16', 800: '#121226', 700: '#1a1a36', 600: '#222246' }
+            white: 'var(--text-white)',
+            gray: {
+              50: 'var(--text-50)',
+              100: 'var(--text-100)',
+              200: 'var(--text-200)',
+              300: 'var(--text-300)',
+              400: 'var(--text-400)',
+              500: 'var(--text-500)',
+              600: 'var(--text-600)',
+              700: 'var(--text-700)',
+              800: 'var(--text-800)',
+              900: 'var(--text-900)',
+              950: 'var(--text-950)',
+            },
+            neon: {
+              blue: 'var(--neon-blue)',
+              purple: 'var(--neon-purple)',
+              pink: 'var(--neon-pink)',
+              green: 'var(--neon-green)',
+              cyan: 'var(--neon-cyan)',
+            },
+            cyber: {
+              900: 'var(--cyber-900)',
+              800: 'var(--cyber-800)',
+              700: 'var(--cyber-700)',
+              600: 'var(--cyber-600)',
+            }
           },
           animation: {
             'fade-in':    'fadeIn 0.4s ease-out',
@@ -64,32 +89,236 @@
   </script>
 
   <style>
+    /* ── THEME DESIGN SYSTEM ── */
+    :root, [data-theme="cyberpunk"] {
+      --neon-blue: #00f3ff;
+      --neon-purple: #bd00ff;
+      --neon-pink: #ff00c8;
+      --neon-green: #00ff8e;
+      --neon-cyan: #00f3ff;
+
+      --cyber-900: #0a0a16;
+      --cyber-800: #121226;
+      --cyber-700: #1a1a36;
+      --cyber-600: #222246;
+
+      --text-white: #ffffff;
+      --text-50: #f9fafb;
+      --text-100: #f3f4f6;
+      --text-200: #e5e7eb;
+      --text-300: #d1d5db;
+      --text-400: #9ca3af;
+      --text-500: #6b7280;
+      --text-600: #4b5563;
+      --text-700: #374151;
+      --text-800: #1f2937;
+      --text-900: #111827;
+      --text-950: #030712;
+
+      --body-bg: #0a0a16;
+      --body-bg-gradient-1: rgba(0, 243, 255, 0.06);
+      --body-bg-gradient-2: rgba(189, 0, 255, 0.06);
+      --card-bg: rgba(18, 18, 38, 0.9);
+      --card-border: rgba(0, 243, 255, 0.12);
+      --btn-bg: rgba(10, 10, 22, 0.8);
+      --btn-border: rgba(0, 243, 255, 0.25);
+      --btn-border-hover: rgba(0, 243, 255, 0.6);
+      --btn-glow-hover: rgba(0, 243, 255, 0.2);
+      --nav-bg: rgba(10, 10, 22, 0.92);
+      --nav-border: rgba(0, 243, 255, 0.15);
+      --scrollbar-track: #0a0a16;
+      --scrollbar-thumb: rgba(0, 243, 255, 0.3);
+    }
+
+    [data-theme="midnight"] {
+      --neon-blue: #00ff8e;
+      --neon-purple: #00f3ff;
+      --neon-pink: #00ff8e;
+      --neon-green: #00ff8e;
+      --neon-cyan: #00f3ff;
+
+      --cyber-900: #000000;
+      --cyber-800: #080808;
+      --cyber-700: #121212;
+      --cyber-600: #1c1c1c;
+
+      --text-white: #ffffff;
+      --text-50: #f9fafb;
+      --text-100: #f3f4f6;
+      --text-200: #e5e7eb;
+      --text-300: #d1d5db;
+      --text-400: #a0a0a0;
+      --text-500: #707070;
+      --text-600: #444444;
+      --text-700: #303030;
+      --text-800: #202020;
+      --text-900: #101010;
+      --text-950: #000000;
+
+      --body-bg: #000000;
+      --body-bg-gradient-1: rgba(0, 255, 142, 0.05);
+      --body-bg-gradient-2: rgba(0, 243, 255, 0.05);
+      --card-bg: rgba(8, 8, 8, 0.95);
+      --card-border: rgba(0, 255, 142, 0.15);
+      --btn-bg: rgba(0, 0, 0, 0.85);
+      --btn-border: rgba(0, 255, 142, 0.3);
+      --btn-border-hover: rgba(0, 255, 142, 0.7);
+      --btn-glow-hover: rgba(0, 255, 142, 0.25);
+      --nav-bg: rgba(0, 0, 0, 0.95);
+      --nav-border: rgba(0, 255, 142, 0.25);
+      --scrollbar-track: #000000;
+      --scrollbar-thumb: rgba(0, 255, 142, 0.4);
+    }
+
+    [data-theme="amethyst"] {
+      --neon-blue: #bd00ff;
+      --neon-purple: #ff00c8;
+      --neon-pink: #ff00c8;
+      --neon-green: #9d00ff;
+      --neon-cyan: #e000ff;
+
+      --cyber-900: #0d0614;
+      --cyber-800: #170d24;
+      --cyber-700: #221434;
+      --cyber-600: #2e1d44;
+
+      --text-white: #ffffff;
+      --text-50: #fbf9fc;
+      --text-100: #f5f0f9;
+      --text-200: #ebe2f3;
+      --text-300: #dccae9;
+      --text-400: #b999d3;
+      --text-500: #936cbd;
+      --text-600: #6f4fa0;
+      --text-700: #543b7a;
+      --text-800: #372552;
+      --text-900: #1e1330;
+      --text-950: #0d0614;
+
+      --body-bg: #0d0614;
+      --body-bg-gradient-1: rgba(189, 0, 255, 0.08);
+      --body-bg-gradient-2: rgba(255, 0, 200, 0.08);
+      --card-bg: rgba(23, 13, 36, 0.9);
+      --card-border: rgba(189, 0, 255, 0.15);
+      --btn-bg: rgba(13, 6, 20, 0.8);
+      --btn-border: rgba(189, 0, 255, 0.3);
+      --btn-border-hover: rgba(255, 0, 200, 0.7);
+      --btn-glow-hover: rgba(189, 0, 255, 0.2);
+      --nav-bg: rgba(13, 6, 20, 0.95);
+      --nav-border: rgba(189, 0, 255, 0.2);
+      --scrollbar-track: #0d0614;
+      --scrollbar-thumb: rgba(189, 0, 255, 0.3);
+    }
+
+    [data-theme="emerald"] {
+      --neon-blue: #0d9488;
+      --neon-purple: #059669;
+      --neon-pink: #be185d;
+      --neon-green: #10b981;
+      --neon-cyan: #0f766e;
+
+      --cyber-900: #f9fafb;
+      --cyber-800: #ffffff;
+      --cyber-700: #f3f4f6;
+      --cyber-600: #e5e7eb;
+
+      --text-white: #0f172a;
+      --text-50: #0f172a;
+      --text-100: #1e293b;
+      --text-200: #334155;
+      --text-300: #475569;
+      --text-400: #64748b;
+      --text-500: #94a3b8;
+      --text-600: #cbd5e1;
+      --text-700: #e2e8f0;
+      --text-800: #f1f5f9;
+      --text-900: #f8fafc;
+      --text-950: #ffffff;
+
+      --body-bg: #f9fafb;
+      --body-bg-gradient-1: rgba(13, 148, 136, 0.05);
+      --body-bg-gradient-2: rgba(16, 185, 129, 0.05);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-border: rgba(13, 148, 136, 0.15);
+      --btn-bg: rgba(243, 244, 246, 0.9);
+      --btn-border: rgba(13, 148, 136, 0.25);
+      --btn-border-hover: rgba(13, 148, 136, 0.6);
+      --btn-glow-hover: rgba(13, 148, 136, 0.08);
+      --nav-bg: rgba(255, 255, 255, 0.95);
+      --nav-border: rgba(13, 148, 136, 0.15);
+      --scrollbar-track: #f9fafb;
+      --scrollbar-thumb: rgba(13, 148, 136, 0.3);
+    }
+
+    [data-theme="classic"] {
+      --neon-blue: #4f46e5;
+      --neon-purple: #7c3aed;
+      --neon-pink: #db2777;
+      --neon-green: #10b981;
+      --neon-cyan: #2563eb;
+
+      --cyber-900: #f8fafc;
+      --cyber-800: #ffffff;
+      --cyber-700: #f1f5f9;
+      --cyber-600: #e2e8f0;
+
+      --text-white: #0f172a;
+      --text-50: #0f172a;
+      --text-100: #1e293b;
+      --text-200: #334155;
+      --text-300: #475569;
+      --text-400: #64748b;
+      --text-500: #94a3b8;
+      --text-600: #cbd5e1;
+      --text-700: #e2e8f0;
+      --text-800: #f1f5f9;
+      --text-900: #f8fafc;
+      --text-950: #ffffff;
+
+      --body-bg: #f8fafc;
+      --body-bg-gradient-1: rgba(79, 70, 229, 0.05);
+      --body-bg-gradient-2: rgba(124, 58, 237, 0.05);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-border: rgba(79, 70, 229, 0.12);
+      --btn-bg: rgba(241, 245, 249, 0.9);
+      --btn-border: rgba(79, 70, 229, 0.25);
+      --btn-border-hover: rgba(79, 70, 229, 0.6);
+      --btn-glow-hover: rgba(79, 70, 229, 0.08);
+      --nav-bg: rgba(255, 255, 255, 0.95);
+      --nav-border: rgba(79, 70, 229, 0.15);
+      --scrollbar-track: #f8fafc;
+      --scrollbar-thumb: rgba(79, 70, 229, 0.3);
+    }
+
     *, *::before, *::after { box-sizing: border-box; }
 
     body {
-      background: #0a0a16;
+      background: var(--body-bg);
       background-image:
-        radial-gradient(ellipse at 20% 0%,  rgba(0,243,255,0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 100%, rgba(189,0,255,0.06) 0%, transparent 50%);
+        radial-gradient(ellipse at 20% 0%,  var(--body-bg-gradient-1) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, var(--body-bg-gradient-2) 0%, transparent 50%);
       overflow-x: hidden;
+      color: var(--text-200);
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     ::-webkit-scrollbar       { width: 6px; }
-    ::-webkit-scrollbar-track { background: #0a0a16; }
-    ::-webkit-scrollbar-thumb { background: rgba(0,243,255,0.3); border-radius: 3px; }
+    ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+    ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
 
     input, select, textarea { font-size: 16px !important; }
 
-    .cyber-border  { border: 1px solid rgba(0,243,255,0.25); box-shadow: 0 0 12px rgba(0,243,255,0.08); }
-    .cyber-card    { background: rgba(18,18,38,0.9); border: 1px solid rgba(0,243,255,0.12); border-radius: 1rem; backdrop-filter: blur(8px); }
-    .cyber-button  { background: rgba(10,10,22,0.8); border: 1px solid rgba(0,243,255,0.25); transition: all 0.25s ease; }
-    .cyber-button:hover { border-color: rgba(0,243,255,0.6); box-shadow: 0 0 16px rgba(0,243,255,0.2); }
+    .cyber-border  { border: 1px solid var(--btn-border); box-shadow: 0 0 12px var(--btn-glow-hover); }
+    .cyber-card    { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 1rem; backdrop-filter: blur(8px); }
+    .cyber-button  { background: var(--btn-bg); border: 1px solid var(--btn-border); transition: all 0.25s ease; }
+    .cyber-button:hover { border-color: var(--btn-border-hover); box-shadow: 0 0 16px var(--btn-glow-hover); }
 
     .nav-gradient {
-      background: rgba(10,10,22,0.92);
+      background: var(--nav-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(0,243,255,0.15);
+      border-bottom: 1px solid var(--nav-border);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
     .nav-link { position: relative; }
@@ -98,17 +327,17 @@
       position: absolute;
       bottom: -3px; left: 0;
       width: 0; height: 1px;
-      background: linear-gradient(90deg, #00f3ff, #bd00ff);
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
       transition: width 0.3s ease;
     }
     .nav-link:hover::after { width: 100%; }
 
-    .glow-text { text-shadow: 0 0 20px rgba(0,243,255,0.5); }
+    .glow-text { text-shadow: 0 0 20px var(--neon-blue); }
 
     .particle {
       position: fixed;
       border-radius: 50%;
-      background: rgba(0,243,255,0.25);
+      background: var(--neon-blue);
       animation: float 15s infinite linear;
       pointer-events: none;
       z-index: 0;
@@ -120,21 +349,21 @@
     .flash-success { background: rgba(0,255,100,0.08); border-color: rgba(0,255,100,0.3); }
     .flash-danger  { background: rgba(255,50,50,0.08);  border-color: rgba(255,50,50,0.3);  }
     .flash-warning { background: rgba(255,200,0,0.08);  border-color: rgba(255,200,0,0.3);  }
-    .flash-info    { background: rgba(0,243,255,0.08);  border-color: rgba(0,243,255,0.3);  }
+    .flash-info    { background: var(--btn-glow-hover);  border-color: var(--btn-border);  }
 
     /* Notification dropdown scrollbar */
     #notif-list::-webkit-scrollbar { width: 4px; }
     #notif-list::-webkit-scrollbar-track { background: transparent; }
-    #notif-list::-webkit-scrollbar-thumb { background: rgba(0,243,255,0.2); border-radius: 2px; }
+    #notif-list::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 2px; }
 
     /* XSM logo hover glow */
     .xsm-logo-wrap:hover .xsm-svg-icon {
-      filter: drop-shadow(0 0 8px rgba(0,243,255,0.55));
+      filter: drop-shadow(0 0 8px var(--neon-blue));
     }
   </style>
 </head>
 
-<body class="text-gray-200 min-h-screen flex flex-col font-sans">
+<body class="min-h-screen flex flex-col font-sans">
 
 <!-- Ambient particles -->
 <div id="particles" class="fixed inset-0 pointer-events-none overflow-hidden" style="z-index:0"></div>
@@ -152,14 +381,13 @@
           <defs>
             <!-- Primary blue→purple gradient (outer bars) -->
             <linearGradient id="xg1" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-              <stop offset="0%"   stop-color="#60c8ff"/>
-              <stop offset="50%"  stop-color="#7b8cff"/>
-              <stop offset="100%" stop-color="#a855f7"/>
+              <stop offset="0%"   stop-color="var(--neon-blue)"/>
+              <stop offset="100%" stop-color="var(--neon-purple)"/>
             </linearGradient>
             <!-- Lighter inner highlight bars -->
             <linearGradient id="xg2" x1="36" y1="0" x2="0" y2="36" gradientUnits="userSpaceOnUse">
-              <stop offset="0%"   stop-color="#93c5fd" stop-opacity="0.95"/>
-              <stop offset="100%" stop-color="#c4b5fd" stop-opacity="0.7"/>
+              <stop offset="0%"   stop-color="var(--neon-cyan)" stop-opacity="0.95"/>
+              <stop offset="100%" stop-color="var(--neon-purple)" stop-opacity="0.7"/>
             </linearGradient>
           </defs>
 
@@ -517,13 +745,12 @@
                xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
             <defs>
               <linearGradient id="fg1" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-                <stop offset="0%"   stop-color="#60c8ff"/>
-                <stop offset="50%"  stop-color="#7b8cff"/>
-                <stop offset="100%" stop-color="#a855f7"/>
+                <stop offset="0%"   stop-color="var(--neon-blue)"/>
+                <stop offset="100%" stop-color="var(--neon-purple)"/>
               </linearGradient>
               <linearGradient id="fg2" x1="36" y1="0" x2="0" y2="36" gradientUnits="userSpaceOnUse">
-                <stop offset="0%"   stop-color="#93c5fd" stop-opacity="0.95"/>
-                <stop offset="100%" stop-color="#c4b5fd" stop-opacity="0.7"/>
+                <stop offset="0%"   stop-color="var(--neon-cyan)" stop-opacity="0.95"/>
+                <stop offset="100%" stop-color="var(--neon-purple)" stop-opacity="0.7"/>
               </linearGradient>
             </defs>
             <polyline points="2,2 18,18 2,34"  stroke="url(#fg1)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>

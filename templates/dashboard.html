@@ -89,7 +89,17 @@
                alt="thumbnail" class="w-16 h-16 rounded-lg object-cover flex-shrink-0">
 
           <div class="flex-1">
-            <p class="text-lg font-bold">{{ listing.platform }} — @{{ listing.username }}</p>
+            <p class="text-lg font-bold">
+              {{ listing.platform }} — 
+              {% if listing.page_link %}
+                <a href="{{ listing.page_link }}" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:text-indigo-300 transition-colors inline-flex items-center gap-1">
+                  @{{ listing.username }}
+                  <i class="fas fa-external-link-alt text-xs opacity-75"></i>
+                </a>
+              {% else %}
+                @{{ listing.username }}
+              {% endif %}
+            </p>
             <p class="text-sm text-gray-400">{{ listing.followers }} followers • ${{ listing.price }}</p>
             <p class="text-sm text-gray-500">{{ listing.description }}</p>
 
@@ -159,7 +169,17 @@
           <img src="{{ listing.thumbnail or '/static/default_thumbnail.png' }}"
                class="w-14 h-14 rounded-lg object-cover flex-shrink-0" alt="thumb">
           <div>
-            <p class="font-bold">{{ listing.platform|capitalize }} — @{{ listing.username }}</p>
+            <p class="font-bold">
+              {{ listing.platform|capitalize }} — 
+              {% if listing.page_link %}
+                <a href="{{ listing.page_link }}" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:text-indigo-300 transition-colors inline-flex items-center gap-1">
+                  @{{ listing.username }}
+                  <i class="fas fa-external-link-alt text-xs opacity-75"></i>
+                </a>
+              {% else %}
+                @{{ listing.username }}
+              {% endif %}
+            </p>
             <p class="text-sm text-gray-400">{{ listing.followers }} followers · {{ listing.price }} cr</p>
             <span class="inline-block mt-1 px-2 py-0.5 text-xs rounded-full font-semibold
               {% if listing.status == 'completed' %}   bg-green-700 text-white
@@ -277,7 +297,17 @@
                alt="thumbnail" class="w-16 h-16 rounded-lg object-cover flex-shrink-0">
 
           <div class="flex-1">
-            <p class="text-lg font-bold">{{ listing.platform }} — @{{ listing.username }}</p>
+            <p class="text-lg font-bold">
+              {{ listing.platform }} — 
+              {% if listing.page_link %}
+                <a href="{{ listing.page_link }}" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:text-indigo-300 transition-colors inline-flex items-center gap-1">
+                  @{{ listing.username }}
+                  <i class="fas fa-external-link-alt text-xs opacity-75"></i>
+                </a>
+              {% else %}
+                @{{ listing.username }}
+              {% endif %}
+            </p>
             <p class="text-sm text-gray-400">{{ listing.followers }} followers • ${{ listing.price }}</p>
 
             <span class="inline-block mt-1 px-2 py-1 text-xs rounded-full font-semibold
@@ -425,7 +455,17 @@
                alt="thumbnail" class="w-16 h-16 rounded-lg object-cover flex-shrink-0">
 
           <div class="flex-1">
-            <p class="text-lg font-bold">{{ listing.platform }} — @{{ listing.username }}</p>
+            <p class="text-lg font-bold">
+              {{ listing.platform }} — 
+              {% if listing.page_link %}
+                <a href="{{ listing.page_link }}" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:text-indigo-300 transition-colors inline-flex items-center gap-1">
+                  @{{ listing.username }}
+                  <i class="fas fa-external-link-alt text-xs opacity-75"></i>
+                </a>
+              {% else %}
+                @{{ listing.username }}
+              {% endif %}
+            </p>
             <p class="text-sm text-gray-400">{{ listing.followers }} followers • ${{ listing.price }}</p>
             <span class="inline-block mt-1 px-2 py-1 text-xs rounded-full font-semibold bg-green-700 text-white">
               ✅ Completed

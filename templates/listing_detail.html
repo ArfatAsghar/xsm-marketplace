@@ -89,7 +89,14 @@
           <div class="absolute bottom-4 left-5">
             <h1 class="font-orbitron text-2xl sm:text-3xl font-bold tracking-tight"
                 style="text-shadow: 0 2px 20px rgba(0,0,0,0.9);">
-              @{{ listing.username }}
+              {% if listing.page_link %}
+                <a href="{{ listing.page_link }}" target="_blank" rel="noopener noreferrer" class="hover:text-neon-blue transition-colors inline-flex items-center gap-2">
+                  @{{ listing.username }}
+                  <i class="fas fa-external-link-alt text-xs opacity-75"></i>
+                </a>
+              {% else %}
+                @{{ listing.username }}
+              {% endif %}
             </h1>
           </div>
         </div>

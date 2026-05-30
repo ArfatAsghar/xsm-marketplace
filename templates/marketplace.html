@@ -149,7 +149,16 @@
 
         <!-- Username + price -->
         <div class="flex items-center justify-between mb-1">
-          <p class="font-bold text-white font-rajdhani truncate text-sm">@{{ listing.username }}</p>
+          <p class="font-bold text-white font-rajdhani truncate text-sm">
+            {% if listing.page_link %}
+              <a href="{{ listing.page_link }}" target="_blank" rel="noopener noreferrer" class="hover:text-neon-blue transition-colors inline-flex items-center gap-1">
+                @{{ listing.username }}
+                <i class="fas fa-external-link-alt text-[10px] opacity-75"></i>
+              </a>
+            {% else %}
+              @{{ listing.username }}
+            {% endif %}
+          </p>
           <p class="text-neon-blue font-bold font-orbitron text-xs flex-shrink-0 ml-2">${{ listing.price }}</p>
         </div>
 

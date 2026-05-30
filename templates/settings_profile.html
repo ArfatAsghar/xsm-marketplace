@@ -131,6 +131,39 @@
       </div>
     </div>
 
+    <!-- Theme & Style -->
+    <div class="bg-cyber-800 border border-neon-blue/10 rounded-2xl p-6 mb-5">
+      <h2 class="text-sm font-bold font-rajdhani text-gray-300 uppercase tracking-widest mb-4">
+        Theme &amp; Style
+      </h2>
+      <div>
+        <label class="block text-xs font-semibold font-rajdhani text-gray-300 mb-3">Select Theme</label>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          {% for th_id, th_name, th_desc in [
+            ('cyberpunk', 'Cyberpunk (Dark)', 'Neon cyan/purple accents, default dark mode'),
+            ('midnight', 'Midnight (Pure Black)', 'High contrast neon green/cyan on black'),
+            ('amethyst', 'Amethyst (Dark Violet)', 'Neon violet/pink accents on deep purple'),
+            ('emerald', 'Emerald (Light)', 'Teal/emerald accents on clean white/gray'),
+            ('classic', 'Classic (Light Indigo)', 'Indigo accents on soft off-white')
+          ] %}
+          <label class="theme-card flex flex-col p-3.5 rounded-xl cursor-pointer transition-all border select-none
+                        {% if (user.theme or 'cyberpunk') == th_id %}
+                          border-neon-blue bg-cyber-900/60
+                        {% else %}
+                          border-gray-700 bg-cyber-700/30 hover:border-gray-600
+                        {% endif %}"
+                 data-theme-id="{{ th_id }}">
+            <input type="radio" name="theme" value="{{ th_id }}" class="hidden"
+                   {% if (user.theme or 'cyberpunk') == th_id %}checked{% endif %}
+                   onchange="updateThemePreview(this.value)">
+            <span class="text-sm font-bold text-white">{{ th_name }}</span>
+            <span class="text-[10px] text-gray-500 mt-1 font-rajdhani leading-snug">{{ th_desc }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
     <!-- Account info -->
     <div class="bg-cyber-800 border border-neon-blue/10 rounded-2xl p-5 mb-6">
       <h2 class="text-sm font-bold font-rajdhani text-gray-300 uppercase tracking-widest mb-3">
@@ -197,6 +230,19 @@
 
 {% block scripts %}
 <script>
+  function updateThemePreview(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    
+    // Update border highlights of theme selection cards
+    document.querySelectorAll('.theme-card').forEach(card => {
+      if (card.dataset.themeId === theme) {
+        card.className = 'theme-card flex flex-col p-3.5 rounded-xl cursor-pointer transition-all border border-neon-blue bg-cyber-900/60 select-none';
+      } else {
+        card.className = 'theme-card flex flex-col p-3.5 rounded-xl cursor-pointer transition-all border border-gray-700 bg-cyber-700/30 hover:border-gray-600 select-none';
+      }
+    });
+  }
+
   function previewPic(input) {
     if (!input.files || !input.files[0]) return;
     const file = input.files[0];

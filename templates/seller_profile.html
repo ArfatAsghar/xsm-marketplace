@@ -286,7 +286,14 @@
       <div class="flex flex-col flex-1 p-4">
         <div class="flex items-start justify-between gap-2 mb-1.5">
           <h3 class="font-bold font-rajdhani text-white text-base truncate">
-            @{{ listing.username }}
+            {% if listing.page_link %}
+              <a href="{{ listing.page_link }}" target="_blank" rel="noopener noreferrer" class="hover:text-neon-blue transition-colors inline-flex items-center gap-1">
+                @{{ listing.username }}
+                <i class="fas fa-external-link-alt text-[10px] opacity-75"></i>
+              </a>
+            {% else %}
+              @{{ listing.username }}
+            {% endif %}
           </h3>
           <span class="flex items-center gap-1 text-[10px] font-rajdhani font-bold
                        text-green-400 flex-shrink-0 mt-0.5">
