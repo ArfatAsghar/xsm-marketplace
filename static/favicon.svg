@@ -1,0 +1,25 @@
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Primary blue→purple gradient (outer bars) -->
+    <linearGradient id="xg1" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#60c8ff"/>
+      <stop offset="50%" stop-color="#7b8cff"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <!-- Lighter inner highlight bars -->
+    <linearGradient id="xg2" x1="36" y1="0" x2="0" y2="36" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#93c5fd" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#c4b5fd" stop-opacity="0.7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- LEFT ARM outer (top-left ↘ centre ↗ bottom-left) -->
+  <polyline points="2,2 18,18 2,34" stroke="url(#xg1)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- LEFT ARM inner highlight -->
+  <polyline points="7,2 18,14 7,34" stroke="url(#xg2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.85"/>
+
+  <!-- RIGHT ARM outer (top-right ↙ centre ↖ bottom-right) -->
+  <polyline points="34,2 18,18 34,34" stroke="url(#xg1)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- RIGHT ARM inner highlight -->
+  <polyline points="29,2 18,14 29,34" stroke="url(#xg2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.85"/>
+</svg>
