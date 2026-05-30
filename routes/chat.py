@@ -91,6 +91,19 @@ def chat(buyer_uid, seller_uid):
         return redirect(url_for("chat.inbox"))
 
     chat_id   = "_".join(sorted([buyer_uid, seller_uid]))
+    
+    # Mark incoming messages from the other user as read
+    db_ref = safe_db_reference(f"chats/{chat_id}/messages")
+    messages_to_update = db_ref.get() or {}
+    if isinstance(messages_to_update, dict):
+        for msg_key, msg_data in messages_to_update.items():
+            if isinstance(msg_data, dict) and msg_data.get("sender") != current_uid and not msg_data.get("read", False):
+                db_ref.child(msg_key).update({"read": True})
+    elif isinstance(messages_to_update, list):
+        for index, msg_data in enumerate(messages_to_update):
+            if isinstance(msg_data, dict) and msg_data.get("sender") != current_uid and not msg_data.get("read", False):
+                db_ref.child(str(index)).update({"read": True})
+
     raw       = safe_db_reference(f"chats/{chat_id}/messages").get() or {}
     messages  = raw if isinstance(raw, dict) else {str(i): m for i, m in enumerate(raw)}
     other_uid = seller_uid if current_uid == buyer_uid else buyer_uid
@@ -111,6 +124,19 @@ def chat_messages_json(chat_id):
     parts = chat_id.split("_")
     if len(parts) != 2 or uid not in parts:
         return jsonify({"error": "forbidden"}), 403
+
+    # Mark incoming messages from the other user as read on active polling
+    db_ref = safe_db_reference(f"chats/{chat_id}/messages")
+    messages_to_update = db_ref.get() or {}
+    if isinstance(messages_to_update, dict):
+        for msg_key, msg_data in messages_to_update.items():
+            if isinstance(msg_data, dict) and msg_data.get("sender") != uid and not msg_data.get("read", False):
+                db_ref.child(msg_key).update({"read": True})
+    elif isinstance(messages_to_update, list):
+        for index, msg_data in enumerate(messages_to_update):
+            if isinstance(msg_data, dict) and msg_data.get("sender") != uid and not msg_data.get("read", False):
+                db_ref.child(str(index)).update({"read": True})
+
     raw  = safe_db_reference(f"chats/{chat_id}/messages").get() or {}
     msgs = raw if isinstance(raw, dict) else {str(i): m for i, m in enumerate(raw)}
     return jsonify({"messages": msgs})

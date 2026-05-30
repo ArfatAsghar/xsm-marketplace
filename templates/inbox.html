@@ -2,106 +2,130 @@
 {% block title %}Inbox — XSM Market{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto px-4 py-8">
+<div class="max-w-3xl mx-auto px-4 py-8">
 
-  <!-- Header -->
-  <div class="flex items-center justify-between mb-6">
-    <div>
-      <h1 class="text-2xl font-bold text-white">💬 Inbox</h1>
-      <p class="text-gray-500 text-sm mt-0.5">Your conversations with buyers and sellers</p>
+  <!-- Header Section with Premium Glassmorphism -->
+  <div class="cyber-card p-6 mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 transition-all duration-300">
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl"
+           style="background: linear-gradient(135deg, rgba(var(--neon-blue), 0.15), rgba(var(--neon-purple), 0.15)); border: 1px solid var(--card-border);">
+        💬
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-white font-orbitron">Inbox</h1>
+        <p class="text-gray-400 text-sm mt-0.5 font-rajdhani">Secure messaging with buyers and sellers</p>
+      </div>
     </div>
     {% if chats %}
-      <span class="bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-        {{ chats|length }} chat{{ 's' if chats|length != 1 }}
-      </span>
+      <div class="self-start sm:self-center px-4 py-1.5 rounded-xl text-xs font-bold font-orbitron uppercase tracking-wider flex items-center gap-2"
+           style="background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); color: #0a0a16; box-shadow: 0 0 15px rgba(0, 243, 255, 0.25);">
+        <span>{{ chats|length }} Conversation{{ 's' if chats|length != 1 }}</span>
+      </div>
     {% endif %}
   </div>
 
   {% if chats %}
-  <div class="space-y-2">
+  <!-- Conversations List -->
+  <div class="space-y-3">
     {% for chat_id, chat in chats.items() %}
-
     {% set has_unread = chat.unread_count > 0 %}
 
     <a href="{{ url_for('chat.chat', buyer_uid=chat.buyer, seller_uid=chat.seller) }}"
-       class="flex items-center gap-4 px-4 py-3 rounded-2xl transition
-              {% if has_unread %}
-                bg-indigo-950 border border-indigo-700 hover:border-indigo-500
-              {% else %}
-                bg-gray-900 border border-gray-800 hover:border-gray-600
-              {% endif %}">
-
-      <!-- Avatar -->
-      <div class="relative flex-shrink-0">
-        <img src="{{ chat.other_user_pic or '/static/default_user.png' }}"
-             alt="{{ chat.other_username }}"
-             class="w-12 h-12 rounded-full object-cover border-2
-                    {% if has_unread %}border-indigo-500{% else %}border-gray-700{% endif %}"
-             onerror="this.src='/static/default_user.png'">
+       class="block cyber-card overflow-hidden hover:-translate-y-[2px] transition-all duration-300 group"
+       style="{% if has_unread %}border-color: var(--neon-blue); box-shadow: 0 0 12px rgba(0, 243, 255, 0.1);{% endif %}">
+       
+      <div class="flex items-center gap-4 px-5 py-4 transition-all duration-300 relative
+                  {% if has_unread %}bg-indigo-950/20{% else %}hover:bg-gray-800/20{% endif %}">
+        
+        <!-- Live Accent Line for Unread -->
         {% if has_unread %}
-          <span class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-indigo-400 rounded-full border-2 border-gray-950"></span>
+          <div class="absolute left-0 top-0 bottom-0 w-1 rounded-r" 
+               style="background: linear-gradient(to bottom, var(--neon-blue), var(--neon-purple));"></div>
         {% endif %}
-      </div>
 
-      <!-- Content -->
-      <div class="flex-1 min-w-0">
-        <div class="flex items-center justify-between gap-2">
-          <p class="font-semibold truncate
-                    {% if has_unread %}text-white{% else %}text-gray-300{% endif %}">
-            {{ chat.other_username }}
-          </p>
-          {% if chat.last_time %}
-            <span class="text-xs flex-shrink-0
-                         {% if has_unread %}text-indigo-400{% else %}text-gray-600{% endif %}">
-              {{ chat.last_time | datetimeformat }}
-            </span>
-          {% endif %}
-        </div>
-
-        <div class="flex items-center justify-between gap-2 mt-0.5">
-          <p class="text-sm truncate
-                    {% if has_unread %}text-gray-300{% else %}text-gray-500{% endif %}">
-            {% if chat.last_message %}
-              {% if chat.last_message.startswith('🔐') %}
-                🔐 2FA code was sent
-              {% else %}
-                {{ chat.last_message }}
-              {% endif %}
-            {% else %}
-              No messages yet…
-            {% endif %}
-          </p>
-
+        <!-- Avatar Container -->
+        <div class="relative flex-shrink-0">
+          <img src="{{ chat.other_user_pic or '/static/default_user.png' }}"
+               alt="{{ chat.other_username }}"
+               class="w-14 h-14 rounded-2xl object-cover border-2 transition-all duration-300
+                      {% if has_unread %}border-neon-blue{% else %}border-gray-700 group-hover:border-gray-500{% endif %}"
+               style="{% if has_unread %}border-color: var(--neon-blue); filter: drop-shadow(0 0 4px var(--neon-blue));{% endif %}"
+               onerror="this.src='/static/default_user.png'">
+          
           {% if has_unread %}
-            <span class="flex-shrink-0 min-w-5 h-5 bg-indigo-500 text-white text-xs
-                         font-bold rounded-full flex items-center justify-center px-1.5">
-              {{ chat.unread_count }}
+            <!-- Pulsing Badge Indicator -->
+            <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-gray-900 flex items-center justify-center animate-pulse"
+                  style="background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));">
             </span>
           {% endif %}
         </div>
+
+        <!-- Metadata & Last Message -->
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between gap-2">
+            <h2 class="font-bold truncate text-base font-rajdhani tracking-wide
+                       {% if has_unread %}text-white font-extrabold{% else %}text-gray-200 group-hover:text-white{% endif %}">
+              {{ chat.other_username }}
+            </h2>
+            {% if chat.last_time %}
+              <span class="text-xs font-medium font-orbitron transition-colors duration-300
+                           {% if has_unread %}text-neon-blue{% else %}text-gray-500 group-hover:text-gray-400{% endif %}">
+                {{ chat.last_time | format_datetime }}
+              </span>
+            {% endif %}
+          </div>
+
+          <div class="flex items-center justify-between gap-3 mt-1.5">
+            <p class="text-sm truncate font-medium max-w-[85%]
+                       {% if has_unread %}text-gray-100 font-semibold{% else %}text-gray-400 group-hover:text-gray-300{% endif %}">
+              {% if chat.last_message %}
+                {% if chat.last_message.startswith('🔐') %}
+                  <span class="text-yellow-400/90 font-semibold flex items-center gap-1">
+                    <i class="fas fa-key text-[10px]"></i> 2FA Verification Code
+                  </span>
+                {% else %}
+                  {{ chat.last_message }}
+                {% endif %}
+              {% else %}
+                <span class="italic text-gray-500">No messages yet…</span>
+              {% endif %}
+            </p>
+
+            <!-- Unread Badge Count -->
+            {% if has_unread %}
+              <span class="flex-shrink-0 min-w-[20px] h-5 px-1.5 rounded-lg text-[10px] font-extrabold font-orbitron
+                           flex items-center justify-center shadow-lg transition-transform duration-300 scale-100 group-hover:scale-110"
+                    style="background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); color: #0a0a16;">
+                {{ chat.unread_count }}
+              </span>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Elegant Action Chevron -->
+        <div class="flex-shrink-0 text-gray-500 group-hover:text-neon-blue transition-all duration-300 translate-x-0 group-hover:translate-x-1 pl-2">
+          <i class="fas fa-chevron-right text-sm"></i>
+        </div>
+
       </div>
-
-      <!-- Arrow -->
-      <span class="text-gray-600 flex-shrink-0 text-lg">›</span>
-
     </a>
     {% endfor %}
   </div>
 
   {% else %}
-  <!-- Empty state -->
-  <div class="flex flex-col items-center justify-center py-24 text-center">
-    <div class="w-20 h-20 bg-gray-900 border border-gray-700 rounded-full
-                flex items-center justify-center text-4xl mb-4">
+  <!-- Empty State Design -->
+  <div class="cyber-card p-12 text-center max-w-lg mx-auto mt-12 transition-all duration-300">
+    <div class="w-20 h-20 mx-auto rounded-3xl flex items-center justify-center text-4xl mb-6 shadow-xl"
+         style="background: linear-gradient(135deg, rgba(var(--neon-blue), 0.08), rgba(var(--neon-purple), 0.08)); border: 1px solid var(--card-border);">
       💬
     </div>
-    <h3 class="text-xl font-bold text-white mb-2">No conversations yet</h3>
-    <p class="text-gray-500 text-sm mb-6 max-w-xs">
-      When you buy or sell an account, your chats with the other party will appear here.
+    <h3 class="text-xl font-bold text-white font-orbitron mb-2">No conversations yet</h3>
+    <p class="text-gray-400 text-sm max-w-sm mx-auto mb-8 font-rajdhani">
+      Start secure discussions with buyers or sellers directly from their listing pages.
     </p>
     <a href="{{ url_for('listings.marketplace') }}"
-       class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white
-              rounded-xl font-semibold text-sm transition">
+       class="cyber-button px-6 py-3 rounded-xl font-bold text-sm tracking-wider uppercase font-orbitron text-neon-blue"
+       style="text-decoration:none;">
       Browse Marketplace
     </a>
   </div>
