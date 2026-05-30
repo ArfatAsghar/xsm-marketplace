@@ -19,7 +19,7 @@
       <div class="min-w-0">
         <p class="font-bold text-white truncate font-orbitron tracking-wide text-base">{{ other_user_name }}</p>
         <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[10px] font-bold font-orbitron uppercase tracking-wider mt-0.5"
-              style="background: rgba(var(--neon-blue), 0.1); color: var(--neon-blue); border: 1px solid rgba(var(--neon-blue), 0.15);">
+              style="background: rgba(var(--neon-blue-rgb), 0.1); color: var(--neon-blue); border: 1px solid rgba(var(--neon-blue-rgb), 0.15);">
           {{ "Seller" if session.user.uid == buyer_uid else "Buyer" }}
         </span>
       </div>
@@ -35,7 +35,7 @@
   <!-- Messages Section -->
   <div id="chat-messages"
        class="flex-1 overflow-y-auto cyber-card px-5 py-5 space-y-4 mb-4 scrollbar-none"
-       style="background: rgba(var(--cyber-900), 0.8);">
+       style="background: var(--cyber-900);">
 
     {% if messages %}
       {% for msg_id, msg in messages.items() %}
@@ -76,7 +76,7 @@
                 style="{% if is_me %}
                          background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); 
                          color: var(--text-950);
-                         box-shadow: 0 4px 12px rgba(var(--neon-blue), 0.15);
+                         box-shadow: 0 4px 12px rgba(var(--neon-blue-rgb), 0.15);
                        {% else %}
                          background: var(--card-bg); 
                          border-color: var(--card-border); 
@@ -104,8 +104,7 @@
 
   <!-- Input Section -->
   <form method="POST" action="{{ url_for('chat.send_message') }}"
-        class="flex-shrink-0 flex items-center gap-3 cyber-card px-4 py-3 relative overflow-hidden"
-        style="background: rgba(var(--cyber-800), 0.9);">
+        class="flex-shrink-0 flex items-center gap-3 cyber-card px-4 py-3 relative overflow-hidden">
     <input type="hidden" name="chat_id"      value="{{ chat_id }}">
     <input type="hidden" name="sender_uid"   value="{{ session.user.uid }}">
     <input type="hidden" name="receiver_uid" value="{{ seller_uid if session.user.uid == buyer_uid else buyer_uid }}">
@@ -116,8 +115,8 @@
       placeholder="Type a message…"
       autocomplete="off"
       required
-      class="flex-1 bg-gray-950/40 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white
-             placeholder-gray-500 focus:outline-none focus:border-neon-blue transition-all duration-300"
+      class="flex-1 border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-neon-blue transition-all duration-300 placeholder-gray-500"
+      style="background: var(--cyber-900); border-color: var(--card-border); color: var(--text-white);"
     >
     <button type="submit"
             class="flex-shrink-0 bg-gradient-to-r from-neon-blue to-neon-purple text-[#0a0a16] hover:scale-[1.03] active:scale-[0.97]
@@ -189,7 +188,7 @@
     if (isMe) {
       bubble.style.background = 'linear-gradient(135deg, var(--neon-blue), var(--neon-purple))';
       bubble.style.color = 'var(--text-950)';
-      bubble.style.boxShadow = '0 4px 12px rgba(var(--neon-blue), 0.15)';
+      bubble.style.boxShadow = '0 4px 12px rgba(var(--neon-blue-rgb), 0.15)';
     } else {
       bubble.style.background = 'var(--card-bg)';
       bubble.style.borderColor = 'var(--card-border)';
