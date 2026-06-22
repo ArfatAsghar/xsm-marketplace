@@ -42,12 +42,9 @@ def api_mark_notifications_read():
     return jsonify({"ok": True})
 
 
-# ── Inbox ─────────────────────────────────────────────────────────────────────
+# ── Helper for user chats retrieval ───────────────────────────────────────────
 
-@chat_bp.route("/inbox")
-@login_required
-def inbox():
-    current_uid = session["user"]["uid"]
+def _get_user_chats(current_uid):
     all_chats   = safe_db_reference("chats").get() or {}
     all_users   = safe_db_reference("users").get() or {}
     user_chats  = {}
@@ -76,7 +73,16 @@ def inbox():
             "last_sender":  chat_data.get("last_sender",""),
             "unread_count": unread,
         }
+    return user_chats
 
+
+# ── Inbox ─────────────────────────────────────────────────────────────────────
+
+@chat_bp.route("/inbox")
+@login_required
+def inbox():
+    current_uid = session["user"]["uid"]
+    user_chats  = _get_user_chats(current_uid)
     return render_template("inbox.html", chats=user_chats)
 
 
@@ -108,13 +114,15 @@ def chat(buyer_uid, seller_uid):
     messages  = raw if isinstance(raw, dict) else {str(i): m for i, m in enumerate(raw)}
     other_uid = seller_uid if current_uid == buyer_uid else buyer_uid
     other     = get_user_public(other_uid)
+    user_chats = _get_user_chats(current_uid)
 
     return render_template("chat.html",
                            messages=messages, chat_id=chat_id,
                            buyer_uid=buyer_uid, seller_uid=seller_uid,
                            other_user_id=other_uid,
                            other_user_name=other.get("username","Unknown"),
-                           other_user_pic=other.get("profile_pic","/static/default_user.png"))
+                           other_user_pic=other.get("profile_pic","/static/default_user.png"),
+                           chats=user_chats)
 
 
 @chat_bp.route("/chat_messages/<chat_id>")
@@ -151,17 +159,22 @@ def send_message():
     message_text = request.form["message"].strip()
 
     if sender_uid != session["user"]["uid"]:
+        if request.headers.get("Accept") == "application/json" or request.is_json:
+            return jsonify({"error": "Unauthorized"}), 403
         flash("Unauthorized.", "danger")
         return redirect(url_for("chat.inbox"))
     if not message_text:
+        if request.headers.get("Accept") == "application/json" or request.is_json:
+            return jsonify({"error": "Message cannot be empty"}), 400
         flash("Message cannot be empty.", "warning")
         return redirect(url_for("chat.chat", buyer_uid=sender_uid, seller_uid=receiver_uid))
 
     ts = int(time.time() * 1000)
-    safe_db_reference(f"chats/{chat_id}/messages").push({
+    msg_data = {
         "sender": sender_uid, "message": message_text,
         "timestamp": ts, "read": False,
-    })
+    }
+    push_ref = safe_db_reference(f"chats/{chat_id}/messages").push(msg_data)
     meta = safe_db_reference(f"chats/{chat_id}").get() or {}
     parts = meta.get("participants", {})
     parts[sender_uid] = parts[receiver_uid] = True
@@ -172,6 +185,9 @@ def send_message():
     push_notification(receiver_uid,
         f"New message from {session['user'].get('username','Someone')}.",
         "info", f"/chat/{sender_uid}/{receiver_uid}")
+
+    if request.headers.get("Accept") == "application/json" or request.is_json:
+        return jsonify({"ok": True, "msg_id": push_ref.key, "message": msg_data})
 
     return redirect(url_for("chat.chat", buyer_uid=sender_uid, seller_uid=receiver_uid))
 
