@@ -48,17 +48,18 @@
 
   <!-- Filters -->
   <form method="get"
-        class="bg-cyber-800/40 border border-white/[0.08] backdrop-blur-md rounded-2xl p-6 mb-8 shadow-xl">
+        class="border rounded-2xl p-6 mb-8 shadow-xl backdrop-blur-md"
+        style="background: var(--card-bg); border-color: var(--card-border);">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
       <input type="text" name="search" value="{{ search_query }}"
              placeholder="🔍 Search by username, platform, niche..."
-             class="px-4 py-3 rounded-xl bg-cyber-700/50 border border-white/[0.08] text-white
-                    placeholder-gray-500 focus:outline-none focus:border-neon-blue font-sans transition-all duration-300">
+             class="px-4 py-3 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-neon-blue font-sans transition-all duration-300"
+             style="background: var(--cyber-900); border: 1px solid var(--card-border);">
 
       <select name="platform"
-              class="px-4 py-3 rounded-xl bg-cyber-700/50 border border-white/[0.08] text-white
-                     focus:outline-none focus:border-neon-blue font-sans transition-all duration-300">
+              class="px-4 py-3 rounded-xl text-white focus:outline-none focus:border-neon-blue font-sans transition-all duration-300"
+              style="background: var(--cyber-900); border: 1px solid var(--card-border);">
         <option value="">All Platforms</option>
         <option value="YouTube"   {% if selected_platform=="YouTube"   %}selected{% endif %}>YouTube</option>
         <option value="Instagram" {% if selected_platform=="Instagram" %}selected{% endif %}>Instagram</option>
@@ -68,7 +69,8 @@
         <option value="Telegram"  {% if selected_platform=="Telegram"  %}selected{% endif %}>Telegram</option>
       </select>
 
-      <label class="flex items-center gap-3 px-4 py-3 rounded-xl bg-cyber-700/50 border border-white/[0.08] cursor-pointer font-sans text-gray-300 hover:border-white/[0.15] transition-all duration-300">
+      <label class="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer font-sans text-gray-300 hover:border-white/[0.15] transition-all duration-300"
+             style="background: var(--cyber-900); border: 1px solid var(--card-border);">
         <input type="checkbox" name="monetized" value="1"
                {% if request.args.get('monetized') %}checked{% endif %}
                class="w-4 h-4 accent-neon-blue">
@@ -78,23 +80,23 @@
       <div class="flex gap-2">
         <input type="number" name="subs_min" value="{{ request.args.get('subs_min','') }}"
                placeholder="Min followers"
-               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700/50 border border-white/[0.08] text-white
-                      placeholder-gray-500 focus:outline-none focus:border-neon-blue font-sans transition-all duration-300 text-sm">
+               class="w-1/2 px-3 py-3 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-neon-blue font-sans transition-all duration-300 text-sm"
+               style="background: var(--cyber-900); border: 1px solid var(--card-border);">
         <input type="number" name="subs_max" value="{{ request.args.get('subs_max','') }}"
                placeholder="Max followers"
-               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700/50 border border-white/[0.08] text-white
-                      placeholder-gray-500 focus:outline-none focus:border-neon-blue font-sans transition-all duration-300 text-sm">
+               class="w-1/2 px-3 py-3 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-neon-blue font-sans transition-all duration-300 text-sm"
+               style="background: var(--cyber-900); border: 1px solid var(--card-border);">
       </div>
 
       <div class="flex gap-2">
         <input type="number" name="price_min" value="{{ request.args.get('price_min','') }}"
                placeholder="Min $"
-               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700/50 border border-white/[0.08] text-white
-                      placeholder-gray-500 focus:outline-none focus:border-neon-blue font-sans transition-all duration-300 text-sm">
+               class="w-1/2 px-3 py-3 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-neon-blue font-sans transition-all duration-300 text-sm"
+               style="background: var(--cyber-900); border: 1px solid var(--card-border);">
         <input type="number" name="price_max" value="{{ request.args.get('price_max','') }}"
                placeholder="Max $"
-               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700/50 border border-white/[0.08] text-white
-                      placeholder-gray-500 focus:outline-none focus:border-neon-blue font-sans transition-all duration-300 text-sm">
+               class="w-1/2 px-3 py-3 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-neon-blue font-sans transition-all duration-300 text-sm"
+               style="background: var(--cyber-900); border: 1px solid var(--card-border);">
       </div>
 
       <button type="submit"
@@ -118,39 +120,47 @@
   {% endif %}
 
   <!-- Listings Grid -->
-  <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
     {% for key, listing in listings.items() %}
-    <div class="bg-cyber-800/40 border border-white/[0.08] hover:border-white/[0.18]
-                rounded-xl overflow-hidden shadow-lg hover:shadow-2xl
-                transition-all duration-300 flex flex-col group
-                {% if listing.is_boosted %}ring-1 ring-yellow-500/30{% endif %}">
+    <div class="rounded-2xl overflow-hidden transition-all duration-300 flex flex-col group hover:-translate-y-1"
+         style="background: var(--card-bg); border: 1px solid var(--card-border);
+                box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3);"
+         onmouseover="this.style.borderColor='rgba(var(--neon-blue-rgb), 0.4)';this.style.boxShadow='0 20px 40px -15px rgba(0,0,0,0.5), 0 0 15px rgba(var(--neon-blue-rgb), 0.15)';"
+         onmouseout="this.style.borderColor='var(--card-border)';this.style.boxShadow='0 10px 30px -10px rgba(0,0,0,0.3)';">
 
       <!-- Thumbnail -->
-      <div class="relative">
+      <div class="relative overflow-hidden aspect-[16/9]">
         <img src="{{ listing.thumbnail }}"
              alt="Thumbnail"
-             class="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-500"
+             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
              onerror="this.src='/static/default_thumbnail.png'">
-        <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-bold font-sans
-                     bg-cyber-900/90 border border-white/[0.1] text-gray-200 backdrop-blur-sm">
+        
+        {# Platform badge #}
+        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[9px] font-bold font-sans uppercase tracking-wider
+                     bg-black/50 border border-white/10 text-white backdrop-blur-md">
           {{ listing.platform }}
         </span>
-        <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-green-400 shadow shadow-green-400/50"></span>
+
+        {# Active Badge #}
+        <div class="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-bold bg-green-500/10 border border-green-500/30 text-green-400 backdrop-blur-md">
+          <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+          ACTIVE
+        </div>
 
         <!-- BOOSTED badge -->
         {% if listing.is_boosted %}
-        <span class="absolute bottom-2 left-2 inline-flex items-center gap-1 text-[9px] font-orbitron
-                     uppercase tracking-widest px-2 py-0.5 rounded
-                     bg-yellow-500/20 border border-yellow-500/40 text-yellow-400 backdrop-blur-sm">
-          <i class="fas fa-bolt text-[8px]"></i> BOOSTED
+        <span class="absolute bottom-3 left-3 inline-flex items-center gap-1.5 text-[9px] font-sans font-bold
+                     uppercase tracking-wider px-2.5 py-1 rounded-full
+                     bg-amber-500/10 border border-amber-500/35 text-amber-400 backdrop-blur-md">
+          <i class="fas fa-bolt text-[8px] text-amber-400"></i> BOOSTED
         </span>
         {% endif %}
       </div>
 
-      <div class="p-3 flex flex-col flex-1">
+      <div class="p-4 flex flex-col flex-1">
 
-        <!-- Username + price -->
-        <div class="flex items-center justify-between mb-1">
+        <!-- Username + Price -->
+        <div class="flex items-center justify-between mb-2">
           <p class="font-bold text-white font-sans truncate text-sm">
             {% if listing.page_link %}
               <a href="{{ listing.page_link }}" target="_blank" rel="noopener noreferrer" class="hover:text-neon-blue transition-colors inline-flex items-center gap-1">
@@ -161,22 +171,23 @@
               @{{ listing.username }}
             {% endif %}
           </p>
-          <p class="text-neon-blue font-bold font-orbitron text-xs flex-shrink-0 ml-2">${{ listing.price }}</p>
+          <p class="text-neon-blue font-bold font-orbitron text-sm flex-shrink-0 ml-2">${{ listing.price }}</p>
         </div>
 
         <!-- Followers -->
-        <p class="text-gray-500 text-xs font-sans mb-1">
-          <i class="fas fa-users mr-1 text-gray-500 text-xs"></i>{{ listing.followers }} followers
-        </p>
+        <div class="flex items-center gap-1.5 text-xs text-gray-500 mb-2">
+          <i class="fas fa-users text-gray-600 text-xs"></i>
+          <span>{{ listing.followers }} followers</span>
+        </div>
 
         <!-- Description -->
-        <p class="text-gray-400 text-xs font-sans line-clamp-2 mb-2 flex-1">
+        <p class="text-gray-400 text-xs font-sans line-clamp-2 mb-4 leading-relaxed flex-1">
           {{ listing.description or 'No description provided.' }}
         </p>
 
         <!-- Stars -->
         {% if listing.avg_rating %}
-        <div class="flex items-center gap-0.5 mb-2">
+        <div class="flex items-center gap-0.5 mb-3">
           {% for i in range(listing.stars_full)  %}<span class="text-yellow-400 text-xs">★</span>{% endfor %}
           {% for i in range(listing.stars_half)  %}<span class="text-yellow-400 text-xs opacity-50">★</span>{% endfor %}
           {% for i in range(listing.stars_empty) %}<span class="text-gray-700 text-xs">★</span>{% endfor %}
@@ -185,35 +196,37 @@
         {% endif %}
 
         <!-- Seller row with verified badge -->
-        <div class="flex items-center gap-2 mb-3 pt-2 border-t border-white/[0.06]">
-          <img src="{{ listing.seller_pic }}"
-               alt="{{ listing.seller_username }}"
-               class="w-6 h-6 rounded-full border border-white/[0.1] object-cover flex-shrink-0"
-               onerror="this.src='/static/default_user.png'">
-          <a href="{{ url_for('misc.seller_profile', seller_id=listing.seller_uid) }}"
-             class="text-neon-blue hover:text-neon-cyan text-xs font-sans font-semibold truncate transition-colors">
-            {{ listing.seller_username }}
-          </a>
-          <!-- ✅ VERIFIED BADGE — only shows when seller_verified is True -->
+        <div class="flex items-center justify-between pt-3 border-t border-white/[0.05] mb-4">
+          <div class="flex items-center gap-2 min-w-0">
+            <img src="{{ listing.seller_pic }}"
+                 alt="{{ listing.seller_username }}"
+                 class="w-6 h-6 rounded-full border border-white/10 object-cover flex-shrink-0"
+                 onerror="this.src='/static/default_user.png'">
+            <a href="{{ url_for('misc.seller_profile', seller_id=listing.seller_uid) }}"
+               class="text-gray-300 hover:text-neon-cyan text-xs font-sans font-medium truncate transition-colors">
+              {{ listing.seller_username }}
+            </a>
+          </div>
+          
           {% if listing.seller_verified %}
           <span title="Verified Seller"
-                class="flex-shrink-0 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full
-                       text-[9px] font-bold font-sans uppercase tracking-wide text-neon-blue"
-                style="background: rgba(var(--neon-blue-rgb), 0.1); border: 1px solid rgba(var(--neon-blue-rgb), 0.3);">
-            <i class="fas fa-circle-check text-[8px]"></i> Verified
+                class="flex-shrink-0 inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full
+                       text-[8px] font-bold font-sans uppercase tracking-wide text-neon-blue"
+                style="background: rgba(var(--neon-blue-rgb), 0.1); border: 1px solid rgba(var(--neon-blue-rgb), 0.25);">
+            <i class="fas fa-circle-check text-[7px]"></i> Verified
           </span>
           {% endif %}
         </div>
 
         <!-- View button -->
         <a href="{{ url_for('listings.listing_detail', listing_id=key) }}"
-           class="w-full block text-center py-2 rounded-lg font-semibold font-sans text-xs
-                  text-white transition-all duration-300 hover:-translate-y-0.5"
-           style="background: rgba(var(--neon-blue-rgb), 0.08); border: 1px solid rgba(var(--neon-blue-rgb), 0.2);"
-           onmouseover="this.style.background='rgba(var(--neon-blue-rgb), 0.15)';this.style.borderColor='rgba(var(--neon-blue-rgb), 0.35)';"
-           onmouseout="this.style.background='rgba(var(--neon-blue-rgb), 0.08)';this.style.borderColor='rgba(var(--neon-blue-rgb), 0.2)';"
+           class="w-full block text-center py-2.5 rounded-xl font-bold font-sans text-xs tracking-wider uppercase text-white transition-all duration-300 hover:-translate-y-0.5"
+           style="background: linear-gradient(135deg, rgba(var(--neon-blue-rgb), 0.15), rgba(var(--neon-purple-rgb), 0.15));
+                  border: 1px solid rgba(var(--neon-blue-rgb), 0.35);"
+           onmouseover="this.style.background='linear-gradient(135deg, var(--neon-blue), var(--neon-purple))';this.style.boxShadow='0 8px 20px rgba(var(--neon-blue-rgb), 0.25)';"
+           onmouseout="this.style.background='linear-gradient(135deg, rgba(var(--neon-blue-rgb), 0.15), rgba(var(--neon-purple-rgb), 0.15))';this.style.boxShadow='none';"
            >
-          View →
+          View Listing
         </a>
 
       </div>
