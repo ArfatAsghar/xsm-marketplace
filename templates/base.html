@@ -32,15 +32,15 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
       theme: {
         fontFamily: {
-          sans:     ['Exo 2', 'sans-serif'],
-          orbitron: ['Orbitron', 'sans-serif'],
-          rajdhani: ['Rajdhani', 'sans-serif'],
+          sans:     ['Plus Jakarta Sans', 'sans-serif'],
+          orbitron: ['Outfit', 'sans-serif'],
+          rajdhani: ['Plus Jakarta Sans', 'sans-serif'],
         },
         extend: {
           colors: {
@@ -91,21 +91,21 @@
   <style>
     /* ── THEME DESIGN SYSTEM ── */
     :root, [data-theme="cyberpunk"] {
-      --neon-blue: #00f3ff;
-      --neon-purple: #bd00ff;
-      --neon-pink: #ff00c8;
-      --neon-green: #00ff8e;
-      --neon-cyan: #00f3ff;
+      --neon-blue: #4f46e5;
+      --neon-purple: #818cf8;
+      --neon-pink: #ec4899;
+      --neon-green: #10b981;
+      --neon-cyan: #06b6d4;
 
-      --neon-blue-rgb: 0, 243, 255;
-      --neon-purple-rgb: 189, 0, 255;
-      --cyber-900-rgb: 10, 10, 22;
-      --cyber-800-rgb: 18, 18, 38;
+      --neon-blue-rgb: 79, 70, 229;
+      --neon-purple-rgb: 129, 140, 248;
+      --cyber-900-rgb: 11, 15, 25;
+      --cyber-800-rgb: 17, 24, 39;
 
-      --cyber-900: #0a0a16;
-      --cyber-800: #121226;
-      --cyber-700: #1a1a36;
-      --cyber-600: #222246;
+      --cyber-900: #0b0f19;
+      --cyber-800: #111827;
+      --cyber-700: #1f2937;
+      --cyber-600: #374151;
 
       --text-white: #ffffff;
       --text-50: #f9fafb;
@@ -120,37 +120,38 @@
       --text-900: #111827;
       --text-950: #030712;
 
-      --body-bg: #0a0a16;
-      --body-bg-gradient-1: rgba(0, 243, 255, 0.06);
-      --body-bg-gradient-2: rgba(189, 0, 255, 0.06);
-      --card-bg: rgba(18, 18, 38, 0.9);
-      --card-border: rgba(0, 243, 255, 0.12);
-      --btn-bg: rgba(10, 10, 22, 0.8);
-      --btn-border: rgba(0, 243, 255, 0.25);
-      --btn-border-hover: rgba(0, 243, 255, 0.6);
-      --btn-glow-hover: rgba(0, 243, 255, 0.2);
-      --nav-bg: rgba(10, 10, 22, 0.92);
-      --nav-border: rgba(0, 243, 255, 0.15);
-      --scrollbar-track: #0a0a16;
-      --scrollbar-thumb: rgba(0, 243, 255, 0.3);
+      --body-bg: #0b0f19;
+      --body-bg-gradient-1: rgba(79, 70, 229, 0.06);
+      --body-bg-gradient-2: rgba(129, 140, 248, 0.06);
+      --card-bg: rgba(17, 24, 39, 0.82);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --btn-bg: rgba(17, 24, 39, 0.9);
+      --btn-bg-hover: rgba(31, 41, 55, 0.95);
+      --btn-border: rgba(255, 255, 255, 0.12);
+      --btn-border-hover: rgba(79, 70, 229, 0.6);
+      --btn-glow-hover: rgba(79, 70, 229, 0.1);
+      --nav-bg: rgba(11, 15, 25, 0.9);
+      --nav-border: rgba(255, 255, 255, 0.06);
+      --scrollbar-track: #0b0f19;
+      --scrollbar-thumb: rgba(255, 255, 255, 0.15);
     }
 
     [data-theme="midnight"] {
-      --neon-blue: #00ff8e;
-      --neon-purple: #00f3ff;
-      --neon-pink: #00ff8e;
-      --neon-green: #00ff8e;
-      --neon-cyan: #00f3ff;
+      --neon-blue: #38bdf8;
+      --neon-purple: #6366f1;
+      --neon-pink: #f43f5e;
+      --neon-green: #10b981;
+      --neon-cyan: #0ea5e9;
 
-      --neon-blue-rgb: 0, 255, 142;
-      --neon-purple-rgb: 0, 243, 255;
-      --cyber-900-rgb: 0, 0, 0;
-      --cyber-800-rgb: 8, 8, 8;
+      --neon-blue-rgb: 56, 189, 248;
+      --neon-purple-rgb: 99, 102, 241;
+      --cyber-900-rgb: 9, 9, 11;
+      --cyber-800-rgb: 24, 24, 27;
 
-      --cyber-900: #000000;
-      --cyber-800: #080808;
-      --cyber-700: #121212;
-      --cyber-600: #1c1c1c;
+      --cyber-900: #09090b;
+      --cyber-800: #18181b;
+      --cyber-700: #27272a;
+      --cyber-600: #3f3f46;
 
       --text-white: #ffffff;
       --text-50: #f9fafb;
@@ -165,37 +166,38 @@
       --text-900: #101010;
       --text-950: #000000;
 
-      --body-bg: #000000;
-      --body-bg-gradient-1: rgba(0, 255, 142, 0.05);
-      --body-bg-gradient-2: rgba(0, 243, 255, 0.05);
-      --card-bg: rgba(8, 8, 8, 0.95);
-      --card-border: rgba(0, 255, 142, 0.15);
-      --btn-bg: rgba(0, 0, 0, 0.85);
-      --btn-border: rgba(0, 255, 142, 0.3);
-      --btn-border-hover: rgba(0, 255, 142, 0.7);
-      --btn-glow-hover: rgba(0, 255, 142, 0.25);
-      --nav-bg: rgba(0, 0, 0, 0.95);
-      --nav-border: rgba(0, 255, 142, 0.25);
-      --scrollbar-track: #000000;
-      --scrollbar-thumb: rgba(0, 255, 142, 0.4);
+      --body-bg: #09090b;
+      --body-bg-gradient-1: rgba(56, 189, 248, 0.05);
+      --body-bg-gradient-2: rgba(99, 102, 241, 0.05);
+      --card-bg: rgba(24, 24, 27, 0.88);
+      --card-border: rgba(255, 255, 255, 0.06);
+      --btn-bg: rgba(24, 24, 27, 0.95);
+      --btn-bg-hover: rgba(39, 39, 42, 0.95);
+      --btn-border: rgba(255, 255, 255, 0.08);
+      --btn-border-hover: #ffffff;
+      --btn-glow-hover: rgba(255, 255, 255, 0.05);
+      --nav-bg: rgba(9, 9, 11, 0.92);
+      --nav-border: rgba(255, 255, 255, 0.05);
+      --scrollbar-track: #09090b;
+      --scrollbar-thumb: rgba(255, 255, 255, 0.1);
     }
 
     [data-theme="amethyst"] {
-      --neon-blue: #bd00ff;
-      --neon-purple: #ff00c8;
-      --neon-pink: #ff00c8;
-      --neon-green: #9d00ff;
-      --neon-cyan: #e000ff;
+      --neon-blue: #a78bfa;
+      --neon-purple: #c084fc;
+      --neon-pink: #f472b6;
+      --neon-green: #34d399;
+      --neon-cyan: #22d3ee;
 
-      --neon-blue-rgb: 189, 0, 255;
-      --neon-purple-rgb: 255, 0, 200;
-      --cyber-900-rgb: 13, 6, 20;
-      --cyber-800-rgb: 23, 13, 36;
+      --neon-blue-rgb: 167, 139, 250;
+      --neon-purple-rgb: 192, 132, 252;
+      --cyber-900-rgb: 18, 14, 36;
+      --cyber-800-rgb: 27, 21, 53;
 
-      --cyber-900: #0d0614;
-      --cyber-800: #170d24;
-      --cyber-700: #221434;
-      --cyber-600: #2e1d44;
+      --cyber-900: #120e24;
+      --cyber-800: #1b1535;
+      --cyber-700: #251d47;
+      --cyber-600: #332961;
 
       --text-white: #ffffff;
       --text-50: #fbf9fc;
@@ -210,19 +212,20 @@
       --text-900: #1e1330;
       --text-950: #0d0614;
 
-      --body-bg: #0d0614;
-      --body-bg-gradient-1: rgba(189, 0, 255, 0.08);
-      --body-bg-gradient-2: rgba(255, 0, 200, 0.08);
-      --card-bg: rgba(23, 13, 36, 0.9);
-      --card-border: rgba(189, 0, 255, 0.15);
-      --btn-bg: rgba(13, 6, 20, 0.8);
-      --btn-border: rgba(189, 0, 255, 0.3);
-      --btn-border-hover: rgba(255, 0, 200, 0.7);
-      --btn-glow-hover: rgba(189, 0, 255, 0.2);
-      --nav-bg: rgba(13, 6, 20, 0.95);
-      --nav-border: rgba(189, 0, 255, 0.2);
-      --scrollbar-track: #0d0614;
-      --scrollbar-thumb: rgba(189, 0, 255, 0.3);
+      --body-bg: #120e24;
+      --body-bg-gradient-1: rgba(167, 139, 250, 0.08);
+      --body-bg-gradient-2: rgba(192, 132, 252, 0.06);
+      --card-bg: rgba(27, 21, 53, 0.85);
+      --card-border: rgba(167, 139, 250, 0.08);
+      --btn-bg: rgba(27, 21, 53, 0.95);
+      --btn-bg-hover: rgba(51, 41, 97, 0.95);
+      --btn-border: rgba(167, 139, 250, 0.15);
+      --btn-border-hover: rgba(192, 132, 252, 0.6);
+      --btn-glow-hover: rgba(167, 139, 250, 0.08);
+      --nav-bg: rgba(18, 14, 36, 0.9);
+      --nav-border: rgba(167, 139, 250, 0.06);
+      --scrollbar-track: #120e24;
+      --scrollbar-thumb: rgba(167, 139, 250, 0.15);
     }
 
     [data-theme="emerald"] {
@@ -234,13 +237,13 @@
 
       --neon-blue-rgb: 13, 148, 136;
       --neon-purple-rgb: 5, 150, 105;
-      --cyber-900-rgb: 241, 245, 249;
+      --cyber-900-rgb: 244, 247, 246;
       --cyber-800-rgb: 255, 255, 255;
 
-      --cyber-900: #f1f5f9;
+      --cyber-900: #f4f7f6;
       --cyber-800: #ffffff;
-      --cyber-700: #e2e8f0;
-      --cyber-600: #cbd5e1;
+      --cyber-700: #e5eae8;
+      --cyber-600: #cbd7d4;
 
       --text-white: #0f172a;
       --text-50: #0f172a;
@@ -255,37 +258,38 @@
       --text-900: #f8fafc;
       --text-950: #ffffff;
 
-      --body-bg: #f1f5f9;
-      --body-bg-gradient-1: rgba(13, 148, 136, 0.05);
-      --body-bg-gradient-2: rgba(16, 185, 129, 0.05);
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: rgba(13, 148, 136, 0.15);
-      --btn-bg: rgba(255, 255, 255, 0.95);
-      --btn-border: rgba(13, 148, 136, 0.25);
-      --btn-border-hover: rgba(13, 148, 136, 0.6);
-      --btn-glow-hover: rgba(13, 148, 136, 0.08);
+      --body-bg: #f4f7f6;
+      --body-bg-gradient-1: rgba(13, 148, 136, 0.04);
+      --body-bg-gradient-2: rgba(16, 185, 129, 0.04);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-border: rgba(13, 148, 136, 0.08);
+      --btn-bg: #ffffff;
+      --btn-bg-hover: rgba(240, 244, 242, 0.95);
+      --btn-border: rgba(13, 148, 136, 0.2);
+      --btn-border-hover: #0d9488;
+      --btn-glow-hover: rgba(13, 148, 136, 0.05);
       --nav-bg: rgba(255, 255, 255, 0.85);
-      --nav-border: rgba(13, 148, 136, 0.15);
-      --scrollbar-track: #f1f5f9;
-      --scrollbar-thumb: rgba(13, 148, 136, 0.3);
+      --nav-border: rgba(13, 148, 136, 0.08);
+      --scrollbar-track: #f4f7f6;
+      --scrollbar-thumb: rgba(13, 148, 136, 0.2);
     }
 
     [data-theme="classic"] {
-      --neon-blue: #4f46e5;
-      --neon-purple: #7c3aed;
-      --neon-pink: #db2777;
+      --neon-blue: #3b82f6;
+      --neon-purple: #4f46e5;
+      --neon-pink: #ec4899;
       --neon-green: #10b981;
-      --neon-cyan: #2563eb;
+      --neon-cyan: #06b6d4;
 
-      --neon-blue-rgb: 79, 70, 229;
-      --neon-purple-rgb: 124, 58, 237;
-      --cyber-900-rgb: 240, 244, 248;
+      --neon-blue-rgb: 59, 130, 246;
+      --neon-purple-rgb: 79, 70, 229;
+      --cyber-900-rgb: 248, 250, 252;
       --cyber-800-rgb: 255, 255, 255;
 
-      --cyber-900: #f0f4f8;
+      --cyber-900: #f8fafc;
       --cyber-800: #ffffff;
-      --cyber-700: #e2e8f0;
-      --cyber-600: #cbd5e1;
+      --cyber-700: #f1f5f9;
+      --cyber-600: #e2e8f0;
 
       --text-white: #0f172a;
       --text-50: #0f172a;
@@ -300,19 +304,20 @@
       --text-900: #f8fafc;
       --text-950: #ffffff;
 
-      --body-bg: #f0f4f8;
-      --body-bg-gradient-1: rgba(79, 70, 229, 0.05);
-      --body-bg-gradient-2: rgba(124, 58, 237, 0.05);
-      --card-bg: rgba(255, 255, 255, 0.9);
-      --card-border: rgba(79, 70, 229, 0.12);
-      --btn-bg: rgba(255, 255, 255, 0.95);
-      --btn-border: rgba(79, 70, 229, 0.25);
-      --btn-border-hover: rgba(79, 70, 229, 0.6);
-      --btn-glow-hover: rgba(79, 70, 229, 0.08);
+      --body-bg: #f8fafc;
+      --body-bg-gradient-1: rgba(59, 130, 246, 0.04);
+      --body-bg-gradient-2: rgba(79, 70, 229, 0.04);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-border: rgba(79, 70, 229, 0.08);
+      --btn-bg: #ffffff;
+      --btn-bg-hover: rgba(241, 245, 249, 0.95);
+      --btn-border: rgba(79, 70, 229, 0.2);
+      --btn-border-hover: #4f46e5;
+      --btn-glow-hover: rgba(79, 70, 229, 0.05);
       --nav-bg: rgba(255, 255, 255, 0.85);
-      --nav-border: rgba(79, 70, 229, 0.15);
-      --scrollbar-track: #f0f4f8;
-      --scrollbar-thumb: rgba(79, 70, 229, 0.3);
+      --nav-border: rgba(79, 70, 229, 0.08);
+      --scrollbar-track: #f8fafc;
+      --scrollbar-thumb: rgba(79, 70, 229, 0.2);
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -333,10 +338,10 @@
 
     input, select, textarea { font-size: 16px !important; }
 
-    .cyber-border  { border: 1px solid var(--btn-border); box-shadow: 0 0 12px var(--btn-glow-hover); }
-    .cyber-card    { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 1rem; backdrop-filter: blur(8px); }
-    .cyber-button  { background: var(--btn-bg); border: 1px solid var(--btn-border); transition: all 0.25s ease; }
-    .cyber-button:hover { border-color: var(--btn-border-hover); box-shadow: 0 0 16px var(--btn-glow-hover); }
+    .cyber-border  { border: 1px solid var(--btn-border); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); }
+    .cyber-card    { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 1rem; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
+    .cyber-button  { background: var(--btn-bg); border: 1px solid var(--btn-border); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+    .cyber-button:hover { border-color: var(--btn-border-hover); background: var(--btn-bg-hover); transform: translateY(-1px); }
 
     .nav-gradient {
       background: var(--nav-bg);
@@ -357,13 +362,13 @@
     }
     .nav-link:hover::after { width: 100%; }
 
-    .glow-text { text-shadow: 0 0 20px var(--neon-blue); }
+    .glow-text { background: linear-gradient(to right, var(--neon-blue), var(--neon-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
     .particle {
       position: fixed;
       border-radius: 50%;
-      background: var(--neon-blue);
-      animation: float 15s infinite linear;
+      background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+      filter: blur(60px);
       pointer-events: none;
       z-index: 0;
     }
@@ -492,7 +497,7 @@
                     x-text="count > 9 ? '9+' : count"
                     class="absolute -top-1 -right-1 min-w-[16px] h-4 px-0.5 rounded-full
                            text-[9px] font-bold flex items-center justify-center font-orbitron"
-                    style="background:linear-gradient(135deg,#00f3ff,#bd00ff); color:#0a0a16;">
+                    style="background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple)); color:var(--cyber-900);">
               </span>
             </button>
 
@@ -504,18 +509,15 @@
                  x-transition:leave="transition ease-in duration-100"
                  x-transition:leave-start="opacity-100 scale-100"
                  x-transition:leave-end="opacity-0 scale-95"
-                 class="absolute right-0 mt-2 w-80 rounded-2xl shadow-2xl z-50 overflow-hidden origin-top-right"
-                 style="background:#0f0f22; border:1px solid rgba(0,243,255,0.18);">
+                 class="absolute right-0 mt-2 w-80 rounded-2xl shadow-2xl z-50 overflow-hidden origin-top-right cyber-card">
 
               <!-- Header -->
-              <div class="flex items-center justify-between px-4 py-3"
-                   style="border-bottom:1px solid rgba(0,243,255,0.1);">
+              <div class="flex items-center justify-between px-4 py-3 border-b border-gray-700/30">
                 <span class="text-[10px] font-bold font-orbitron tracking-widest uppercase text-gray-400">
                   Notifications
                 </span>
                 <button onclick="markAllRead()"
-                        class="text-[10px] font-rajdhani font-semibold transition-colors"
-                        style="color:#00f3ff;">
+                        class="text-[10px] font-rajdhani font-semibold text-neon-blue transition-colors hover:opacity-80">
                   Mark all read
                 </button>
               </div>
@@ -529,7 +531,7 @@
               </div>
 
               <!-- Footer -->
-              <div style="border-top:1px solid rgba(0,243,255,0.08);" class="px-4 py-2.5 text-center">
+              <div class="px-4 py-2.5 text-center border-t border-gray-700/20">
                 <a href="/dashboard"
                    class="text-[11px] font-rajdhani text-gray-500 hover:text-neon-blue transition-colors">
                   Go to Dashboard
@@ -657,7 +659,7 @@
         <!-- Mobile notification count badge -->
         {% if unread_notif_count > 0 %}
         <span class="text-[9px] font-bold font-orbitron px-1.5 py-0.5 rounded-full flex-shrink-0"
-              style="background:linear-gradient(135deg,#00f3ff,#bd00ff); color:#0a0a16;">
+              style="background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple)); color:var(--cyber-900);">
           {{ unread_notif_count if unread_notif_count <= 9 else '9+' }}
         </span>
         {% endif %}
@@ -699,7 +701,7 @@
           </span>
           {% if unread_notif_count > 0 %}
           <span class="text-[9px] font-bold font-orbitron px-1.5 py-0.5 rounded-full"
-                style="background:linear-gradient(135deg,#00f3ff,#bd00ff); color:#0a0a16;">
+                style="background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple)); color:var(--cyber-900);">
             {{ unread_notif_count if unread_notif_count <= 9 else '9+' }}
           </span>
           {% endif %}
@@ -758,7 +760,7 @@
 </main>
 
 <!-- ── FOOTER ── -->
-<footer class="mt-20 border-t border-neon-blue/10" style="background: rgba(10,10,22,0.97)">
+<footer class="mt-20 border-t border-white/5" style="background: var(--cyber-900);">
   <div class="max-w-7xl mx-auto px-4 py-12">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
 
@@ -859,24 +861,28 @@
     icon.className = open ? 'fas fa-bars text-lg' : 'fas fa-times text-lg';
   }
 
-  /* ── Ambient particles ── */
+  /* ── Ambient orb blobs ── */
   function createParticles() {
     const c = document.getElementById('particles');
-    for (let i = 0; i < 25; i++) {
-      const p  = document.createElement('div');
+    const positions = [
+      { x: -5,  y: -5,  size: 500, dur: 28, delay: 0 },
+      { x: 70,  y: 60,  size: 420, dur: 34, delay: -8 },
+      { x: 30,  y: 80,  size: 350, dur: 22, delay: -14 },
+      { x: 90,  y: 10,  size: 280, dur: 40, delay: -5 },
+      { x: 50,  y: 40,  size: 200, dur: 30, delay: -20 },
+    ];
+    positions.forEach(pos => {
+      const p = document.createElement('div');
       p.className = 'particle';
-      const s  = Math.random() * 2.5 + 0.5;
-      const op = (Math.random() * 0.2 + 0.05).toFixed(2);
       p.style.cssText = [
-        `width:${s}px`, `height:${s}px`,
-        `left:${Math.random()*100}vw`,
-        `top:${Math.random()*100}vh`,
-        `opacity:${op}`,
-        `animation-duration:${12 + Math.random()*12}s`,
-        `animation-delay:-${Math.random()*10}s`
+        `width:${pos.size}px`, `height:${pos.size}px`,
+        `left:${pos.x}vw`, `top:${pos.y}vh`,
+        `opacity:0.45`,
+        `animation:float ${pos.dur}s ease-in-out infinite`,
+        `animation-delay:${pos.delay}s`
       ].join(';');
       c.appendChild(p);
-    }
+    });
   }
 
   /* ── Auto-dismiss flash messages after 5s ── */

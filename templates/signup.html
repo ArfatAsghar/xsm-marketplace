@@ -42,9 +42,8 @@
             <div class="relative group cursor-pointer" onclick="document.getElementById('profile_pic').click()">
               <div class="w-20 h-20 rounded-2xl overflow-hidden flex items-center justify-center
                           transition-all duration-200 group-hover:scale-105"
-                   style="border:2px solid rgba(0,243,255,0.3);
-                          box-shadow:0 0 16px rgba(0,243,255,0.1);
-                          background:#08080f;">
+                   style="border:2px solid var(--card-border);
+                          background:var(--cyber-800);">
                 <img id="profilePreview" src="" alt="Preview"
                      class="w-full h-full object-cover hidden">
                 <svg id="defaultAvatar" class="w-9 h-9 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
@@ -52,7 +51,7 @@
                 </svg>
               </div>
               <div class="absolute -bottom-1 -right-1 w-7 h-7 rounded-lg flex items-center justify-center"
-                   style="background:linear-gradient(135deg,#00f3ff,#bd00ff);">
+                   style="background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));">
                 <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round"
                         d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/>
@@ -564,7 +563,7 @@
 
     <!-- Verification notice -->
     <div class="mt-4 flex items-start gap-2.5 px-4 py-3 rounded-xl"
-         style="background:rgba(0,243,255,0.04); border:1px solid rgba(0,243,255,0.12);">
+         style="background:rgba(var(--neon-blue-rgb),0.04); border:1px solid rgba(var(--neon-blue-rgb),0.1);">
       <svg class="w-4 h-4 text-neon-blue flex-shrink-0 mt-0.5" fill="none"
            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round"
@@ -585,10 +584,10 @@
     width: 100%;
     padding: 0.75rem 1rem;
     border-radius: 0.75rem;
-    background: #08080f;
-    border: 1px solid rgba(0,243,255,0.15);
-    color: #e5e7eb;
-    font-family: 'Rajdhani', sans-serif;
+    background: var(--cyber-800);
+    border: 1px solid var(--btn-border);
+    color: var(--text-200);
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 14px;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -599,20 +598,20 @@
   /* Right icon padding (eye toggle) */
   .xsm-icon-right { padding-right: 2.5rem !important; }
 
-  .xsm-input::placeholder { color: #374151; }
+  .xsm-input::placeholder { color: var(--text-500); }
   .xsm-input:focus {
-    border-color: rgba(0,243,255,0.5);
-    box-shadow: 0 0 0 3px rgba(0,243,255,0.07);
+    border-color: var(--btn-border-hover);
+    box-shadow: 0 0 0 3px var(--btn-glow-hover);
   }
   .xsm-input.error {
     border-color: rgba(255,80,80,0.6) !important;
     box-shadow: 0 0 0 3px rgba(255,80,80,0.07) !important;
   }
   .xsm-input.valid {
-    border-color: rgba(0,255,142,0.5) !important;
+    border-color: var(--neon-green) !important;
   }
   select.xsm-input option,
-  select.xsm-input optgroup { background: #0f0f22; color: #e5e7eb; }
+  select.xsm-input optgroup { background: var(--cyber-800); color: var(--text-200); }
 </style>
 {% endblock %}
 

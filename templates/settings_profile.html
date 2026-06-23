@@ -140,11 +140,11 @@
         <label class="block text-xs font-semibold font-rajdhani text-gray-300 mb-3">Select Theme</label>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
           {% for th_id, th_name, th_desc in [
-            ('cyberpunk', 'Cyberpunk (Dark)', 'Neon cyan/purple accents, default dark mode'),
-            ('midnight', 'Midnight (Pure Black)', 'High contrast neon green/cyan on black'),
-            ('amethyst', 'Amethyst (Dark Violet)', 'Neon violet/pink accents on deep purple'),
-            ('emerald', 'Emerald (Light)', 'Teal/emerald accents on clean white/gray'),
-            ('classic', 'Classic (Light Indigo)', 'Indigo accents on soft off-white')
+            ('cyberpunk', 'Slate Dark', 'Soft indigo accents on a premium dark slate background (Default)'),
+            ('midnight', 'Onyx Black', 'Sky blue accents on a deep pure black background'),
+            ('amethyst', 'Lavender Dusk', 'Soft violet & rose tones on a warm dark background'),
+            ('emerald', 'Mint Light', 'Clean mint teal accents on a fresh white surface'),
+            ('classic', 'Slate Light', 'Professional indigo-blue accents on a clean off-white surface')
           ] %}
           <label class="theme-card flex flex-col p-3.5 rounded-xl cursor-pointer transition-all border select-none
                         {% if (user.theme or 'cyberpunk') == th_id %}
