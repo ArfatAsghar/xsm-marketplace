@@ -48,17 +48,17 @@
 
   <!-- Filters -->
   <form method="get"
-        class="bg-cyber-800 border border-neon-blue/10 rounded-2xl p-5 mb-8 shadow-lg">
+        class="bg-cyber-800/40 border border-white/[0.08] backdrop-blur-md rounded-2xl p-6 mb-8 shadow-xl">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
       <input type="text" name="search" value="{{ search_query }}"
              placeholder="🔍 Search by username, platform, niche..."
-             class="px-4 py-3 rounded-xl bg-cyber-700 border border-neon-blue/20 text-white
-                    placeholder-gray-500 focus:outline-none focus:border-neon-blue/60 font-rajdhani transition">
+             class="px-4 py-3 rounded-xl bg-cyber-700/50 border border-white/[0.08] text-white
+                    placeholder-gray-500 focus:outline-none focus:border-neon-blue font-sans transition-all duration-300">
 
       <select name="platform"
-              class="px-4 py-3 rounded-xl bg-cyber-700 border border-neon-blue/20 text-white
-                     focus:outline-none focus:border-neon-blue/60 font-rajdhani transition">
+              class="px-4 py-3 rounded-xl bg-cyber-700/50 border border-white/[0.08] text-white
+                     focus:outline-none focus:border-neon-blue font-sans transition-all duration-300">
         <option value="">All Platforms</option>
         <option value="YouTube"   {% if selected_platform=="YouTube"   %}selected{% endif %}>YouTube</option>
         <option value="Instagram" {% if selected_platform=="Instagram" %}selected{% endif %}>Instagram</option>
@@ -68,7 +68,7 @@
         <option value="Telegram"  {% if selected_platform=="Telegram"  %}selected{% endif %}>Telegram</option>
       </select>
 
-      <label class="flex items-center gap-3 px-4 py-3 rounded-xl bg-cyber-700 border border-neon-blue/20 cursor-pointer font-rajdhani text-gray-300 hover:border-neon-blue/40 transition">
+      <label class="flex items-center gap-3 px-4 py-3 rounded-xl bg-cyber-700/50 border border-white/[0.08] cursor-pointer font-sans text-gray-300 hover:border-white/[0.15] transition-all duration-300">
         <input type="checkbox" name="monetized" value="1"
                {% if request.args.get('monetized') %}checked{% endif %}
                class="w-4 h-4 accent-neon-blue">
@@ -78,29 +78,31 @@
       <div class="flex gap-2">
         <input type="number" name="subs_min" value="{{ request.args.get('subs_min','') }}"
                placeholder="Min followers"
-               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700 border border-neon-blue/20 text-white
-                      placeholder-gray-500 focus:outline-none focus:border-neon-blue/60 font-rajdhani transition text-sm">
+               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700/50 border border-white/[0.08] text-white
+                      placeholder-gray-500 focus:outline-none focus:border-neon-blue font-sans transition-all duration-300 text-sm">
         <input type="number" name="subs_max" value="{{ request.args.get('subs_max','') }}"
                placeholder="Max followers"
-               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700 border border-neon-blue/20 text-white
-                      placeholder-gray-500 focus:outline-none focus:border-neon-blue/60 font-rajdhani transition text-sm">
+               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700/50 border border-white/[0.08] text-white
+                      placeholder-gray-500 focus:outline-none focus:border-neon-blue font-sans transition-all duration-300 text-sm">
       </div>
 
       <div class="flex gap-2">
         <input type="number" name="price_min" value="{{ request.args.get('price_min','') }}"
                placeholder="Min $"
-               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700 border border-neon-blue/20 text-white
-                      placeholder-gray-500 focus:outline-none focus:border-neon-blue/60 font-rajdhani transition text-sm">
+               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700/50 border border-white/[0.08] text-white
+                      placeholder-gray-500 focus:outline-none focus:border-neon-blue font-sans transition-all duration-300 text-sm">
         <input type="number" name="price_max" value="{{ request.args.get('price_max','') }}"
                placeholder="Max $"
-               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700 border border-neon-blue/20 text-white
-                      placeholder-gray-500 focus:outline-none focus:border-neon-blue/60 font-rajdhani transition text-sm">
+               class="w-1/2 px-3 py-3 rounded-xl bg-cyber-700/50 border border-white/[0.08] text-white
+                      placeholder-gray-500 focus:outline-none focus:border-neon-blue font-sans transition-all duration-300 text-sm">
       </div>
 
       <button type="submit"
-              class="px-6 py-3 rounded-xl font-semibold font-rajdhani text-white transition
-                     bg-gradient-to-r from-neon-blue/80 to-neon-purple/80
-                     hover:from-neon-blue hover:to-neon-purple shadow-md">
+              class="px-6 py-3 rounded-xl font-semibold font-sans text-white transition-all duration-300 hover:-translate-y-0.5 shadow-lg"
+              style="background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+                     box-shadow: 0 4px 15px rgba(var(--neon-blue-rgb), 0.15);"
+              onmouseover="this.style.boxShadow='0 6px 20px rgba(var(--neon-blue-rgb), 0.25)'"
+              onmouseout="this.style.boxShadow='0 4px 15px rgba(var(--neon-blue-rgb), 0.15)'">
         Apply Filters
       </button>
 
@@ -109,7 +111,7 @@
 
   <!-- Results count -->
   {% if total is defined %}
-  <p class="text-gray-500 text-sm font-rajdhani mb-4">
+  <p class="text-gray-500 text-sm font-sans mb-4">
     {{ total }} listing{{ 's' if total != 1 }} found
     {% if total_pages > 1 %} · Page {{ page }} of {{ total_pages }}{% endif %}
   </p>
@@ -118,8 +120,8 @@
   <!-- Listings Grid -->
   <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
     {% for key, listing in listings.items() %}
-    <div class="bg-cyber-800 border border-neon-blue/10 hover:border-neon-blue/40
-                rounded-xl overflow-hidden shadow-md hover:shadow-neon-blue/10
+    <div class="bg-cyber-800/40 border border-white/[0.08] hover:border-white/[0.18]
+                rounded-xl overflow-hidden shadow-lg hover:shadow-2xl
                 transition-all duration-300 flex flex-col group
                 {% if listing.is_boosted %}ring-1 ring-yellow-500/30{% endif %}">
 
@@ -129,8 +131,8 @@
              alt="Thumbnail"
              class="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-500"
              onerror="this.src='/static/default_thumbnail.png'">
-        <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full text-xs font-bold font-rajdhani
-                     bg-cyber-900/80 border border-neon-blue/30 text-neon-blue backdrop-blur-sm">
+        <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-bold font-sans
+                     bg-cyber-900/90 border border-white/[0.1] text-gray-200 backdrop-blur-sm">
           {{ listing.platform }}
         </span>
         <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-green-400 shadow shadow-green-400/50"></span>
@@ -149,11 +151,11 @@
 
         <!-- Username + price -->
         <div class="flex items-center justify-between mb-1">
-          <p class="font-bold text-white font-rajdhani truncate text-sm">
+          <p class="font-bold text-white font-sans truncate text-sm">
             {% if listing.page_link %}
               <a href="{{ listing.page_link }}" target="_blank" rel="noopener noreferrer" class="hover:text-neon-blue transition-colors inline-flex items-center gap-1">
                 @{{ listing.username }}
-                <i class="fas fa-external-link-alt text-[10px] opacity-75"></i>
+                <i class="fas fa-external-link-alt text-[9px] opacity-75"></i>
               </a>
             {% else %}
               @{{ listing.username }}
@@ -163,12 +165,12 @@
         </div>
 
         <!-- Followers -->
-        <p class="text-gray-500 text-xs font-rajdhani mb-1">
-          <i class="fas fa-users mr-1 text-neon-blue/40 text-xs"></i>{{ listing.followers }} followers
+        <p class="text-gray-500 text-xs font-sans mb-1">
+          <i class="fas fa-users mr-1 text-gray-500 text-xs"></i>{{ listing.followers }} followers
         </p>
 
         <!-- Description -->
-        <p class="text-gray-400 text-xs font-rajdhani line-clamp-2 mb-2 flex-1">
+        <p class="text-gray-400 text-xs font-sans line-clamp-2 mb-2 flex-1">
           {{ listing.description or 'No description provided.' }}
         </p>
 
@@ -178,26 +180,26 @@
           {% for i in range(listing.stars_full)  %}<span class="text-yellow-400 text-xs">★</span>{% endfor %}
           {% for i in range(listing.stars_half)  %}<span class="text-yellow-400 text-xs opacity-50">★</span>{% endfor %}
           {% for i in range(listing.stars_empty) %}<span class="text-gray-700 text-xs">★</span>{% endfor %}
-          <span class="text-xs text-gray-600 ml-1 font-rajdhani">{{ listing.avg_rating }}</span>
+          <span class="text-xs text-gray-600 ml-1 font-sans">{{ listing.avg_rating }}</span>
         </div>
         {% endif %}
 
         <!-- Seller row with verified badge -->
-        <div class="flex items-center gap-2 mb-3 pt-2 border-t border-gray-800">
+        <div class="flex items-center gap-2 mb-3 pt-2 border-t border-white/[0.06]">
           <img src="{{ listing.seller_pic }}"
                alt="{{ listing.seller_username }}"
-               class="w-6 h-6 rounded-full border border-neon-blue/20 object-cover flex-shrink-0"
+               class="w-6 h-6 rounded-full border border-white/[0.1] object-cover flex-shrink-0"
                onerror="this.src='/static/default_user.png'">
           <a href="{{ url_for('misc.seller_profile', seller_id=listing.seller_uid) }}"
-             class="text-neon-blue hover:text-neon-cyan text-xs font-rajdhani font-semibold truncate transition-colors">
+             class="text-neon-blue hover:text-neon-cyan text-xs font-sans font-semibold truncate transition-colors">
             {{ listing.seller_username }}
           </a>
           <!-- ✅ VERIFIED BADGE — only shows when seller_verified is True -->
           {% if listing.seller_verified %}
           <span title="Verified Seller"
                 class="flex-shrink-0 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full
-                       text-[9px] font-bold font-rajdhani uppercase tracking-wide
-                       bg-neon-blue/10 border border-neon-blue/30 text-neon-blue">
+                       text-[9px] font-bold font-sans uppercase tracking-wide text-neon-blue"
+                style="background: rgba(var(--neon-blue-rgb), 0.1); border: 1px solid rgba(var(--neon-blue-rgb), 0.3);">
             <i class="fas fa-circle-check text-[8px]"></i> Verified
           </span>
           {% endif %}
@@ -205,10 +207,12 @@
 
         <!-- View button -->
         <a href="{{ url_for('listings.listing_detail', listing_id=key) }}"
-           class="w-full block text-center py-2 rounded-lg font-semibold font-rajdhani text-xs
-                  text-white cyber-button hover:border-neon-blue/60
-                  bg-gradient-to-r from-neon-blue/10 to-neon-purple/10
-                  hover:from-neon-blue/20 hover:to-neon-purple/20 transition-all">
+           class="w-full block text-center py-2 rounded-lg font-semibold font-sans text-xs
+                  text-white transition-all duration-300 hover:-translate-y-0.5"
+           style="background: rgba(var(--neon-blue-rgb), 0.08); border: 1px solid rgba(var(--neon-blue-rgb), 0.2);"
+           onmouseover="this.style.background='rgba(var(--neon-blue-rgb), 0.15)';this.style.borderColor='rgba(var(--neon-blue-rgb), 0.35)';"
+           onmouseout="this.style.background='rgba(var(--neon-blue-rgb), 0.08)';this.style.borderColor='rgba(var(--neon-blue-rgb), 0.2)';"
+           >
           View →
         </a>
 
@@ -218,8 +222,8 @@
     {% else %}
     <div class="col-span-3 text-center py-20">
       <div class="text-5xl mb-4">🔍</div>
-      <p class="text-gray-400 font-rajdhani text-lg">No listings found matching your filters.</p>
-      <a href="/marketplace" class="text-neon-blue hover:underline text-sm font-rajdhani mt-2 inline-block">
+      <p class="text-gray-400 font-sans text-lg">No listings found matching your filters.</p>
+      <a href="/marketplace" class="text-neon-blue hover:underline text-sm font-sans mt-2 inline-block">
         Clear filters
       </a>
     </div>
@@ -232,42 +236,44 @@
 
     {% if page > 1 %}
       <a href="{{ request.path }}?{{ request.query_string.decode() | replace('page=' ~ page, 'page=' ~ (page - 1)) }}"
-         class="px-4 py-2 bg-cyber-800 hover:bg-cyber-700 border border-neon-blue/20
-                hover:border-neon-blue/50 text-white rounded-xl text-sm font-rajdhani transition">
+         class="px-4 py-2 bg-cyber-800/60 hover:bg-cyber-700 border border-white/[0.08]
+                hover:border-white/[0.2] text-white rounded-xl text-sm font-sans transition">
         ← Prev
       </a>
     {% else %}
-      <span class="px-4 py-2 bg-cyber-900 text-gray-700 rounded-xl text-sm font-rajdhani cursor-not-allowed">← Prev</span>
+      <span class="px-4 py-2 bg-cyber-900/60 text-gray-700 rounded-xl text-sm font-sans cursor-not-allowed">← Prev</span>
     {% endif %}
 
     {% for p in range(1, total_pages + 1) %}
       {% if p == page %}
-        <span class="px-4 py-2 bg-gradient-to-r from-neon-blue/80 to-neon-purple/80
-                     text-white rounded-xl text-sm font-bold font-rajdhani">{{ p }}</span>
+        <span class="px-4 py-2 text-white rounded-xl text-sm font-bold font-sans"
+              style="background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));">
+          {{ p }}
+        </span>
       {% elif p == 1 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
         <a href="{{ request.path }}?{{ request.query_string.decode() | replace('page=' ~ page, 'page=' ~ p) if 'page=' in request.query_string.decode() else request.query_string.decode() ~ ('&' if request.query_string else '') ~ 'page=' ~ p }}"
-           class="px-4 py-2 bg-cyber-800 hover:bg-cyber-700 border border-neon-blue/20
-                  hover:border-neon-blue/50 text-white rounded-xl text-sm font-rajdhani transition">
+           class="px-4 py-2 bg-cyber-800/60 hover:bg-cyber-700 border border-white/[0.08]
+                  hover:border-white/[0.2] text-white rounded-xl text-sm font-sans transition">
           {{ p }}
         </a>
       {% elif p == page - 3 or p == page + 3 %}
-        <span class="px-2 text-gray-600 font-rajdhani">…</span>
+        <span class="px-2 text-gray-600 font-sans">…</span>
       {% endif %}
     {% endfor %}
 
     {% if page < total_pages %}
       <a href="{{ request.path }}?{{ request.query_string.decode() | replace('page=' ~ page, 'page=' ~ (page + 1)) if 'page=' in request.query_string.decode() else request.query_string.decode() ~ ('&' if request.query_string else '') ~ 'page=' ~ (page + 1) }}"
-         class="px-4 py-2 bg-cyber-800 hover:bg-cyber-700 border border-neon-blue/20
-                hover:border-neon-blue/50 text-white rounded-xl text-sm font-rajdhani transition">
+         class="px-4 py-2 bg-cyber-800/60 hover:bg-cyber-700 border border-white/[0.08]
+                hover:border-white/[0.2] text-white rounded-xl text-sm font-sans transition">
         Next →
       </a>
     {% else %}
-      <span class="px-4 py-2 bg-cyber-900 text-gray-700 rounded-xl text-sm font-rajdhani cursor-not-allowed">Next →</span>
+      <span class="px-4 py-2 bg-cyber-900/60 text-gray-700 rounded-xl text-sm font-sans cursor-not-allowed">Next →</span>
     {% endif %}
 
   </div>
 
-  <p class="text-center text-gray-600 text-xs font-rajdhani mt-3">
+  <p class="text-center text-gray-600 text-xs font-sans mt-3">
     Showing {{ ((page - 1) * 9) + 1 }}–{{ [page * 9, total] | min }} of {{ total }} listings
   </p>
   {% endif %}
