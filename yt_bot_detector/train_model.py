@@ -11,8 +11,7 @@ import os
 import json
 import math
 import random
-import numpy as np
-import joblib
+# Zero-dependency imports at module level
 
 from feature_engineering import extract_features, FEATURE_NAMES
 
@@ -145,7 +144,11 @@ def generate_dataset(n_organic=1500, n_bot=1500, seed=42):
         records.append([feats[f] for f in FEATURE_NAMES])
         labels.append(1)
 
-    return np.array(records, dtype=np.float32), np.array(labels, dtype=np.int32)
+    try:
+        import numpy as np
+        return np.array(records, dtype=np.float32), np.array(labels, dtype=np.int32)
+    except ImportError:
+        return records, labels
 
 
 # ─────────────────────────── training ────────────────────────────────────────
@@ -164,7 +167,7 @@ def train(n_organic=1500, n_bot=1500):
     )
     model.fit(X, y)
 
-    # ── save model ──────────────────────────────────────────────────────────
+    import joblib
     model_path = os.path.join(MODEL_DIR, "xgb_model.joblib")
     joblib.dump(model, model_path)
     print(f"[TRAIN] Model saved -> {model_path}")
@@ -172,12 +175,18 @@ def train(n_organic=1500, n_bot=1500):
     # ── Calculate feature importances and profile means ─────────────────────
     importances = model.feature_importances_
     
-    # Calculate baseline profiles for features
-    organic_idx = (y == 0)
-    bot_idx = (y == 1)
-    
-    organic_means = X[organic_idx].mean(axis=0)
-    bot_means = X[bot_idx].mean(axis=0)
+    try:
+        import numpy as np
+        organic_idx = (y == 0)
+        bot_idx = (y == 1)
+        organic_means = X[organic_idx].mean(axis=0)
+        bot_means = X[bot_idx].mean(axis=0)
+    except ImportError:
+        # Fallback if numpy is not present
+        organic_rows = [X[i] for i, label in enumerate(y) if label == 0]
+        bot_rows = [X[i] for i, label in enumerate(y) if label == 1]
+        organic_means = [sum(col) / len(col) for col in zip(*organic_rows)]
+        bot_means = [sum(col) / len(col) for col in zip(*bot_rows)]
 
     importance_list = sorted(
         zip(FEATURE_NAMES, importances.tolist()),

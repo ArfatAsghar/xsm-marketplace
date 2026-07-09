@@ -8,18 +8,21 @@ import threading
 from flask import Flask, render_template_string, request, jsonify
 
 from analyzer import analyze
-from train_model import train as train_model
 
 app = Flask(__name__)
 
 # ── train model on first launch if not present ───────────────────────────────
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "model", "xgb_model.joblib")
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "model", "model_meta.json")
 
 def _ensure_model():
-    if not os.path.exists(MODEL_PATH):
-        print("[APP] Model not found — training now …")
-        train_model()
-        print("[APP] Model ready ✅")
+    try:
+        from train_model import train as train_model
+        if not os.path.exists(MODEL_PATH):
+            print("[APP] Model not found — training now …")
+            train_model()
+            print("[APP] Model ready ✅")
+    except Exception as e:
+        print(f"[APP] Could not run automatic training fallback: {e}")
 
 threading.Thread(target=_ensure_model, daemon=True).start()
 
