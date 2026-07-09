@@ -211,127 +211,7 @@
         </div>
       </div>
 
-      <!-- YouTube Legitimacy Test Section -->
-      {% if listing.platform == 'YouTube' %}
-      <div class="cyber-card p-6 relative overflow-hidden my-5">
-        <div class="absolute top-0 left-0 w-full h-[2px]" style="background:linear-gradient(90deg, #7c3aed, #00f3ff);"></div>
-        
-        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
-          <p class="text-[10px] font-orbitron tracking-widest uppercase text-neon-blue font-bold flex items-center gap-1.5">
-            <i class="fab fa-youtube text-[#ff0000] text-xs"></i> YouTube Bot &amp; Legitimacy Test
-          </p>
-          <span class="text-[10px] font-orbitron text-gray-500 uppercase tracking-widest">
-            Audit Fee: $2 Credits
-          </span>
-        </div>
 
-        {% if listing.legitimacy_report %}
-          <!-- Report exists, show the audit details -->
-          {% set report = listing.legitimacy_report %}
-          <div class="space-y-4">
-            
-            <!-- Verdict Hero -->
-            <div class="flex items-center gap-4 flex-wrap bg-gray-950/40 p-4 rounded-xl border border-gray-800/80">
-              <div class="flex-1 min-w-[200px]">
-                <p class="text-[9px] font-bold text-gray-500 font-orbitron tracking-wider">AUDIT VERDICT</p>
-                <div class="flex items-center gap-2 mt-1">
-                  <span class="text-base font-black font-orbitron" style="color: {{ report.verdict.color }}">
-                    {{ report.verdict.icon }} {{ report.verdict.label }}
-                  </span>
-                </div>
-                <p class="text-[10px] text-gray-500 font-rajdhani mt-1">
-                  Last scanned: {{ report.run_at[:10] }} by @{{ report.run_by_username }}
-                </p>
-              </div>
-              
-              <!-- Radial Ring -->
-              <div class="text-center">
-                <div class="relative w-16 h-16 mx-auto">
-                  <svg class="transform -rotate-90 w-16 h-16" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="{{ report.verdict.color }}" stroke-width="8"
-                      stroke-dasharray="251.2" stroke-dashoffset="{{ 251.2 * (1 - report.verdict.score / 100) }}"/>
-                  </svg>
-                  <div class="absolute inset-0 flex flex-col items-center justify-center">
-                    <span class="text-sm font-black font-orbitron" style="color: {{ report.verdict.color }}">
-                      {{ report.verdict.score }}%
-                    </span>
-                  </div>
-                </div>
-                <p class="text-[9px] font-orbitron text-gray-500 mt-1 uppercase tracking-wide">Authentic</p>
-              </div>
-            </div>
-
-            <!-- Signal Highlights -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Bot Signals -->
-              <div class="p-3 bg-red-950/10 border border-red-900/20 rounded-xl space-y-2">
-                <h4 class="text-[10px] font-orbitron font-bold text-red-400 uppercase tracking-wider flex items-center gap-1">
-                  <i class="fas fa-exclamation-triangle"></i> Bot Risk Signals
-                </h4>
-                {% if report.top_red_flags %}
-                  <ul class="space-y-1.5">
-                    {% for f in report.top_red_flags %}
-                      <li class="text-[11px] font-rajdhani text-gray-400 flex items-start gap-1">
-                        <span class="text-red-400 mr-0.5">•</span>
-                        <span><b>{{ f.label }}:</b> {{ f.description }}</span>
-                      </li>
-                    {% endfor %}
-                  </ul>
-                {% else %}
-                  <p class="text-[10px] text-gray-600 font-rajdhani">No high-risk bot signals found.</p>
-                {% endif %}
-              </div>
-
-              <!-- Clean Signals -->
-              <div class="p-3 bg-green-950/10 border border-green-900/20 rounded-xl space-y-2">
-                <h4 class="text-[10px] font-orbitron font-bold text-green-400 uppercase tracking-wider flex items-center gap-1">
-                  <i class="fas fa-check-circle"></i> Organic Signals
-                </h4>
-                {% if report.top_clean_signals %}
-                  <ul class="space-y-1.5">
-                    {% for f in report.top_clean_signals %}
-                      <li class="text-[11px] font-rajdhani text-gray-400 flex items-start gap-1">
-                        <span class="text-green-400 mr-0.5">•</span>
-                        <span><b>{{ f.label }}:</b> {{ f.description }}</span>
-                      </li>
-                    {% endfor %}
-                  </ul>
-                {% else %}
-                  <p class="text-[10px] text-gray-600 font-rajdhani">No significant organic signals found.</p>
-                {% endif %}
-              </div>
-            </div>
-
-            <!-- Rerun button -->
-            <form method="POST" action="{{ url_for('listings.run_legitimacy', listing_id=listing_id) }}" class="pt-2 text-right">
-              <button type="submit" 
-                      class="px-4 py-2 rounded-xl text-xs font-bold font-rajdhani text-gray-400 border border-gray-800
-                             hover:text-neon-blue hover:border-neon-blue transition-all"
-                      onclick="return confirm('Rerunning the legitimacy scan will deduct $2 credits from your balance. Continue?')">
-                <i class="fas fa-sync-alt mr-1"></i> Rerun Audit ($2 Credits)
-              </button>
-            </form>
-          </div>
-        {% else %}
-          <!-- No report yet -->
-          <div class="bg-gray-950/30 p-5 rounded-xl border border-gray-800/80 text-center space-y-3">
-            <p class="text-xs text-gray-400 font-rajdhani leading-relaxed max-w-md mx-auto">
-              This channel has not been audited yet. Anyone can perform an instant machine learning audit using live YouTube API data to detect fake subscribers, bought view patterns, and engagement levels.
-            </p>
-            <form method="POST" action="{{ url_for('listings.run_legitimacy', listing_id=listing_id) }}">
-              <button type="submit" 
-                      class="px-5 py-2.5 rounded-xl text-xs font-bold font-orbitron text-white tracking-wider uppercase
-                             transition-all hover:scale-[1.02] shadow-lg"
-                      style="background: linear-gradient(135deg, #7c3aed, #00f3ff); box-shadow: 0 4px 16px rgba(0,243,255,0.15);"
-                      onclick="return confirm('Running this scan will deduct $2 credits from your wallet. Continue?')">
-                <i class="fas fa-shield-halved mr-1"></i> Run Legitimacy Scan ($2 Credits)
-              </button>
-            </form>
-          </div>
-        {% endif %}
-      </div>
-      {% endif %}
 
       <!-- Escrow explanation -->
       <div class="rounded-2xl p-4 flex items-start gap-3"
@@ -497,15 +377,54 @@
                 ('fa-clock','72-hour dispute window'),
                 ('fa-headset','Admin dispute resolution'),
                 ('fa-lock','Secure credential delivery')
-              ] %}
-              <li class="flex items-center gap-2.5 text-xs font-rajdhani text-gray-500">
-                <i class="fas {{ icon }} text-neon-blue/60 w-4 text-center text-[11px]"></i>
-                {{ label }}
-              </li>
-              {% endfor %}
             </ul>
           </div>
         </div>
+
+        <!-- YouTube Legitimacy Sidebar Card -->
+        {% if listing.platform == 'YouTube' %}
+        <div class="cyber-card overflow-hidden">
+          <div class="h-px w-full" style="background:linear-gradient(90deg, #7c3aed, #00f3ff);"></div>
+          <div class="p-6 space-y-4">
+            <p class="text-[10px] font-orbitron tracking-widest uppercase text-neon-blue font-bold flex items-center gap-1.5">
+              <i class="fab fa-youtube text-[#ff0000] text-xs"></i> Legitimacy &amp; Bot Audit
+            </p>
+            
+            {% if listing.legitimacy_report %}
+              {% set report = listing.legitimacy_report %}
+              <div class="flex items-center justify-between bg-gray-950/40 p-3 rounded-xl border border-gray-800/80">
+                <div>
+                  <p class="text-[9px] font-bold text-gray-500 font-orbitron tracking-wider">VERDICT</p>
+                  <p class="text-xs font-black font-orbitron mt-0.5" style="color: {{ report.verdict.color }}">
+                    {{ report.verdict.icon }} {{ report.verdict.label }}
+                  </p>
+                </div>
+                <div class="text-right">
+                  <span class="text-base font-black font-orbitron" style="color: {{ report.verdict.color }}">
+                    {{ report.verdict.score }}%
+                  </span>
+                  <p class="text-[8px] font-orbitron text-gray-500 uppercase tracking-wide">Authentic</p>
+                </div>
+              </div>
+              <a href="{{ url_for('listings.view_audit', listing_id=listing_id) }}" 
+                 class="block w-full py-2.5 rounded-xl text-xs font-bold font-rajdhani text-center transition-all bg-cyber-900 border border-neon-blue/30 text-neon-blue hover:border-neon-blue hover:scale-[1.01]">
+                <i class="fas fa-chart-bar mr-1.5"></i> View Detailed Audit
+              </a>
+            {% else %}
+              <div class="bg-gray-950/30 p-4 rounded-xl border border-gray-800/80 text-center space-y-3">
+                <p class="text-[11px] text-gray-400 font-rajdhani leading-relaxed">
+                  Verify channel authenticity and scan for fake subscribers/bots for $2 credits.
+                </p>
+                <a href="{{ url_for('listings.view_audit', listing_id=listing_id) }}"
+                   class="block w-full py-2.5 rounded-xl text-xs font-bold font-orbitron text-white text-center tracking-wider uppercase transition-all hover:scale-[1.01]"
+                   style="background: linear-gradient(135deg, #7c3aed, #00f3ff); box-shadow: 0 4px 12px rgba(0,243,255,0.15);">
+                  <i class="fas fa-shield-halved mr-1"></i> Audit Channel ($2)
+                </a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
 
         <!-- Escrow state -->
         {% if escrow and escrow.state %}

@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+{% block title %}Legitimacy Audit — @{{ listing.username }} on YouTube — XSM Marketplace{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+  <!-- Breadcrumb -->
+  <div class="mb-6 flex items-center gap-2 text-xs font-rajdhani text-gray-500">
+    <a href="{{ url_for('listings.marketplace') }}" class="hover:text-neon-blue">Marketplace</a>
+    <span>&gt;</span>
+    <a href="{{ url_for('listings.listing_detail', listing_id=listing_id) }}" class="hover:text-neon-blue">@{{ listing.username }}</a>
+    <span>&gt;</span>
+    <span class="text-gray-400">Legitimacy Audit</span>
+  </div>
+
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="font-orbitron text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-3">
+      <i class="fab fa-youtube text-[#ff0000]"></i> YouTube Legitimacy Audit
+    </h1>
+    <p class="text-sm text-gray-500 font-rajdhani mt-1">
+      Scan live statistics directly from the YouTube API v3 to identify fake subscribers, inflated views, and bot networks.
+    </p>
+  </div>
+
+  <div class="space-y-6">
+
+    <!-- Input Form Card -->
+    <div class="cyber-card p-6 relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-full h-[2px]" style="background:linear-gradient(90deg, #7c3aed, #00f3ff);"></div>
+      
+      <p class="text-[10px] font-orbitron tracking-widest uppercase text-neon-blue font-bold mb-4">
+        Run Legitimacy Scan
+      </p>
+
+      <form method="POST" action="{{ url_for('listings.run_legitimacy', listing_id=listing_id) }}" class="space-y-4">
+        <div>
+          <label class="block text-xs font-rajdhani text-gray-400 mb-2">YouTube Channel Link or Handle</label>
+          <div class="relative flex items-center">
+            <span class="absolute left-3.5 text-gray-500">
+              <i class="fas fa-link text-sm"></i>
+            </span>
+            <input type="url" name="page_link" required
+                   value="{{ listing.page_link or '' }}"
+                   placeholder="https://www.youtube.com/@handle or https://www.youtube.com/channel/UC..."
+                   class="w-full pl-10 pr-4 py-3 rounded-xl font-rajdhani text-sm text-white bg-gray-950/60
+                          placeholder-gray-700 outline-none border border-gray-800 focus:border-neon-blue transition-colors">
+          </div>
+          <p class="text-[10px] text-gray-600 font-rajdhani mt-2 leading-relaxed">
+            Must be a public YouTube channel URL. Running the audit costs <b>$2 credits</b> which are deducted from your balance.
+          </p>
+        </div>
+
+        <div class="flex items-center justify-between pt-2">
+          <p class="text-xs font-rajdhani text-gray-500">
+            Your Wallet Balance: <span class="text-yellow-400 font-semibold">${{ session.user.credit }}</span>
+          </p>
+          <button type="submit"
+                  class="px-6 py-3 rounded-xl text-xs font-bold font-orbitron text-white tracking-wider uppercase
+                         transition-all hover:scale-[1.02] shadow-lg flex items-center gap-2"
+                  style="background: linear-gradient(135deg, #7c3aed, #00f3ff); box-shadow: 0 4px 16px rgba(0,243,255,0.15);"
+                  onclick="return confirm('Running this audit will deduct $2 credits from your balance. Continue?')">
+            <i class="fas fa-shield-halved"></i> Run Legitimacy Scan ($2 Credits)
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Audit Report Results -->
+    {% if listing.legitimacy_report %}
+      {% set report = listing.legitimacy_report %}
+      
+      <!-- Verdict & Channel Info -->
+      <div class="cyber-card p-6 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-[2px]" style="background:{{ report.verdict.color }};"></div>
+        
+        <div class="flex flex-col md:flex-row items-center gap-6 justify-between">
+          
+          <!-- Channel Bio -->
+          <div class="flex items-center gap-4 flex-1">
+            {% if report.channel.thumbnail %}
+              <img src="{{ report.channel.thumbnail }}" alt="Thumbnail" class="w-16 h-16 rounded-full border border-gray-800 bg-gray-950">
+            {% else %}
+              <div class="w-16 h-16 rounded-full border border-gray-800 bg-gray-950 flex items-center justify-center text-gray-600 font-orbitron text-xl">
+                YT
+              </div>
+            {% endif %}
+            <div>
+              <h2 class="font-orbitron text-lg font-bold text-white leading-tight">
+                {{ report.channel.title }}
+              </h2>
+              <p class="text-xs font-rajdhani text-gray-500 mt-1 flex items-center gap-1.5">
+                <span>{{ report.channel.handle or '@' ~ listing.username }}</span>
+                {% if report.channel.country %}
+                  <span class="px-1.5 py-0.5 rounded bg-gray-900 border border-gray-800 text-[9px] uppercase tracking-wider text-gray-400">
+                    {{ report.channel.country }}
+                  </span>
+                {% endif %}
+              </p>
+              <p class="text-[10px] text-gray-600 font-rajdhani mt-2">
+                Audited on {{ report.run_at[:10] }} at {{ report.run_at[11:16] }} UTC by @{{ report.run_by_username }}
+              </p>
+            </div>
+          </div>
+
+          <!-- radial ring score -->
+          <div class="flex items-center gap-4 bg-gray-950/40 p-4 rounded-xl border border-gray-800/80">
+            <div class="text-right">
+              <p class="text-[9px] font-bold text-gray-500 font-orbitron tracking-wider">AUDIT VERDICT</p>
+              <p class="text-base font-black font-orbitron mt-0.5" style="color: {{ report.verdict.color }}">
+                {{ report.verdict.icon }} {{ report.verdict.label }}
+              </p>
+              <p class="text-[10px] text-gray-500 font-rajdhani mt-1">
+                Authenticity: {{ report.verdict.score }}%
+              </p>
+            </div>
+            
+            <div class="relative w-16 h-16">
+              <svg class="transform -rotate-90 w-16 h-16" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
+                <circle cx="50" cy="50" r="40" fill="none" stroke="{{ report.verdict.color }}" stroke-width="8"
+                  stroke-dasharray="251.2" stroke-dashoffset="{{ 251.2 * (1 - report.verdict.score / 100) }}"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center text-center">
+                <span class="text-sm font-black font-orbitron" style="color: {{ report.verdict.color }}">
+                  {{ report.verdict.score }}%
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Core Stats Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        
+        <div class="cyber-card p-4 text-center">
+          <p class="text-[9px] font-orbitron text-gray-500 uppercase tracking-wider mb-1">Subscribers</p>
+          <p class="font-orbitron text-lg font-bold text-white">
+            {{ "{:,}".format(report.channel.subscriber_count) if report.channel.subscriber_count else '0' }}
+          </p>
+        </div>
+
+        <div class="cyber-card p-4 text-center">
+          <p class="text-[9px] font-orbitron text-gray-500 uppercase tracking-wider mb-1">Total views</p>
+          <p class="font-orbitron text-lg font-bold text-white">
+            {{ "{:,}".format(report.channel.total_views) if report.channel.total_views else '0' }}
+          </p>
+        </div>
+
+        <div class="cyber-card p-4 text-center">
+          <p class="text-[9px] font-orbitron text-gray-500 uppercase tracking-wider mb-1">Avg Views (Recent)</p>
+          <p class="font-orbitron text-lg font-bold text-white">
+            {% set sum_views = namespace(value=0) %}
+            {% set list_len = report.features | selectattr('name', 'equalto', 'log_avg_views') | list %}
+            {% if list_len %}
+              {% set avg_v_log = list_len[0].value %}
+              {% set avg_v = (2.71828 ** avg_v_log - 1) | int %}
+              {{ "{:,}".format(avg_v) }}
+            {% else %}
+              N/A
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="cyber-card p-4 text-center">
+          <p class="text-[9px] font-orbitron text-gray-500 uppercase tracking-wider mb-1">Avg Likes (Recent)</p>
+          <p class="font-orbitron text-lg font-bold text-white">
+            {% set list_len = report.features | selectattr('name', 'equalto', 'log_avg_likes') | list %}
+            {% if list_len %}
+              {% set avg_l_log = list_len[0].value %}
+              {% set avg_l = (2.71828 ** avg_l_log - 1) | int %}
+              {{ "{:,}".format(avg_l) }}
+            {% else %}
+              N/A
+            {% endif %}
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Detail Analysis Breakdown -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Red Flags -->
+        <div class="cyber-card p-5 space-y-3 relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-[2px] bg-red-500/50"></div>
+          <h3 class="font-orbitron text-xs font-bold text-red-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fas fa-exclamation-triangle text-red-500"></i> Bot / Engagement Risk Signals
+          </h3>
+          <p class="text-[10px] text-gray-500 font-rajdhani">
+            Features driving the bot classification score up. Values showing variance from organic channel benchmarks.
+          </p>
+
+          <ul class="space-y-3 pt-2">
+            {% set red_flags = report.features | selectattr('shap', 'greaterthan', 0.01) | list %}
+            {% if red_flags %}
+              {% for f in red_flags[:6] %}
+                <li class="p-3 rounded-lg bg-red-950/10 border border-red-500/15">
+                  <div class="flex items-center justify-between text-xs font-orbitron font-semibold">
+                    <span class="text-red-300">{{ f.label }}</span>
+                    <span class="text-red-400 font-mono">{{ f.value }}</span>
+                  </div>
+                  <p class="text-[10px] text-gray-400 font-rajdhani mt-1 leading-relaxed">
+                    {{ f.description }}
+                  </p>
+                </li>
+              {% endfor %}
+            {% else %}
+              <div class="py-6 text-center border border-dashed border-gray-800 rounded-xl">
+                <i class="fas fa-circle-check text-green-500/60 text-lg mb-2"></i>
+                <p class="text-xs text-gray-500 font-rajdhani">No high-risk bot signals detected.</p>
+              </div>
+            {% endif %}
+          </ul>
+        </div>
+
+        <!-- Clean Signals -->
+        <div class="cyber-card p-5 space-y-3 relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-[2px] bg-green-500/50"></div>
+          <h3 class="font-orbitron text-xs font-bold text-green-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fas fa-circle-check text-green-500"></i> Organic / Genuine Signals
+          </h3>
+          <p class="text-[10px] text-gray-500 font-rajdhani">
+            Positive, healthy features verifying natural growth, strong engagement correlations, and organic viewership.
+          </p>
+
+          <ul class="space-y-3 pt-2">
+            {% set clean_signals = report.features | selectattr('shap', 'lessthan', -0.01) | list %}
+            {% if clean_signals %}
+              {% for f in clean_signals[:6] %}
+                <li class="p-3 rounded-lg bg-green-950/10 border border-green-500/15">
+                  <div class="flex items-center justify-between text-xs font-orbitron font-semibold">
+                    <span class="text-green-300">{{ f.label }}</span>
+                    <span class="text-green-400 font-mono">{{ f.value }}</span>
+                  </div>
+                  <p class="text-[10px] text-gray-400 font-rajdhani mt-1 leading-relaxed">
+                    {{ f.description }}
+                  </p>
+                </li>
+              {% endfor %}
+            {% else %}
+              <div class="py-6 text-center border border-dashed border-gray-800 rounded-xl">
+                <p class="text-xs text-gray-500 font-rajdhani">No significant organic benchmarks found.</p>
+              </div>
+            {% endif %}
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Feature Deep Dive Table -->
+      <div class="cyber-card p-6 space-y-4">
+        <p class="text-[10px] font-orbitron tracking-widest uppercase text-gray-500">
+          Complete Feature Comparison Matrix
+        </p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left font-rajdhani border-collapse">
+            <thead>
+              <tr class="border-b border-gray-800 text-[10px] uppercase font-orbitron tracking-wider text-gray-500">
+                <th class="py-3">Feature Metric</th>
+                <th class="py-3 text-right">Value</th>
+                <th class="py-3 text-right">Organic Avg</th>
+                <th class="py-3 text-right">Bot Avg</th>
+                <th class="py-3 text-right">Signal</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-800/50 text-xs">
+              {% for f in report.features %}
+                <!-- Map feature name to benchmark mean keys -->
+                {% set name = f.name %}
+                <tr class="hover:bg-gray-900/20">
+                  <td class="py-3 text-gray-300 font-semibold">{{ f.label }}</td>
+                  <td class="py-3 text-right font-mono text-white">{{ f.value }}</td>
+                  <td class="py-3 text-right font-mono text-gray-500">
+                    {% if name == 'sub_view_ratio' %}0.011{% elif name == 'views_per_sub' %}0.313{% elif name == 'like_rate' %}0.060{% elif name == 'comment_rate' %}0.008{% elif name == 'comment_like_ratio' %}0.133{% elif name == 'view_cv' %}0.512{% elif name == 'upload_rate' %}0.060{% elif name == 'log_age' %}8.203{% elif name == 'log_subs' %}13.51{% elif name == 'log_total_views' %}18.12{% elif name == 'hidden_subs' %}0.00{% elif name == 'disabled_comments' %}0.00{% elif name == 'comment_diversity' %}0.514{% elif name == 'spam_ratio' %}0.00{% elif name == 'avg_comment_len' %}2.06{% elif name == 'comments_collected' %}54.71{% elif name == 'top_avg_ratio' %}2.54{% elif name == 'bot_avg_ratio' %}0.325{% elif name == 'view_like_corr' %}0.758{% elif name == 'log_avg_views' %}12.2{% elif name == 'log_avg_likes' %}9.39{% elif name == 'log_avg_comments' %}7.36{% elif name == 'vps_anomaly' %}0.00{% elif name == 'engagement_score' %}0.068{% else %}-{% endif %}
+                  </td>
+                  <td class="py-3 text-right font-mono text-gray-500">
+                    {% if name == 'sub_view_ratio' %}0.129{% elif name == 'views_per_sub' %}0.737{% elif name == 'like_rate' %}0.020{% elif name == 'comment_rate' %}0.008{% elif name == 'comment_like_ratio' %}1.523{% elif name == 'view_cv' %}0.187{% elif name == 'upload_rate' %}0.102{% elif name == 'log_age' %}6.921{% elif name == 'log_subs' %}12.59{% elif name == 'log_total_views' %}15.08{% elif name == 'hidden_subs' %}0.488{% elif name == 'disabled_comments' %}0.00{% elif name == 'comment_diversity' %}0.502{% elif name == 'spam_ratio' %}0.318{% elif name == 'avg_comment_len' %}1.992{% elif name == 'comments_collected' %}17.61{% elif name == 'top_avg_ratio' %}1.415{% elif name == 'bot_avg_ratio' %}0.709{% elif name == 'view_like_corr' %}0.586{% elif name == 'log_avg_views' %}9.90{% elif name == 'log_avg_likes' %}5.34{% elif name == 'log_avg_comments' %}3.83{% elif name == 'vps_anomaly' %}0.276{% elif name == 'engagement_score' %}0.028{% else %}-{% endif %}
+                  </td>
+                  <td class="py-3 text-right">
+                    {% if f.shap > 0.05 %}
+                      <span class="px-1.5 py-0.5 rounded bg-red-950/20 border border-red-500/20 text-red-400 text-[9px] uppercase font-bold tracking-wider">
+                        High Risk
+                      </span>
+                    {% elif f.shap > 0.01 %}
+                      <span class="px-1.5 py-0.5 rounded bg-orange-950/20 border border-orange-500/20 text-orange-400 text-[9px] uppercase font-bold tracking-wider">
+                        Moderate Risk
+                      </span>
+                    {% elif f.shap < -0.01 %}
+                      <span class="px-1.5 py-0.5 rounded bg-green-950/20 border border-green-500/20 text-green-400 text-[9px] uppercase font-bold tracking-wider">
+                        Healthy
+                      </span>
+                    {% else %}
+                      <span class="text-gray-600 font-mono">-</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

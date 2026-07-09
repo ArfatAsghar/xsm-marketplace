@@ -526,6 +526,23 @@ def dispute_delivery(listing_id):
     return redirect(url_for("misc.dashboard"))
 
 
+@listings_bp.route("/listing/<listing_id>/audit")
+@login_required
+def view_audit(listing_id):
+    listing_ref = safe_db_reference("listings", listing_id)
+    listing     = listing_ref.get()
+
+    if not listing:
+        flash("Listing not found.", "danger")
+        return redirect(url_for("listings.marketplace"))
+
+    if listing.get("platform") != "YouTube":
+        flash("Legitimacy audit is only available for YouTube listings.", "danger")
+        return redirect(url_for("listings.listing_detail", listing_id=listing_id))
+
+    return render_template("audit_report.html", listing=listing, listing_id=listing_id)
+
+
 @listings_bp.route("/listing/<listing_id>/run_legitimacy", methods=["POST"])
 @login_required
 def run_legitimacy(listing_id):
@@ -541,10 +558,11 @@ def run_legitimacy(listing_id):
         flash("Legitimacy test is only available for YouTube listings.", "danger")
         return redirect(url_for("listings.listing_detail", listing_id=listing_id))
 
-    page_link = listing.get("page_link", "").strip()
+    # Support custom pasted link from form, or fallback to saved link
+    page_link = request.form.get("page_link", "").strip() or listing.get("page_link", "").strip()
     if not page_link:
-        flash("This listing does not have a channel link to run the legitimacy test.", "danger")
-        return redirect(url_for("listings.listing_detail", listing_id=listing_id))
+        flash("Please provide a valid YouTube channel link.", "danger")
+        return redirect(url_for("listings.view_audit", listing_id=listing_id))
 
     # Fee is 2 credits
     user_ref  = safe_db_reference("users", buyer_uid)
@@ -553,14 +571,14 @@ def run_legitimacy(listing_id):
 
     if credit < 2:
         flash("Insufficient credits. Running a legitimacy test costs 2 credits.", "danger")
-        return redirect(url_for("listings.listing_detail", listing_id=listing_id))
+        return redirect(url_for("listings.view_audit", listing_id=listing_id))
 
     try:
         from yt_bot_detector.analyzer import analyze
         report = analyze(page_link)
         if report.get("error"):
             flash(f"Error running legitimacy test: {report['error']}", "danger")
-            return redirect(url_for("listings.listing_detail", listing_id=listing_id))
+            return redirect(url_for("listings.view_audit", listing_id=listing_id))
 
         # Deduct fee from user
         new_credit = credit - 2
@@ -568,8 +586,9 @@ def run_legitimacy(listing_id):
         session["user"]["credit"] = new_credit
         record_platform_revenue(2, listing_id)
 
-        # Update listing with legitimacy report
+        # Update listing with legitimacy report and the new page_link
         listing_ref.update({
+            "page_link": page_link,
             "legitimacy_report": {
                 "verdict": report["verdict"],
                 "top_red_flags": report["top_red_flags"],
@@ -586,5 +605,5 @@ def run_legitimacy(listing_id):
     except Exception as e:
         flash(f"An unexpected error occurred during analysis: {e}", "danger")
 
-    return redirect(url_for("listings.listing_detail", listing_id=listing_id))
+    return redirect(url_for("listings.view_audit", listing_id=listing_id))
 
