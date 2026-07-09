@@ -14,7 +14,7 @@ from utils.db    import (safe_db_reference, get_all_listings, get_user_public,
                           invalidate_users_cache)
 from utils.notifications import push_notification, notify_seller_new_purchase, \
     notify_buyer_credentials_delivered, notify_seller_confirmed, notify_dispute_raised
-from utils.config import BOOST_COST, BOOST_HOURS, GMAIL_USER
+from utils.config import BOOST_COST, BOOST_HOURS, GMAIL_USER, YOUTUBE_API_KEY
 
 listings_bp = Blueprint("listings", __name__)
 
@@ -575,7 +575,7 @@ def run_legitimacy(listing_id):
 
     try:
         from yt_bot_detector.analyzer import analyze
-        report = analyze(page_link)
+        report = analyze(page_link, api_key=YOUTUBE_API_KEY)
         if report.get("error"):
             flash(f"Error running legitimacy test: {report['error']}", "danger")
             return redirect(url_for("listings.view_audit", listing_id=listing_id))

@@ -5,6 +5,7 @@ FIREBASE_API_KEY   = os.getenv("FIREBASE_API_KEY", "")
 GMAIL_USER         = os.getenv("GMAIL_USER", "")
 GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD", "")
 PLATFORM_FEE_PCT   = float(os.getenv("PLATFORM_FEE_PCT", "8"))
+YOUTUBE_API_KEY    = os.getenv("YOUTUBE_API_KEY", "AIzaSyANYgZeJUfdPI9jJPpcJjvgr5BgoLfY254")
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif"}
 

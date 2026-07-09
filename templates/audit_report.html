@@ -37,14 +37,17 @@
         <div>
           <label class="block text-xs font-rajdhani text-gray-400 mb-2">YouTube Channel Link or Handle</label>
           <div class="relative flex items-center">
-            <span class="absolute left-3.5 text-gray-500">
+            <span class="absolute left-3.5 text-gray-500 z-10">
               <i class="fas fa-link text-sm"></i>
             </span>
             <input type="url" name="page_link" required
                    value="{{ listing.page_link or '' }}"
                    placeholder="https://www.youtube.com/@handle or https://www.youtube.com/channel/UC..."
-                   class="w-full pl-10 pr-4 py-3 rounded-xl font-rajdhani text-sm text-white bg-gray-950/60
-                          placeholder-gray-700 outline-none border border-gray-800 focus:border-neon-blue transition-colors">
+                   style="background: #0d1117; color: #f0f6fc; border: 1px solid rgba(0,243,255,0.25); caret-color: #00f3ff;"
+                   class="w-full pl-10 pr-4 py-3 rounded-xl font-rajdhani text-sm
+                          outline-none focus:border-neon-blue transition-colors"
+                   onfocus="this.style.borderColor='#00f3ff'"
+                   onblur="this.style.borderColor='rgba(0,243,255,0.25)'">
           </div>
           <p class="text-[10px] text-gray-600 font-rajdhani mt-2 leading-relaxed">
             Must be a public YouTube channel URL. Running the audit costs <b>$2 credits</b> which are deducted from your balance.

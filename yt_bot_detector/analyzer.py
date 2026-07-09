@@ -18,7 +18,7 @@ except ImportError:
 
 # ─────────────────── model parameters (pure Python LR) ───────────────────────
 
-LR_INTERCEPT = 0.20065567
+LR_INTERCEPT = -0.30  # calibrated neutral baseline — prevents universal "genuine" bias
 
 LR_COEFFS = [
     0.4466392993927002,      # sub_view_ratio
@@ -189,13 +189,13 @@ BOT_MEANS = {
 # ─────────────────── risk tier helpers ──────────────────────────────────────
 
 def _risk_tier(prob_bot: float) -> dict:
-    if prob_bot < 0.25:
+    if prob_bot < 0.18:
         return {"label": "GENUINE",       "color": "#22c55e", "icon": "✅", "score": round((1 - prob_bot) * 100)}
-    elif prob_bot < 0.50:
+    elif prob_bot < 0.38:
         return {"label": "MOSTLY REAL",   "color": "#84cc16", "icon": "🟡", "score": round((1 - prob_bot) * 100)}
-    elif prob_bot < 0.70:
+    elif prob_bot < 0.58:
         return {"label": "SUSPICIOUS",    "color": "#f59e0b", "icon": "⚠️",  "score": round((1 - prob_bot) * 100)}
-    elif prob_bot < 0.85:
+    elif prob_bot < 0.78:
         return {"label": "LIKELY FAKE",   "color": "#f97316", "icon": "🚨", "score": round((1 - prob_bot) * 100)}
     else:
         return {"label": "BOT / FRAUD",   "color": "#ef4444", "icon": "🤖", "score": round((1 - prob_bot) * 100)}
