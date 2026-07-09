@@ -377,6 +377,12 @@
                 ('fa-clock','72-hour dispute window'),
                 ('fa-headset','Admin dispute resolution'),
                 ('fa-lock','Secure credential delivery')
+              ] %}
+              <li class="flex items-center gap-2.5 text-xs font-rajdhani text-gray-500">
+                <i class="fas {{ icon }} text-neon-blue/60 w-4 text-center text-[11px]"></i>
+                {{ label }}
+              </li>
+              {% endfor %}
             </ul>
           </div>
         </div>
