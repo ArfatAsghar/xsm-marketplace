@@ -131,7 +131,7 @@ def dashboard():
     # Purchases made BY this user as buyer
     try:
         purchases = safe_db_reference("purchases", user_id).get() or {}
-        for listing_id, _ in purchases.items():
+        for listing_id, p_item in purchases.items():
             if listing_id in listings: continue
             try:
                 pdata = safe_db_reference("listings", listing_id).get() or {}
@@ -140,13 +140,25 @@ def dashboard():
                     pdata["thumbnail"]    = resolve_media_url(pdata.get("thumbnail"))
                     pdata["price"]        = int(float(pdata.get("price", 0) or 0))
                     pdata["followers"]    = int(pdata.get("followers", 0) or 0)
+                    pdata["purchase_timestamp"] = p_item.get("timestamp", "") if isinstance(p_item, dict) else ""
                     listings[listing_id]  = pdata
             except Exception:
                 pass
     except Exception:
         pass
 
+    def get_sort_key(item_tuple):
+        lid, item = item_tuple
+        if item.get("_is_purchase"):
+            return item.get("purchase_timestamp", "") or item.get("created_at", "")
+        if item.get("status") == "completed":
+            return item.get("escrow", {}).get("released_at", "") or item.get("created_at", "")
+        if item.get("status") in ['pending_delivery', 'pending_confirmation', 'disputed']:
+            return item.get("escrow", {}).get("created_at", "") or item.get("created_at", "")
+        return item.get("created_at", "") or ""
+
     all_items   = list(listings.items())
+    all_items.sort(key=get_sort_key, reverse=True)
     total       = len(all_items)
     total_pages = max(1, (total + DASHBOARD_PER_PAGE - 1) // DASHBOARD_PER_PAGE)
     page        = max(1, min(page, total_pages))
